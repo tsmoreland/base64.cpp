@@ -11,17 +11,13 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "scoped_se_translator.h"
+#pragma once
 
-namespace moreland::base64::shared
-{
-    scoped_se_translator::scoped_se_translator(translator_function const translator) noexcept
-        : m_previous_handler{_set_se_translator(translator)}
-    {
-    }
-    scoped_se_translator::~scoped_se_translator()
-    {
-        _set_se_translator(m_previous_handler);
-    }
-}
+#define WIN32_LEAN_AND_MEAN 
+
+#include <Windows.h>
+#include <eh.h>
+#include <exception>
+
+#include "seh_exception.h"
+

@@ -13,6 +13,7 @@
 
 #include <iostream>
 
+#include <pch.h>
 #include "seh_exception.h"
 
 using moreland::base64::shared::seh_exception;

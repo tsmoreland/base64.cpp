@@ -16,11 +16,13 @@
 
 namespace moreland::base64::shared
 {
+
     class scoped_se_translator final
     {
-        _se_translator_function const m_previous_handler;
+        using translator_function = _se_translator_function;
+        translator_function const m_previous_handler;
     public:
-        scoped_se_translator(_se_translator_function translator) noexcept;
+        scoped_se_translator(translator_function const translator) noexcept;
         ~scoped_se_translator();
         scoped_se_translator(scoped_se_translator const&) = delete;
         scoped_se_translator(scoped_se_translator &&) noexcept = delete;

@@ -13,7 +13,8 @@
 
 #pragma once
 
-#include <stdexcept>
+#include <exception>
+#include <Windows.h>
 
 namespace moreland::base64::shared
 {

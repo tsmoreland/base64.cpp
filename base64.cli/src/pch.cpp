@@ -12,16 +12,3 @@
 // 
 
 #include "pch.h"
-#include "scoped_se_translator.h"
-
-namespace moreland::base64::shared
-{
-    scoped_se_translator::scoped_se_translator(translator_function const translator) noexcept
-        : m_previous_handler{_set_se_translator(translator)}
-    {
-    }
-    scoped_se_translator::~scoped_se_translator()
-    {
-        _set_se_translator(m_previous_handler);
-    }
-}

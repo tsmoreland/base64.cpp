@@ -34,6 +34,8 @@ seh_exception::seh_exception(unsigned int const error_code, EXCEPTION_POINTERS c
     if (exception_pointers == nullptr) {
         return;
     }
+
+    // do something with the exception pointers, specifically gather up the exception codes 
 }
 
 unsigned seh_exception::get_error_code() const
