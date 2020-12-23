@@ -14,10 +14,14 @@
 
 module;
 
-#include "seh_exception.h"
+//#include "seh_exception.h"
 
 export module moreland.base64.shared;
-//export import moreland.base64.shared.seh_exception;
+export import moreland.base64.shared.seh_exception;
 
 //export class moreland::base64::shared::seh_exception;
-export class seh_exception;
+//export class seh_exception;
+
+//module :private;
+
+//#include "src/seh_exception.cpp"

@@ -18,7 +18,7 @@ module;
 #include <Windows.h>
 #include <eh.h>
 #include <exception>
-#include "scoped_se_translator.h"
+import moreland.base64.shared.scoped_se_translator;
 
 export module moreland.base64.shared.seh_exception;
 
@@ -39,10 +39,9 @@ public:
 
 module :private; 
 
-//import moreland.base64.shared.scoped_se_translator;
 
-[[noreturn]] 
-void seh_translator(unsigned int error_code, EXCEPTION_POINTERS* exception_pointers)
+[[noreturn]]
+void __cdecl seh_translator(unsigned int error_code, struct _EXCEPTION_POINTERS* exception_pointers)
 {
     throw seh_exception(error_code, exception_pointers);
 }
@@ -71,6 +70,5 @@ void seh_exception::initialize()
 {
     // failure to call destructor means we won't unregister the translator for this process, but its exiting anyway so
     // no real harm
-    using moreland::base64::shared::scoped_se_translator;
-    static scoped_se_translator translator{seh_translator};  // NOLINT(clang-diagnostic-exit-time-destructors)
+    static scoped_se_translator translator(seh_translator);  // NOLINT(clang-diagnostic-exit-time-destructors)
 }

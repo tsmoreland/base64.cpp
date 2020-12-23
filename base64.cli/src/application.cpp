@@ -21,11 +21,7 @@ int main()
 {
 
     try {
-        seh_exception sex{42};
-
-         auto const error = sex.get_error_code();
-         std::cout << error << std::endl;
-        //seh_exception::initialize();
+        seh_exception::initialize();
 
         std::cout << "Hello World!\n";
 
