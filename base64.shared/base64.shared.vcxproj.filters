@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="modules">
+      <UniqueIdentifier>{c400e994-952e-46b0-991f-88a540abbc51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\seh_exception.h">
@@ -35,5 +38,8 @@
     <ClCompile Include="src\scoped_se_translator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="seh_exception.ixx" />
+    <ClCompile Include="shared.ixx" />
+    <ClCompile Include="scoped_se_translator.ixx" />
   </ItemGroup>
 </Project>

@@ -13,15 +13,19 @@
 
 #include <iostream>
 
-#include <pch.h>
-#include "seh_exception.h"
+import moreland.base64.shared;
 
-using moreland::base64::shared::seh_exception;
+#include <pch.h>
 
 int main()
 {
+
     try {
-        seh_exception::initialize();
+        seh_exception sex{42};
+
+         auto const error = sex.get_error_code();
+         std::cout << error << std::endl;
+        //seh_exception::initialize();
 
         std::cout << "Hello World!\n";
 

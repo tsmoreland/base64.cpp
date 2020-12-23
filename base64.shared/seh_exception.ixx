@@ -11,12 +11,35 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "seh_exception.h"
+module;
+
+#define WIN32_LEAN_AND_MEAN 
+
+#include <Windows.h>
+#include <eh.h>
+#include <exception>
 #include "scoped_se_translator.h"
 
-//namespace moreland::base64::shared
-//{
+export module moreland.base64.shared.seh_exception;
+
+
+export class seh_exception final : public std::exception
+{
+    unsigned int const m_error_code;
+public:
+
+    explicit seh_exception(unsigned int const error_code);
+    explicit seh_exception(unsigned int const error_code, EXCEPTION_POINTERS const* const exception_pointers);
+
+    [[nodiscard]] 
+    unsigned int get_error_code() const;
+
+    static void initialize();
+};
+
+module :private; 
+
+//import moreland.base64.shared.scoped_se_translator;
 
 [[noreturn]] 
 void seh_translator(unsigned int error_code, EXCEPTION_POINTERS* exception_pointers)
@@ -47,10 +70,7 @@ unsigned seh_exception::get_error_code() const
 void seh_exception::initialize()
 {
     // failure to call destructor means we won't unregister the translator for this process, but its exiting anyway so
-    // no reall harm
+    // no real harm
     using moreland::base64::shared::scoped_se_translator;
     static scoped_se_translator translator{seh_translator};  // NOLINT(clang-diagnostic-exit-time-destructors)
 }
-
-//}
-

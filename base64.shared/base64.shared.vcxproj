@@ -60,7 +60,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ExceptionHandling>Async</ExceptionHandling>
       <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableModules>true</EnableModules>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -81,7 +81,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ExceptionHandling>Async</ExceptionHandling>
       <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableModules>true</EnableModules>
     </ClCompile>
@@ -98,6 +98,9 @@
     <ClInclude Include="include\seh_exception.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="scoped_se_translator.ixx" />
+    <ClCompile Include="seh_exception.ixx" />
+    <ClCompile Include="shared.ixx" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\scoped_se_translator.cpp" />
     <ClCompile Include="src\seh_exception.cpp" />

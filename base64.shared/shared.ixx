@@ -1,3 +1,4 @@
+
 //
 // Copyright © 2020 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
@@ -11,24 +12,12 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+module;
 
-#include <exception>
-#include <Windows.h>
+#include "seh_exception.h"
 
-//namespace moreland::base64::shared
-//{
-    class seh_exception final : public std::exception
-    {
-        unsigned int const m_error_code;
-    public:
+export module moreland.base64.shared;
+//export import moreland.base64.shared.seh_exception;
 
-        explicit seh_exception(unsigned int const error_code);
-        explicit seh_exception(unsigned int const error_code, EXCEPTION_POINTERS const * const exception_pointers);
-
-        [[nodiscard]] unsigned get_error_code() const;
-
-        static void initialize();
-    };
-    
-//}
+//export class moreland::base64::shared::seh_exception;
+export class seh_exception;

@@ -19,5 +19,3 @@
 #include <eh.h>
 #include <exception>
 
-#include "seh_exception.h"
-
