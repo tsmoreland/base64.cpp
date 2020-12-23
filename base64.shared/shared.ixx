@@ -1,3 +1,4 @@
+
 //
 // Copyright © 2020 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
@@ -11,17 +12,7 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "scoped_se_translator.h"
+export module moreland.base64.shared;
+export import :scoped_se_translator;
+export import :seh_exception;
 
-namespace moreland::base64::shared
-{
-    scoped_se_translator::scoped_se_translator(translator_function const translator) noexcept
-        : m_previous_handler{_set_se_translator(translator)}
-    {
-    }
-    scoped_se_translator::~scoped_se_translator()
-    {
-        _set_se_translator(m_previous_handler);
-    }
-}

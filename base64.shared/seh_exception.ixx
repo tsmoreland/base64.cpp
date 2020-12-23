@@ -11,14 +11,60 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "seh_exception.h"
-#include "scoped_se_translator.h"
+module;
+
+#define WIN32_LEAN_AND_MEAN 
+
+#include <Windows.h>
+#include <eh.h>
+
+#include <exception>
+#include <iomanip> 
+#include <sstream>
+#include <string>
+
+export module moreland.base64.shared:seh_exception;
+
+import :scoped_se_translator;
+
+export namespace moreland::base64::shared
+{
+    class seh_exception final : public std::exception
+    {
+        unsigned int const m_error_code;
+    public:
+
+        explicit seh_exception(unsigned int const error_code);
+        explicit seh_exception(unsigned int const error_code, EXCEPTION_POINTERS const* const exception_pointers);
+
+        [[nodiscard]] 
+        unsigned int get_error_code() const;
+
+        static void initialize();
+    };
+}
+
+using std::string;
 
 namespace moreland::base64::shared
 {
 
-void seh_translator(unsigned int error_code, EXCEPTION_POINTERS* exception_pointers)
+[[nodiscard]]
+std::string format_what(unsigned int error_code, EXCEPTION_POINTERS const* const exception_pointers)
+{
+    using std::stringstream;
+    stringstream builder{};
+    builder << "SEH Error: ";
+    builder << "0x" << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << error_code;
+
+    if (exception_pointers == nullptr)
+        return builder.str();
+
+    return builder.str();
+}
+
+[[noreturn]]
+void __cdecl seh_translator(unsigned int error_code, EXCEPTION_POINTERS* exception_pointers)
 {
     throw seh_exception(error_code, exception_pointers);
 }
@@ -30,6 +76,7 @@ seh_exception::seh_exception(unsigned int const error_code)
 
 seh_exception::seh_exception(unsigned int const error_code, EXCEPTION_POINTERS const* const exception_pointers)
     : m_error_code{error_code}
+    , std::exception{format_what(error_code, exception_pointers).c_str()}
 {
     if (exception_pointers == nullptr) {
         return;
@@ -46,9 +93,8 @@ unsigned seh_exception::get_error_code() const
 void seh_exception::initialize()
 {
     // failure to call destructor means we won't unregister the translator for this process, but its exiting anyway so
-    // no reall harm
-    static scoped_se_translator translator{seh_translator};  // NOLINT(clang-diagnostic-exit-time-destructors)
+    // no real harm
+    static scoped_se_translator translator(seh_translator);  // NOLINT(clang-diagnostic-exit-time-destructors)
 }
 
 }
-
