@@ -64,6 +64,8 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableModules>true</EnableModules>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <FloatingPointExceptions>
+      </FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -96,15 +98,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src/application.cpp" />
-    <ClCompile Include="src\pch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\base64.shared\base64.shared.vcxproj">
       <Project>{afe4772a-fa26-4758-b8a0-9a30e45be129}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\pch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

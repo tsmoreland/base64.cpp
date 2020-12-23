@@ -12,16 +12,7 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-module;
-
-//#include "seh_exception.h"
-
 export module moreland.base64.shared;
-export import moreland.base64.shared.seh_exception;
+export import :scoped_se_translator;
+export import :seh_exception;
 
-//export class moreland::base64::shared::seh_exception;
-//export class seh_exception;
-
-//module :private;
-
-//#include "src/seh_exception.cpp"

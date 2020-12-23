@@ -11,11 +11,21 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include <iostream>
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <eh.h>
 
 import moreland.base64.shared;
+import std.core;
 
-#include <pch.h>
+using moreland::base64::shared::seh_exception;
+
+void force_exception()
+{
+    int x = 9;
+    int const y = 0;
+    x = x / y;
+}
 
 int main()
 {
@@ -23,10 +33,16 @@ int main()
     try {
         seh_exception::initialize();
 
-        std::cout << "Hello World!\n";
+        force_exception();
+        force_exception();
+
+    } catch (std::exception const& e) {
+        std::cout << e.what() << std::endl;
 
     } catch (...) {
-
+        std::cout << "unknown error occurred" << std::endl;
     }
+
+    std::cout << "exiting program" << std::endl;
 }
 
