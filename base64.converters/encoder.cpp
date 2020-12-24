@@ -21,12 +21,22 @@ using std::move;
 namespace  moreland::base64::converters
 {
 
-    encoder::encoder(bool is_url, std::vector<byte> newline, int const line_max, bool do_padding) noexcept
+    encoder::encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept
         : is_url_{is_url}
         , newline_{move(newline)}
-        , line_max_{line_max}
+        , line_max_{move(line_max)}
         , do_padding_{do_padding}
     {
     }
     
+    encoder const& get_encoder() noexcept
+    {
+        static encoder rfc4648{false, nullopt, nullopt, true};
+        return rfc4648;
+    }
+    encoder const& get_url_encoder() noexcept
+    {
+        static encoder rfc4648_url_safe{true, nullopt, nullopt, true};
+        return rfc4648_url_safe;
+    }
 }

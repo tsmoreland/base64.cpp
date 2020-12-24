@@ -13,14 +13,25 @@ export namespace moreland::base64::converters
     class BASE64_ENCODER_EXPORT encoder final 
     {
         bool is_url_;
-        std::vector<byte> newline_;
-        int line_max_;
+        optional<vector<byte>> newline_;
+        optional<int const> line_max_;
         bool do_padding_;
 
     public:
-        explicit encoder(bool is_url, std::vector<byte> newline, int const line_max, bool do_padding) noexcept;
+        explicit encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept;
+
+
 
     };
+
+    export 
+    [[nodiscard]]
+    BASE64_ENCODER_EXPORT encoder const& get_encoder() noexcept;
+
+    export 
+    [[nodiscard]]
+    BASE64_ENCODER_EXPORT encoder const& get_url_encoder() noexcept;
+
 }
 
 #pragma warning(pop)
