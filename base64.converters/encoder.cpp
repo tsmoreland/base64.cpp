@@ -16,10 +16,24 @@
 
 import moreland_base64_converters;
 
+#include <algorithm>
+
 using std::move;
 
 namespace  moreland::base64::converters
 {
+    auto const& get_byte_to_char_mapping()
+    {
+        static std::vector<byte> values{
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+        };
+        return values;
+    }
+
 
     encoder::encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept
         : is_url_{is_url}
@@ -27,6 +41,21 @@ namespace  moreland::base64::converters
         , line_max_{move(line_max)}
         , do_padding_{do_padding}
     {
+    }
+
+    vector<byte> encoder::encode(vector<byte> const& source) const
+    {
+        return vector<byte>();
+    }
+
+    encoder::size_type encoder::encode(vector<byte> const& source, vector<byte>& destintation) const
+    {
+        return size_type();
+    }
+
+    std::string encoder::encode_to_string(vector<byte> const& source) const
+    {
+        return std::string();
     }
     
     encoder const& get_encoder() noexcept

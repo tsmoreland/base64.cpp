@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <optional>
-#include <algorithm>
+#include <string>
 
 namespace moreland::base64::converters
 {

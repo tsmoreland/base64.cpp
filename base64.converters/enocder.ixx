@@ -18,10 +18,18 @@ export namespace moreland::base64::converters
         bool do_padding_;
 
     public:
+        using size_type = vector<byte>::size_type;
+
         explicit encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept;
 
+        [[nodiscard]]
+        vector<byte> encode(vector<byte> const& source) const;
 
+        [[nodiscard]]
+        size_type encode(vector<byte> const& source, vector<byte>& destintation) const;
 
+        [[nodiscard]]
+        std::string encode_to_string(vector<byte> const& source) const;
     };
 
     export 
