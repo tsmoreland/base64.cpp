@@ -23,7 +23,7 @@ namespace  moreland::base64::converters
 
     encoder::encoder(bool is_url, std::vector<byte> newline, int const line_max, bool do_padding) noexcept
         : is_url_{is_url}
-        , newline_{newline}
+        , newline_{move(newline)}
         , line_max_{line_max}
         , do_padding_{do_padding}
     {
