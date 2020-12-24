@@ -31,7 +31,7 @@ export namespace moreland::base64::shared
 {
     class seh_exception final : public std::exception
     {
-        unsigned int const m_error_code;
+        unsigned int const error_code_;
     public:
 
         explicit seh_exception(unsigned int const error_code);
@@ -49,52 +49,53 @@ using std::string;
 namespace moreland::base64::shared
 {
 
-[[nodiscard]]
-std::string format_what(unsigned int error_code, EXCEPTION_POINTERS const* const exception_pointers)
-{
-    using std::stringstream;
-    stringstream builder{};
-    builder << "SEH Error: ";
-    builder << "0x" << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << error_code;
+    [[nodiscard]]
+    std::string format_what(unsigned int error_code, EXCEPTION_POINTERS const* const exception_pointers)
+    {
+        using std::stringstream;
+        stringstream builder{};
+        builder << "SEH Error: ";
+        builder << "0x" << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << error_code;
 
-    if (exception_pointers == nullptr)
+        if (exception_pointers == nullptr)
+            return builder.str();
+
         return builder.str();
-
-    return builder.str();
-}
-
-[[noreturn]]
-void __cdecl seh_translator(unsigned int error_code, EXCEPTION_POINTERS* exception_pointers)
-{
-    throw seh_exception(error_code, exception_pointers);
-}
-    
-seh_exception::seh_exception(unsigned int const error_code)
-    : seh_exception(error_code, nullptr)
-{
-}
-
-seh_exception::seh_exception(unsigned int const error_code, EXCEPTION_POINTERS const* const exception_pointers)
-    : m_error_code{error_code}
-    , std::exception{format_what(error_code, exception_pointers).c_str()}
-{
-    if (exception_pointers == nullptr) {
-        return;
     }
 
-    // do something with the exception pointers, specifically gather up the exception codes 
-}
+    [[noreturn]]
+    void __cdecl seh_translator(unsigned int error_code, EXCEPTION_POINTERS* exception_pointers)
+    {
+        throw seh_exception(error_code, exception_pointers);
+    }
+        
+    seh_exception::seh_exception(unsigned int const error_code)
+        : seh_exception(error_code, nullptr)
+    {
+    }
 
-unsigned seh_exception::get_error_code() const
-{
-    return m_error_code;
-}
+    seh_exception::seh_exception(unsigned int const error_code, EXCEPTION_POINTERS const* const exception_pointers)
+        : error_code_{error_code}
+        , std::exception{format_what(error_code, exception_pointers).c_str()}
+    {
+        if (exception_pointers == nullptr) {
+            return;
+        }
 
-void seh_exception::initialize()
-{
-    // failure to call destructor means we won't unregister the translator for this process, but its exiting anyway so
-    // no real harm
-    static scoped_se_translator translator(seh_translator);  // NOLINT(clang-diagnostic-exit-time-destructors)
-}
+        // do something with the exception pointers, specifically gather up the exception codes 
+    }
+
+    unsigned seh_exception::get_error_code() const
+    {
+        return error_code_;
+    }
+
+    void seh_exception::initialize()
+    {
+        // failure to call destructor means we won't unregister the translator for this process, but its exiting anyway so
+        // no real harm
+        thread_local scoped_se_translator translator(seh_translator);  // NOLINT(clang-diagnostic-exit-time-destructors)
+
+    }
 
 }
