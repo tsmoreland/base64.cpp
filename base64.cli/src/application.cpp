@@ -11,14 +11,14 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <eh.h>
+#include <exception>
 
 import moreland.base64.shared;
 import std.core;
+import std.threading;
 
 using moreland::base64::shared::seh_exception;
+
 
 void force_exception()
 {
@@ -27,13 +27,27 @@ void force_exception()
     x = x / y;
 }
 
+void force_exception_in_thread()
+{
+    std::thread exception_in_thread([]() -> void
+    {
+        seh_exception::initialize();
+        try {
+            force_exception();
+        } catch (std::exception const& e) {
+            std::cout << e.what() << std::endl;
+        }
+    });
+    exception_in_thread.join();
+}
+
 int main()
 {
 
     try {
         seh_exception::initialize();
 
-        force_exception();
+        force_exception_in_thread();
         force_exception();
 
     } catch (std::exception const& e) {
