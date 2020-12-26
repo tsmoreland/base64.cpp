@@ -35,6 +35,7 @@ namespace moreland::base64::shared
     }
 
     [[noreturn]]
+    // ReSharper disable once CppParameterMayBeConst -- matching the expected function input/output for _set_se_translator
     void __cdecl seh_translator(unsigned int error_code, EXCEPTION_POINTERS* exception_pointers)
     {
         throw seh_exception(error_code, exception_pointers);

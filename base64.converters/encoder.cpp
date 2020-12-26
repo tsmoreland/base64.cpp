@@ -13,6 +13,9 @@
 
 #include "common.h"
 #include "encoder.h"
+
+#include "../base64.shared/optional_functions.h"
+
 #include <memory>
 #include <algorithm>
 
@@ -22,7 +25,6 @@ using std::vector;
 using std::span;
 using std::nullopt;
 
-import moreland.base64.shared.optional_functions;
 using moreland::base64::shared::map;
 
 namespace moreland::base64::converters
@@ -38,7 +40,7 @@ namespace moreland::base64::converters
     optional<vector<byte>> encoder::encode(span<byte const> const source) const
     {
         auto const output_length = get_output_length(source);
-        if (!output_length.value_or(0UL) == 0UL) {
+        if (output_length.value_or(0UL) == 0UL) {
             return nullopt;
         }
 
@@ -48,7 +50,7 @@ namespace moreland::base64::converters
     encoder::size_type encoder::encode(span<byte const> const source, vector<byte>& destintation) const
     {
         auto const output_length = get_output_length(source);
-        if (!output_length.value_or(0UL) == 0UL) {
+        if (output_length.value_or(0UL) == 0UL) {
             return 0UL;
         }
 
@@ -58,7 +60,7 @@ namespace moreland::base64::converters
     std::string encoder::encode_to_string_or_empty(span<byte const> const source) const
     {
         auto const output_length = get_output_length(source);
-        if (!output_length.value_or(0UL) == 0UL) {
+        if (output_length.value_or(0UL) == 0UL) {
             return "";
         }
 

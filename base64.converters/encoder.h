@@ -40,6 +40,8 @@ namespace moreland::base64::converters
         ~encoder() = default;
         encoder(encoder const&) = default;
         encoder(encoder &&) noexcept = default;
+        encoder& operator=(encoder const&) = default;
+        encoder& operator=(encoder &&) noexcept = default;
 
         [[nodiscard]]
         std::optional<std::vector<byte>> encode(std::span<byte const> const source) const;
