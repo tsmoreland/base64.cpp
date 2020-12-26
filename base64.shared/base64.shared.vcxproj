@@ -93,6 +93,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="optional_functions.ixx" />
     <ClCompile Include="scoped_se_translator.ixx" />
     <ClCompile Include="seh_exception.ixx" />
     <ClCompile Include="shared.ixx" />

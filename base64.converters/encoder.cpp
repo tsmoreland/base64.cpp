@@ -11,30 +11,19 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "encoder.h"
+#include "common.h"
+
 #include <memory>
-
-import moreland_base64_converters;
-
 #include <algorithm>
 
+import moreland_base64_converters;
+import moreland.base64.shared.optional_functions;
+
 using std::move;
+using moreland::base64::shared::map;
 
-namespace  moreland::base64::converters
+namespace moreland::base64::converters
 {
-    auto const& get_byte_to_char_mapping()
-    {
-        static std::vector<byte> values{
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
-        };
-        return values;
-    }
-
-
     encoder::encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept
         : is_url_{is_url}
         , newline_{move(newline)}
@@ -43,19 +32,45 @@ namespace  moreland::base64::converters
     {
     }
 
-    vector<byte> encoder::encode(vector<byte> const& source) const
+    optional<vector<byte>> encoder::encode(vector<byte> const& source) const
     {
-        return vector<byte>();
+        auto const output_length = get_output_length(source);
+        if (!output_length.value_or(0UL) == 0UL) {
+            return nullopt;
+        }
+
+        return nullopt;
     }
 
     encoder::size_type encoder::encode(vector<byte> const& source, vector<byte>& destintation) const
     {
+        auto const output_length = get_output_length(source);
+        if (!output_length.value_or(0UL) == 0UL) {
+            return 0UL;
+        }
+
         return size_type();
     }
 
-    std::string encoder::encode_to_string(vector<byte> const& source) const
+    std::string encoder::encode_to_string_or_empty(vector<byte> const& source) const
     {
+        auto const output_length = get_output_length(source);
+        if (!output_length.value_or(0UL) == 0UL) {
+            return "";
+        }
+
         return std::string();
+    }
+
+    optional<size_type> encoder::get_output_length(span<byte const> const source) const noexcept
+    {
+        return calculate_output_length(
+            source, 
+            newline_.has_value(),
+            map<vector<byte>::size_type, vector<byte>>(newline_, 
+                [](auto const& container) {
+                    return container.size();
+                }).value_or(0UL));
     }
     
     encoder const& get_encoder() noexcept

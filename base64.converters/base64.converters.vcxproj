@@ -90,10 +90,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="base64_converters.ixx" />
+    <ClCompile Include="common.cpp" />
     <ClCompile Include="encoder.cpp" />
     <ClCompile Include="enocder.ixx" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="common.h" />
     <ClInclude Include="encoder.h" />
     <ClInclude Include="library_export.h" />
   </ItemGroup>

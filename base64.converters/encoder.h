@@ -4,6 +4,7 @@
 #include <vector>
 #include <optional>
 #include <string>
+#include <span>
 
 namespace moreland::base64::converters
 {
@@ -11,4 +12,6 @@ namespace moreland::base64::converters
     using std::optional;
     using std::nullopt;
     using std::vector;
+    using std::span;
+
 }

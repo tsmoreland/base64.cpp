@@ -4,5 +4,6 @@
     <ClCompile Include="seh_exception.ixx" />
     <ClCompile Include="shared.ixx" />
     <ClCompile Include="scoped_se_translator.ixx" />
+    <ClCompile Include="optional_functions.ixx" />
   </ItemGroup>
 </Project>

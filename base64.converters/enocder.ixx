@@ -23,13 +23,18 @@ export namespace moreland::base64::converters
         explicit encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept;
 
         [[nodiscard]]
-        vector<byte> encode(vector<byte> const& source) const;
+        optional<vector<byte>> encode(vector<byte> const& source) const;
 
         [[nodiscard]]
         size_type encode(vector<byte> const& source, vector<byte>& destintation) const;
 
         [[nodiscard]]
-        std::string encode_to_string(vector<byte> const& source) const;
+        std::string encode_to_string_or_empty(vector<byte> const& source) const;
+
+    private:
+        [[nodiscard]]
+        optional<size_type> get_output_length(span<byte const> const source) const noexcept;
+
     };
 
     export 
@@ -39,6 +44,7 @@ export namespace moreland::base64::converters
     export 
     [[nodiscard]]
     BASE64_ENCODER_EXPORT encoder const& get_url_encoder() noexcept;
+
 
 }
 
