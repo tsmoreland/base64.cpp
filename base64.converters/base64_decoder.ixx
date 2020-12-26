@@ -1,3 +1,4 @@
+
 //
 // Copyright © 2020 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
@@ -11,52 +12,9 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include <exception>
+export module moreland.base64.decoder;
 
-import moreland.base64.shared;
-import std.core;
-import std.threading;
-
-using moreland::base64::shared::seh_exception;
-
-
-void force_exception()
-{
-    int x = 9;
-    int const y = 0;
-    x = x / y;
-}
-
-void force_exception_in_thread()
-{
-    std::thread exception_in_thread([]() -> void
-    {
-        seh_exception::initialize();
-        try {
-            force_exception();
-        } catch (std::exception const& e) {
-            std::cout << e.what() << std::endl;
-        }
-    });
-    exception_in_thread.join();
-}
-
-int main()
+export namespace moreland::base64::decoder 
 {
 
-    try {
-        seh_exception::initialize();
-
-        force_exception_in_thread();
-        force_exception();
-
-    } catch (std::exception const& e) {
-        std::cout << e.what() << std::endl;
-
-    } catch (...) {
-        std::cout << "unknown error occurred" << std::endl;
-    }
-
-    std::cout << "exiting program" << std::endl;
 }
-
