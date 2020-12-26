@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <Windows.h>
 
 namespace moreland::base64::shared
 {

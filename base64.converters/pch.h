@@ -11,27 +11,37 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "common.h"
+#pragma once
 
+#include <memory>
+#include <algorithm>
+#include <exception>
+#include <iomanip> 
+#include <string>
+#include <sstream>
+#include <vector>
+#include <optional>
+#include <string>
+#include <span>
 #include <limits>
 
-
-using std::span;
-
-namespace moreland::base64::converters
+namespace numeric_limits
 {
-    std::span<byte> get_byte_to_char_mapping() noexcept
+    template <typename T>
+    constexpr T maximum()
     {
-        static auto values = std::vector<byte> {  // NOLINT(clang-diagnostic-exit-time-destructors)
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
-        };
-        return values;  
+        return std::numeric_limits<T>::max();
     }
-
-    
+    template <typename T>
+    constexpr T minimum()
+    {
+        return std::numeric_limits<T>::min();
+    }
 }
+
+
+#define WIN32_LEAN_AND_MEAN 
+
+#include <Windows.h>
+#include <eh.h>
+

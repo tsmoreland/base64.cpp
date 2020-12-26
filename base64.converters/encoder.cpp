@@ -11,13 +11,11 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
+#include "pch.h"
 #include "common.h"
 #include "encoder.h"
 
 #include "../base64.shared/optional_functions.h"
-
-#include <memory>
-#include <algorithm>
 
 using std::move;
 using std::optional;
@@ -92,19 +90,19 @@ namespace moreland::base64::converters
             size += new_line_count * new_line_size;
         }
 
-        if (size > ONE * std::numeric_limits<int>::max()) {
+        if (size > static_cast<size_type>(numeric_limits::maximum<int>())) {
             return nullopt;
         }
 
         return optional(size);
     }
     
-    encoder build_encoder() noexcept
+    encoder make_encoder() noexcept
     {
         encoder rfc4648{false, nullopt, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
         return rfc4648;
     }
-    encoder build_url_encoder() noexcept  // NOLINT(clang-diagnostic-exit-time-destructors)
+    encoder make_url_encoder() noexcept  // NOLINT(clang-diagnostic-exit-time-destructors)
     {
         encoder rfc4648_url_safe{true, nullopt, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
         return rfc4648_url_safe;

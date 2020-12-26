@@ -11,22 +11,19 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include <exception>
-
-import moreland.base64.shared;
-import std.core;
-import std.threading;
+#include "pch.h"
+#include "../base64.shared/seh_exception.h"
+#include "../../base64.converters/encoder.h"
 
 using moreland::base64::shared::seh_exception;
-
+using moreland::base64::converters::make_encoder;
 
 void force_exception()
 {
     int x = 9;
     int const y = 0;
-    x = x / y;
+    x = x / y;  // NOLINT(clang-diagnostic-division-by-zero) -- intended
 }
-
 void force_exception_in_thread()
 {
     std::thread exception_in_thread([]() -> void
@@ -41,14 +38,27 @@ void force_exception_in_thread()
     exception_in_thread.join();
 }
 
+using std::vector;
+using byte_string = std::basic_string<unsigned char>;
+
 int main()
 {
 
     try {
         seh_exception::initialize();
 
+        auto const encoder = make_encoder();
+
+        std::string source_string = "hello world";
+        byte_string source{begin(source_string), end(source_string)};
+
+        auto const encoded = encoder.encode(source);
+        if (!encoded.has_value())
+            return 1;
+
         force_exception_in_thread();
         force_exception();
+
 
     } catch (std::exception const& e) {
         std::cout << e.what() << std::endl;
@@ -57,6 +67,6 @@ int main()
         std::cout << "unknown error occurred" << std::endl;
     }
 
-    std::cout << "exiting program" << std::endl;
+    return 0;
 }
 

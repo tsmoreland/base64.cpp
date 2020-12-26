@@ -63,9 +63,9 @@ namespace moreland::base64::converters
 #pragma warning(pop)
 
     [[nodiscard]]
-    BASE64_CONVERTER_EXPORT encoder build_encoder() noexcept;
+    BASE64_CONVERTER_EXPORT encoder make_encoder() noexcept;
 
     [[nodiscard]]
-    BASE64_CONVERTER_EXPORT encoder build_url_encoder() noexcept;
+    BASE64_CONVERTER_EXPORT encoder make_url_encoder() noexcept;
 
 }

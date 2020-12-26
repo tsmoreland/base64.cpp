@@ -11,27 +11,16 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "common.h"
+#pragma once
 
-#include <limits>
+#define WIN32_LEAN_AND_MEAN 
 
+#include <Windows.h>
+#include <eh.h>
 
-using std::span;
-
-namespace moreland::base64::converters
-{
-    std::span<byte> get_byte_to_char_mapping() noexcept
-    {
-        static auto values = std::vector<byte> {  // NOLINT(clang-diagnostic-exit-time-destructors)
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
-        };
-        return values;  
-    }
-
-    
-}
+#include <exception>
+#include <iomanip> 
+#include <optional>
+#include <string>
+#include <iostream>
+#include <thread>
