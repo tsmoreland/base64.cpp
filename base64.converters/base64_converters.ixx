@@ -1,5 +1,3 @@
-module;
-
-export module moreland_base64_converters;
+export module moreland.base64.converters;
 export import :encoder;
 

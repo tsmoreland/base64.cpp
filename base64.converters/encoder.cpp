@@ -11,20 +11,31 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
+#include "library_export.h"
 #include "common.h"
+
+import moreland.base64.converters;
+import moreland.base64.shared.optional_functions;
+
+import <vector>;
+import <optional>;
+import <string>;
+import <span>;
 
 #include <memory>
 #include <algorithm>
+#include <limits>
 
-import moreland_base64_converters;
-import moreland.base64.shared.optional_functions;
 
 using std::move;
 using moreland::base64::shared::map;
 
+#pragma warning(push)
+#pragma warning(disable : 4251)
+
 namespace moreland::base64::converters
 {
-    encoder::encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept
+     encoder::encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept
         : is_url_{is_url}
         , newline_{move(newline)}
         , line_max_{move(line_max)}
@@ -62,6 +73,15 @@ namespace moreland::base64::converters
         return std::string();
     }
 
+    bool encoder::validate_encode_source(span<byte const> const source) const noexcept
+    {
+        if (source.size() == 0)
+            return false;
+
+
+        return false;
+    }
+
     optional<size_type> encoder::get_output_length(span<byte const> const source) const noexcept
     {
         return calculate_output_length(
@@ -72,15 +92,31 @@ namespace moreland::base64::converters
                     return container.size();
                 }).value_or(0UL));
     }
-    
-    encoder const& get_encoder() noexcept
+    optional<size_type> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks, size_type const new_line_size) 
     {
-        static encoder rfc4648{false, nullopt, nullopt, true};
-        return rfc4648;
-    }
-    encoder const& get_url_encoder() noexcept
-    {
-        static encoder rfc4648_url_safe{true, nullopt, nullopt, true};
-        return rfc4648_url_safe;
+        size_type const ONE = 1;
+
+        auto size = source.size() / 3 * 4;       
+        size += ((source.size() % 3) != 0)
+            ? 4
+            : 0;
+
+        if (size == 0)
+            return 0;
+        if (insert_line_breaks) {
+            auto new_line_count = size / get_base64_line_break_position();
+            if (size % new_line_count == 0) {
+                --new_line_count;
+            }
+            size += new_line_count * new_line_size;
+        }
+
+        if (size > ONE * std::numeric_limits<int>::max()) {
+            return nullopt;
+        }
+
+        return optional(size);
     }
 }
+
+#pragma warning(pop)

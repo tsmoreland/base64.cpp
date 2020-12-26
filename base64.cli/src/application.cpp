@@ -14,11 +14,13 @@
 #include <exception>
 
 import moreland.base64.shared;
+import moreland.base64.converters;
 import std.core;
 import std.threading;
 
 using moreland::base64::shared::seh_exception;
-
+//using moreland::base64::converters::encoder;
+//using moreland::base64::converters::get_encoder;
 
 void force_exception()
 {
@@ -47,8 +49,7 @@ int main()
     try {
         seh_exception::initialize();
 
-        force_exception_in_thread();
-        force_exception();
+        //auto const encoder = get_encoder();
 
     } catch (std::exception const& e) {
         std::cout << e.what() << std::endl;
