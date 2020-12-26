@@ -1,8 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="seh_exception.ixx" />
-    <ClCompile Include="shared.ixx" />
-    <ClCompile Include="scoped_se_translator.ixx" />
+    <ClCompile Include="scoped_se_translator.cpp" />
+    <ClCompile Include="seh_exception.cpp" />
+    <ClCompile Include="pch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="optional_functions.h" />
+    <ClInclude Include="scoped_se_translator.h" />
+    <ClInclude Include="seh_exception.h" />
+    <ClInclude Include="pch.h" />
   </ItemGroup>
 </Project>

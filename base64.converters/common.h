@@ -11,13 +11,24 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-// ReSharper disable CppClangTidyCppcoreguidelinesMacroUsage
-// ReSharper disable CppClangTidyClangDiagnosticUnusedMacros
 #pragma once
 
-#ifdef BASE64_CONVERTER_EXPORTS
-#define BASE64_CONVERTER_EXPORT __declspec(dllexport)
-#else
-#define BASE64_CONVERTER_EXPORT __declspec(dllimport)
-#endif
+#include "encoder.h"
+#include <span>
 
+namespace moreland::base64::converters
+{
+    using size_type = typename std::vector<byte>::size_type;
+    using std::span;
+
+    [[nodiscard]]
+    constexpr auto get_base64_line_break_position()
+    {
+        return 76UL;
+    }
+
+    [[nodiscard]]
+    std::span<byte> get_byte_to_char_mapping() noexcept;
+
+
+}

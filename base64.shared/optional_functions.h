@@ -1,3 +1,4 @@
+
 //
 // Copyright © 2020 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
@@ -11,13 +12,30 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-// ReSharper disable CppClangTidyCppcoreguidelinesMacroUsage
-// ReSharper disable CppClangTidyClangDiagnosticUnusedMacros
 #pragma once
 
-#ifdef BASE64_CONVERTER_EXPORTS
-#define BASE64_CONVERTER_EXPORT __declspec(dllexport)
-#else
-#define BASE64_CONVERTER_EXPORT __declspec(dllimport)
-#endif
+#include <optional>
 
+namespace moreland::base64::shared
+{
+
+    template <typename TDESTINATION_RESULT, typename TSOURCE_RESULT, class TMAPPER>
+    std::optional<TDESTINATION_RESULT> map(
+        std::optional<TSOURCE_RESULT> source, 
+        TMAPPER mapper)
+    {
+        return source.has_value()
+            ? std::optional(mapper(source.value()))
+            : std::nullopt; 
+    }
+
+    template <typename TDESTINATION_RESULT, typename TSOURCE_RESULT, class TMAPPER>
+    std::optional<TDESTINATION_RESULT> flat_map(
+        std::optional<TSOURCE_RESULT> source, 
+        TMAPPER mapper)
+    {
+        return source.has_value()
+            ? mapper(source.value())
+            : std::nullopt; 
+    }
+}

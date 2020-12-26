@@ -11,52 +11,27 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include <exception>
+#include "pch.h"
+#include "common.h"
 
-import moreland.base64.shared;
-import std.core;
-import std.threading;
-
-using moreland::base64::shared::seh_exception;
+#include <limits>
 
 
-void force_exception()
+using std::span;
+
+namespace moreland::base64::converters
 {
-    int x = 9;
-    int const y = 0;
-    x = x / y;
-}
-
-void force_exception_in_thread()
-{
-    std::thread exception_in_thread([]() -> void
+    std::span<byte> get_byte_to_char_mapping() noexcept
     {
-        seh_exception::initialize();
-        try {
-            force_exception();
-        } catch (std::exception const& e) {
-            std::cout << e.what() << std::endl;
-        }
-    });
-    exception_in_thread.join();
-}
-
-int main()
-{
-
-    try {
-        seh_exception::initialize();
-
-        force_exception_in_thread();
-        force_exception();
-
-    } catch (std::exception const& e) {
-        std::cout << e.what() << std::endl;
-
-    } catch (...) {
-        std::cout << "unknown error occurred" << std::endl;
+        static auto values = std::vector<byte> {  // NOLINT(clang-diagnostic-exit-time-destructors)
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+        };
+        return values;  
     }
 
-    std::cout << "exiting program" << std::endl;
+    
 }
-

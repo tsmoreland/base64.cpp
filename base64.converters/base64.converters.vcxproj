@@ -59,6 +59,8 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ExceptionHandling>Async</ExceptionHandling>
       <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -89,12 +91,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="base64_converters.ixx" />
-    <ClCompile Include="encoder.cpp" />
-    <ClCompile Include="enocder.ixx" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClCompile Include="pch.cpp" >
+      <DependentUpon>pch.h</DependentUpon>
+    </ClCompile>
+    <ClInclude Include="common.h" />
+    <ClCompile Include="common.cpp">
+      <DependentUpon>common.h</DependentUpon>
+    </ClCompile>
     <ClInclude Include="encoder.h" />
+    <ClCompile Include="encoder.cpp">
+      <DependentUpon>encoder.h</DependentUpon>
+    </ClCompile>
     <ClInclude Include="library_export.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

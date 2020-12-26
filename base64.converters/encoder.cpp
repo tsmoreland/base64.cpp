@@ -11,31 +11,23 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
+#include "pch.h"
+#include "common.h"
 #include "encoder.h"
-#include <memory>
 
-import moreland_base64_converters;
-
-#include <algorithm>
+#include "../base64.shared/optional_functions.h"
 
 using std::move;
+using std::optional;
+using std::vector;
+using std::span;
+using std::nullopt;
 
-namespace  moreland::base64::converters
+using moreland::base64::shared::map;
+
+namespace moreland::base64::converters
 {
-    auto const& get_byte_to_char_mapping()
-    {
-        static std::vector<byte> values{
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
-        };
-        return values;
-    }
-
-
-    encoder::encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept
+    encoder::encoder(bool const is_url, optional<vector<byte>> newline, optional<int const> line_max, bool const do_padding) noexcept
         : is_url_{is_url}
         , newline_{move(newline)}
         , line_max_{move(line_max)}
@@ -43,29 +35,76 @@ namespace  moreland::base64::converters
     {
     }
 
-    vector<byte> encoder::encode(vector<byte> const& source) const
+    optional<vector<byte>> encoder::encode(span<byte const> const source) const
     {
-        return vector<byte>();
+        auto const output_length = get_output_length(source);
+        if (output_length.value_or(0UL) == 0UL) {
+            return nullopt;
+        }
+
+        return nullopt;
     }
 
-    encoder::size_type encoder::encode(vector<byte> const& source, vector<byte>& destintation) const
+    encoder::size_type encoder::encode(span<byte const> const source, vector<byte>& destintation) const
     {
+        auto const output_length = get_output_length(source);
+        if (output_length.value_or(0UL) == 0UL) {
+            return 0UL;
+        }
+
         return size_type();
     }
 
-    std::string encoder::encode_to_string(vector<byte> const& source) const
+    std::string encoder::encode_to_string_or_empty(span<byte const> const source) const
     {
+        auto const output_length = get_output_length(source);
+        if (output_length.value_or(0UL) == 0UL) {
+            return "";
+        }
+
         return std::string();
     }
-    
-    encoder const& get_encoder() noexcept
+
+    optional<size_type> encoder::get_output_length(span<byte const> const source) const noexcept
     {
-        static encoder rfc4648{false, nullopt, nullopt, true};
+        return calculate_output_length(
+            source, 
+            newline_.has_value(),
+            map<vector<byte>::size_type, vector<byte>>(newline_, 
+                [](auto const& container) {
+                    return container.size();
+                }).value_or(0UL));
+    }
+
+    optional<size_type> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks, size_type const new_line_size) 
+    {
+        size_type const ONE = 1;
+        auto size = source.size() / 3 * 4;       
+        if (size == 0)
+            return 0;
+        if (insert_line_breaks) {
+            auto new_line_count = size / get_base64_line_break_position();
+            if (size % new_line_count == 0) {
+                --new_line_count;
+            }
+            size += new_line_count * new_line_size;
+        }
+
+        if (size > static_cast<size_type>(numeric_limits::maximum<int>())) {
+            return nullopt;
+        }
+
+        return optional(size);
+    }
+    
+    encoder make_encoder() noexcept
+    {
+        encoder rfc4648{false, nullopt, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
         return rfc4648;
     }
-    encoder const& get_url_encoder() noexcept
+    encoder make_url_encoder() noexcept  // NOLINT(clang-diagnostic-exit-time-destructors)
     {
-        static encoder rfc4648_url_safe{true, nullopt, nullopt, true};
+        encoder rfc4648_url_safe{true, nullopt, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
         return rfc4648_url_safe;
     }
 }

@@ -11,13 +11,16 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-// ReSharper disable CppClangTidyCppcoreguidelinesMacroUsage
-// ReSharper disable CppClangTidyClangDiagnosticUnusedMacros
 #pragma once
 
-#ifdef BASE64_CONVERTER_EXPORTS
-#define BASE64_CONVERTER_EXPORT __declspec(dllexport)
-#else
-#define BASE64_CONVERTER_EXPORT __declspec(dllimport)
-#endif
+#define WIN32_LEAN_AND_MEAN 
 
+#include <Windows.h>
+#include <eh.h>
+
+#include <exception>
+#include <iomanip> 
+#include <optional>
+#include <string>
+#include <iostream>
+#include <thread>

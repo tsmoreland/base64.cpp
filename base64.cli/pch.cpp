@@ -11,13 +11,4 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-// ReSharper disable CppClangTidyCppcoreguidelinesMacroUsage
-// ReSharper disable CppClangTidyClangDiagnosticUnusedMacros
-#pragma once
-
-#ifdef BASE64_CONVERTER_EXPORTS
-#define BASE64_CONVERTER_EXPORT __declspec(dllexport)
-#else
-#define BASE64_CONVERTER_EXPORT __declspec(dllimport)
-#endif
-
+#include "pch.h"

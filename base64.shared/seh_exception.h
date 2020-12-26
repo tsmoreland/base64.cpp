@@ -11,13 +11,25 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-// ReSharper disable CppClangTidyCppcoreguidelinesMacroUsage
-// ReSharper disable CppClangTidyClangDiagnosticUnusedMacros
+
 #pragma once
 
-#ifdef BASE64_CONVERTER_EXPORTS
-#define BASE64_CONVERTER_EXPORT __declspec(dllexport)
-#else
-#define BASE64_CONVERTER_EXPORT __declspec(dllimport)
-#endif
+#include <Windows.h>
+
+namespace moreland::base64::shared
+{
+    class seh_exception final : public std::exception
+    {
+        unsigned int const error_code_;
+    public:
+
+        explicit seh_exception(unsigned int const error_code);
+        explicit seh_exception(unsigned int const error_code, EXCEPTION_POINTERS const* const exception_pointers);
+
+        [[nodiscard]] 
+        unsigned int get_error_code() const;
+
+        static void initialize();
+    };
+}
 

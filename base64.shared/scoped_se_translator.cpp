@@ -11,13 +11,19 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-// ReSharper disable CppClangTidyCppcoreguidelinesMacroUsage
-// ReSharper disable CppClangTidyClangDiagnosticUnusedMacros
-#pragma once
+#include "pch.h"
+#include "scoped_se_translator.h"
 
-#ifdef BASE64_CONVERTER_EXPORTS
-#define BASE64_CONVERTER_EXPORT __declspec(dllexport)
-#else
-#define BASE64_CONVERTER_EXPORT __declspec(dllimport)
-#endif
+namespace moreland::base64::shared
+{
 
+    scoped_se_translator::scoped_se_translator(translator_function translator) noexcept
+        : previous_handler_{_set_se_translator(translator)}
+    {
+    }
+    scoped_se_translator::~scoped_se_translator()
+    {
+        _set_se_translator(previous_handler_);
+    }
+
+}

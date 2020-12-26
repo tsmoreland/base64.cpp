@@ -11,13 +11,37 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-// ReSharper disable CppClangTidyCppcoreguidelinesMacroUsage
-// ReSharper disable CppClangTidyClangDiagnosticUnusedMacros
 #pragma once
 
-#ifdef BASE64_CONVERTER_EXPORTS
-#define BASE64_CONVERTER_EXPORT __declspec(dllexport)
-#else
-#define BASE64_CONVERTER_EXPORT __declspec(dllimport)
-#endif
+#include <memory>
+#include <algorithm>
+#include <exception>
+#include <iomanip> 
+#include <string>
+#include <sstream>
+#include <vector>
+#include <optional>
+#include <string>
+#include <span>
+#include <limits>
+
+namespace numeric_limits
+{
+    template <typename T>
+    constexpr T maximum()
+    {
+        return std::numeric_limits<T>::max();
+    }
+    template <typename T>
+    constexpr T minimum()
+    {
+        return std::numeric_limits<T>::min();
+    }
+}
+
+
+#define WIN32_LEAN_AND_MEAN 
+
+#include <Windows.h>
+#include <eh.h>
 
