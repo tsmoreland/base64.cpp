@@ -15,7 +15,6 @@
 #include "common.h"
 
 import moreland.base64.converters;
-import moreland.base64.shared.optional_functions;
 
 #include <vector>
 #include <optional>
@@ -28,16 +27,15 @@ import moreland.base64.shared.optional_functions;
 
 
 using std::move;
-using moreland::base64::shared::map;
 
 #pragma warning(push)
 #pragma warning(disable : 4251)
 
 namespace moreland::base64::converters
 {
-     encoder::encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept
+     encoder::encoder(bool const is_url, bool insert_line_breaks, optional<int const> line_max, bool const do_padding) noexcept
         : is_url_{is_url}
-        , newline_{move(newline)}
+        , insert_line_breaks_{insert_line_breaks}
         , line_max_{move(line_max)}
         , do_padding_{do_padding}
     {
@@ -84,13 +82,7 @@ namespace moreland::base64::converters
 
     optional<size_type> encoder::get_output_length(span<byte const> const source) const noexcept
     {
-        return calculate_output_length(
-            source, 
-            newline_.has_value(),
-            map<vector<byte>::size_type, vector<byte>>(newline_, 
-                [](auto const& container) {
-                    return container.size();
-                }).value_or(0UL));
+        return calculate_output_length(source, insert_line_breaks_, 2UL);
     }
     optional<size_type> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks, size_type const new_line_size) 
     {
@@ -117,6 +109,22 @@ namespace moreland::base64::converters
 
         return optional(size);
     }
+
+    [[nodiscard]]
+    encoder make_encoder() noexcept
+    {
+        encoder rfc4648{false, false, nullopt, true};
+        return rfc4648;
+    }
+
+    [[nodiscard]]
+    encoder make_url_encoder() noexcept
+    {
+        encoder rfc4648{true, false, nullopt, true};
+        return rfc4648;
+    }
+
+
 }
 
 #pragma warning(pop)

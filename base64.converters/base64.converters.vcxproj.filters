@@ -21,13 +21,13 @@
     <ClCompile Include="base64_converters.ixx">
       <Filter>modules</Filter>
     </ClCompile>
-    <ClCompile Include="encoder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="enocder.ixx">
       <Filter>modules</Filter>
     </ClCompile>
     <ClCompile Include="common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="encoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
