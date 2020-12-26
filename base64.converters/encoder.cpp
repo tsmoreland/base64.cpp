@@ -12,19 +12,22 @@
 // 
 
 #include "common.h"
-
+#include "encoder.h"
 #include <memory>
 #include <algorithm>
 
-import moreland_base64_converters;
-import moreland.base64.shared.optional_functions;
-
 using std::move;
+using std::optional;
+using std::vector;
+using std::span;
+using std::nullopt;
+
+import moreland.base64.shared.optional_functions;
 using moreland::base64::shared::map;
 
 namespace moreland::base64::converters
 {
-    encoder::encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept
+    encoder::encoder(bool const is_url, optional<vector<byte>> newline, optional<int const> line_max, bool const do_padding) noexcept
         : is_url_{is_url}
         , newline_{move(newline)}
         , line_max_{move(line_max)}
@@ -32,7 +35,7 @@ namespace moreland::base64::converters
     {
     }
 
-    optional<vector<byte>> encoder::encode(vector<byte> const& source) const
+    optional<vector<byte>> encoder::encode(span<byte const> const source) const
     {
         auto const output_length = get_output_length(source);
         if (!output_length.value_or(0UL) == 0UL) {
@@ -42,7 +45,7 @@ namespace moreland::base64::converters
         return nullopt;
     }
 
-    encoder::size_type encoder::encode(vector<byte> const& source, vector<byte>& destintation) const
+    encoder::size_type encoder::encode(span<byte const> const source, vector<byte>& destintation) const
     {
         auto const output_length = get_output_length(source);
         if (!output_length.value_or(0UL) == 0UL) {
@@ -52,7 +55,7 @@ namespace moreland::base64::converters
         return size_type();
     }
 
-    std::string encoder::encode_to_string_or_empty(vector<byte> const& source) const
+    std::string encoder::encode_to_string_or_empty(span<byte const> const source) const
     {
         auto const output_length = get_output_length(source);
         if (!output_length.value_or(0UL) == 0UL) {
@@ -72,15 +75,36 @@ namespace moreland::base64::converters
                     return container.size();
                 }).value_or(0UL));
     }
-    
-    encoder const& get_encoder() noexcept
+
+    optional<size_type> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks, size_type const new_line_size) 
     {
-        static encoder rfc4648{false, nullopt, nullopt, true};
+        size_type const ONE = 1;
+        auto size = source.size() / 3 * 4;       
+        if (size == 0)
+            return 0;
+        if (insert_line_breaks) {
+            auto new_line_count = size / get_base64_line_break_position();
+            if (size % new_line_count == 0) {
+                --new_line_count;
+            }
+            size += new_line_count * new_line_size;
+        }
+
+        if (size > ONE * std::numeric_limits<int>::max()) {
+            return nullopt;
+        }
+
+        return optional(size);
+    }
+    
+    encoder build_encoder() noexcept
+    {
+        encoder rfc4648{false, nullopt, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
         return rfc4648;
     }
-    encoder const& get_url_encoder() noexcept
+    encoder build_url_encoder() noexcept  // NOLINT(clang-diagnostic-exit-time-destructors)
     {
-        static encoder rfc4648_url_safe{true, nullopt, nullopt, true};
+        encoder rfc4648_url_safe{true, nullopt, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
         return rfc4648_url_safe;
     }
 }

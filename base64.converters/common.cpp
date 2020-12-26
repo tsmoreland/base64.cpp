@@ -32,25 +32,5 @@ namespace moreland::base64::converters
         return values;  
     }
 
-    optional<size_type> calculate_output_length(span<byte const> const source, bool const insert_line_breaks, size_type const new_line_size) 
-    {
-        size_type const ONE = 1;
-        auto size = source.size() / 3 * 4;       
-        if (size == 0)
-            return 0;
-        if (insert_line_breaks) {
-            auto new_line_count = size / get_base64_line_break_position();
-            if (size % new_line_count == 0) {
-                --new_line_count;
-            }
-            size += new_line_count * new_line_size;
-        }
-
-        if (size > ONE * std::numeric_limits<int>::max()) {
-            return nullopt;
-        }
-
-        return optional(size);
-    }
     
 }

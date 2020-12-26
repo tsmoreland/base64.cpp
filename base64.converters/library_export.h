@@ -15,9 +15,9 @@
 // ReSharper disable CppClangTidyClangDiagnosticUnusedMacros
 #pragma once
 
-#ifdef BASE64_ENCODER_EXPORTS
-#define BASE64_ENCODER_EXPORT __declspec(dllexport)
+#ifdef BASE64_CONVERTER_EXPORTS
+#define BASE64_CONVERTER_EXPORT __declspec(dllexport)
 #else
-#define BASE64_ENCODER_EXPORT __declspec(dllimport)
+#define BASE64_CONVERTER_EXPORT __declspec(dllimport)
 #endif
 

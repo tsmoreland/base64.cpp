@@ -18,7 +18,7 @@
 
 namespace moreland::base64::converters
 {
-    using size_type = typename vector<byte>::size_type;
+    using size_type = typename std::vector<byte>::size_type;
     using std::span;
 
     [[nodiscard]]
@@ -30,8 +30,5 @@ namespace moreland::base64::converters
     [[nodiscard]]
     std::span<byte> get_byte_to_char_mapping() noexcept;
 
-
-    [[nodiscard]]
-    optional<size_type> calculate_output_length(span<byte const> const source, bool const insert_line_breaks, size_type const new_line_size);
 
 }
