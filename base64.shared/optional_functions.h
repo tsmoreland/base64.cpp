@@ -12,13 +12,11 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-module;
+#pragma once
 
 #include <optional>
 
-export module moreland.base64.shared.optional_functions;
-
-export namespace moreland::base64::shared
+namespace moreland::base64::shared
 {
 
     template <typename TDESTINATION_RESULT, typename TSOURCE_RESULT, class TMAPPER>

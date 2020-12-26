@@ -60,9 +60,8 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ExceptionHandling>Async</ExceptionHandling>
       <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <EnableModules>true</EnableModules>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -93,10 +92,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="optional_functions.ixx" />
-    <ClCompile Include="scoped_se_translator.ixx" />
-    <ClCompile Include="seh_exception.ixx" />
-    <ClCompile Include="shared.ixx" />
+    <ClInclude Include="optional_functions.h" />
+    <ClInclude Include="pch.h" />
+    <ClCompile Include="pch.cpp">
+      <DependentUpon>pch.h</DependentUpon>
+    </ClCompile>
+    <ClInclude Include="seh_exception.h" />
+    <ClCompile Include="seh_exception.cpp">
+      <DependentUpon>seh_exception.h</DependentUpon>
+    </ClCompile>
+    <ClInclude Include="scoped_se_translator.h" />
+    <ClCompile Include="scoped_se_translator.cpp">
+      <DependentUpon>scoped_se_translator.h</DependentUpon>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -11,38 +11,9 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-module;
-
-#define WIN32_LEAN_AND_MEAN 
-
-#include <Windows.h>
-#include <eh.h>
-
-#include <exception>
-#include <iomanip> 
-#include <sstream>
-#include <string>
-
-export module moreland.base64.shared:seh_exception;
-
-import :scoped_se_translator;
-
-export namespace moreland::base64::shared
-{
-    class seh_exception final : public std::exception
-    {
-        unsigned int const error_code_;
-    public:
-
-        explicit seh_exception(unsigned int const error_code);
-        explicit seh_exception(unsigned int const error_code, EXCEPTION_POINTERS const* const exception_pointers);
-
-        [[nodiscard]] 
-        unsigned int get_error_code() const;
-
-        static void initialize();
-    };
-}
+#include "pch.h"
+#include "seh_exception.h"
+#include "scoped_se_translator.h"
 
 using std::string;
 
@@ -50,7 +21,7 @@ namespace moreland::base64::shared
 {
 
     [[nodiscard]]
-    std::string format_what(unsigned int error_code, EXCEPTION_POINTERS const* const exception_pointers)
+    std::string format_what(unsigned int const error_code, EXCEPTION_POINTERS const* const exception_pointers)
     {
         using std::stringstream;
         stringstream builder{};
@@ -68,15 +39,15 @@ namespace moreland::base64::shared
     {
         throw seh_exception(error_code, exception_pointers);
     }
-        
+
     seh_exception::seh_exception(unsigned int const error_code)
         : seh_exception(error_code, nullptr)
     {
     }
 
     seh_exception::seh_exception(unsigned int const error_code, EXCEPTION_POINTERS const* const exception_pointers)
-        : error_code_{error_code}
-        , std::exception{format_what(error_code, exception_pointers).c_str()}
+        : std::exception{format_what(error_code, exception_pointers).c_str()}
+        , error_code_{error_code}
     {
         if (exception_pointers == nullptr) {
             return;
@@ -97,5 +68,4 @@ namespace moreland::base64::shared
         thread_local scoped_se_translator translator(seh_translator);  // NOLINT(clang-diagnostic-exit-time-destructors)
 
     }
-
 }
