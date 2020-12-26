@@ -1,14 +1,12 @@
 module;
 
 #include "library_export.h"
-//#include "encoder.h"
+#include <span>
+#include <vector>
+#include <optional>
+#include <string>
 
 export module moreland.base64.converters:encoder;
-
-import <vector>;
-import <optional>;
-import <string>;
-import <span>;
 
 #pragma warning(push)
 #pragma warning(disable : 4251)
@@ -20,7 +18,7 @@ export namespace moreland::base64::converters
     using std::vector;
     using std::span;
 
-    class BASE64_ENCODER_EXPORT encoder final 
+    class encoder final 
     {
         bool is_url_;
         optional<vector<byte>> newline_;
@@ -30,7 +28,7 @@ export namespace moreland::base64::converters
     public:
         using size_type = vector<byte>::size_type;
 
-        explicit encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept;
+        BASE64_ENCODER_EXPORT explicit encoder(bool is_url, optional<vector<byte>> newline, optional<int const> line_max, bool do_padding) noexcept;
         ~encoder() = default;
         encoder(encoder const&) = default;
         encoder(encoder &&) noexcept = default;
@@ -39,13 +37,13 @@ export namespace moreland::base64::converters
 
 
         [[nodiscard]]
-        optional<vector<byte>> encode(vector<byte> const& source) const;
+        BASE64_ENCODER_EXPORT optional<vector<byte>> encode(vector<byte> const& source) const;
 
         [[nodiscard]]
-        size_type encode(vector<byte> const& source, vector<byte>& destintation) const;
+        BASE64_ENCODER_EXPORT size_type encode(vector<byte> const& source, vector<byte>& destintation) const;
 
         [[nodiscard]]
-        std::string encode_to_string_or_empty(vector<byte> const& source) const;
+        BASE64_ENCODER_EXPORT std::string encode_to_string_or_empty(vector<byte> const& source) const;
 
     private:
         [[nodiscard]]

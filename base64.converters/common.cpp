@@ -13,8 +13,7 @@
 
 #include "common.h"
 
-import <vector>;
-
+#include <vector>
 
 using std::span;
 
