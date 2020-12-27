@@ -19,11 +19,12 @@
 #include "../base64.shared/convert.h"
 
 using std::move;
+using std::nullopt;
 using std::optional;
-using std::vector;
+using std::size_t;
 using std::span;
 using std::string;
-using std::nullopt;
+using std::vector;
 
 using moreland::base64::shared::map;
 using moreland::base64::shared::to_byte;
@@ -45,12 +46,13 @@ namespace moreland::base64::converters
     optional<vector<byte>> encoder::encode(span<byte const> const source) const
     {
         vector<byte> destination;
-        return encode(source, destination).has_value()
-            ? optional(destination)
-            : nullopt;
+        return map<size_t, vector<byte>>(encode(source, destination),
+            [&destination](auto const&) {
+                return destination;
+            });
     }
 
-    optional<encoder::size_type> encoder::encode(span<byte const> const source, vector<byte>& destination) const
+    optional<size_type> encoder::encode(span<byte const> const source, vector<byte>& destination) const
     {
         auto const output_length = calculate_output_length(source, insert_line_break_);
         if (output_length.value_or(0UL) == 0UL) {
@@ -120,11 +122,18 @@ namespace moreland::base64::converters
 
     string encoder::encode_to_string_or_empty(span<byte const> const source) const
     {
-        return map<string, vector<byte>>(encode(source), 
+        return map<vector<byte>, string>(encode(source), 
             [](span<byte const> const source_view) -> string
             {
                 return shared::to_string(source_view);
-            }).value_or("");
+            })
+            .value_or("");
+    }
+
+    string encoder::encode_to_string_or_empty(span<char const> const source) const
+    {
+        vector<byte> source_bytes(begin(source), end(source));
+        return encode_to_string_or_empty(source_bytes);
     }
 
     optional<size_type> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks) 

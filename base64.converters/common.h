@@ -13,12 +13,12 @@
 
 #pragma once
 
-#include "encoder.h"
 #include <span>
 
 namespace moreland::base64::converters
 {
-    using size_type = typename std::vector<byte>::size_type;
+    using byte = unsigned char;
+    using size_type = std::vector<byte>::size_type;
     using std::span;
 
     [[nodiscard]]
@@ -29,12 +29,6 @@ namespace moreland::base64::converters
 
     [[nodiscard]]
     std::span<byte const> get_base64_table() noexcept;
-
-    template <typename T>
-    constexpr byte to_byte(T const value) 
-    {
-        return static_cast<byte>(value);
-    }
 
 
 }

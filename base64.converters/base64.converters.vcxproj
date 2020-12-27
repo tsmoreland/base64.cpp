@@ -91,8 +91,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="decoder.h" />
+    <ClCompile Include="decoder.cpp">
+      <DependentUpon>decoder.h</DependentUpon>
+    </ClCompile>
     <ClInclude Include="pch.h" />
-    <ClCompile Include="pch.cpp" >
+    <ClCompile Include="pch.cpp">
       <DependentUpon>pch.h</DependentUpon>
     </ClCompile>
     <ClInclude Include="common.h" />

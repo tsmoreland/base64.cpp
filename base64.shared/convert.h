@@ -15,6 +15,7 @@
 
 #include <string>
 #include <span>
+#include <type_traits>
 
 namespace moreland::base64::shared
 {
@@ -23,7 +24,7 @@ namespace moreland::base64::shared
     template <typename T>
     constexpr byte to_byte(T const value) 
     {
-        static_assert(std::convertible_to<T, byte>(), "type must be convertable to byte (unsigned char)");
+        static_assert(std::is_convertible<T, byte>::value, "type must be convertable to byte (unsigned char)");
         return static_cast<byte>(value);
     }
     
