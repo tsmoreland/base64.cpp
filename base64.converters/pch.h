@@ -24,6 +24,7 @@
 #include <string>
 #include <span>
 #include <limits>
+#include <type_traits>
 
 namespace numeric_limits
 {

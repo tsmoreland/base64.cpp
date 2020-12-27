@@ -14,6 +14,7 @@
 #include "pch.h"
 #include "../base64.shared/seh_exception.h"
 #include "../../base64.converters/encoder.h"
+#include "../../base64.shared/convert.h"
 
 using moreland::base64::shared::seh_exception;
 using moreland::base64::converters::make_encoder;
@@ -41,9 +42,10 @@ void force_exception_in_thread()
 using std::vector;
 using byte_string = std::basic_string<unsigned char>;
 
+namespace shared = moreland::base64::shared;  // NOLINT(misc-unused-alias-decls)
+
 int main()
 {
-
     try {
         seh_exception::initialize();
 
@@ -55,6 +57,9 @@ int main()
         auto const encoded = encoder.encode(source);
         if (!encoded.has_value())
             return 1;
+
+        auto const encoded_string = shared::to_string(encoded.value());
+        char const* str = encoded_string.c_str();
 
         force_exception_in_thread();
         force_exception();

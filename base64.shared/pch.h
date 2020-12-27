@@ -24,5 +24,6 @@
 #include <optional>
 #include <string>
 #include <sstream>
+#include <type_traits>
 
 #include <cassert>

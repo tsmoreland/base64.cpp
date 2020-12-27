@@ -13,6 +13,8 @@
 
 #pragma once
 
+#include <string>
+#include <span>
 #include <type_traits>
 
 namespace moreland::base64::shared
@@ -26,4 +28,10 @@ namespace moreland::base64::shared
         return static_cast<byte>(value);
     }
     
+    [[nodiscard]]
+    inline std::string to_string(std::span<byte const> const source)
+    {
+        return std::string(begin(source), end(source));
+    }
+
 }

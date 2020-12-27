@@ -61,33 +61,35 @@ namespace moreland::base64::converters
             return nullopt;
         }
 
+        auto const base64_table = get_base64_table();
+
         destination.reserve(output_length.value());
+        destination.clear();
 
         auto const length = source.size();
         auto const length_mod_3 = length % 3;
         auto const calc_length = length - length_mod_3;
-        auto const line_break_position = get_base64_line_break_position();
+        constexpr auto line_break_position = get_base64_line_break_position();
         size_type character_count = 0;
 
         size_type input_position;
         size_type output_position = 0;
-
-        auto const base64_table = get_base64_table();
         
         for (input_position = 0; input_position < calc_length; input_position += 3) {
             if (insert_line_break_) {
                 if (character_count == line_break_position) {
-                    destination[output_position++] = static_cast<byte>('\r');
-                    destination[output_position++] = static_cast<byte>('\n');
+                    destination.emplace_back(static_cast<byte>('\r'));
+                    destination.emplace_back(static_cast<byte>('\n'));
+                    output_position += 2;
                     character_count = 0UL;
                 }
                 character_count += 4;
             } 
 
-            destination[output_position] = base64_table[get_output_index<0>(source, input_position)];
-            destination[output_position+1] = base64_table[get_output_index<1>(source, input_position)];
-            destination[output_position+2] = base64_table[get_output_index<2>(source, input_position)];
-            destination[output_position+3] = base64_table[get_output_index<3>(source, input_position)];
+            destination.emplace_back(base64_table[get_output_index<0>(source, input_position)]);
+            destination.emplace_back(base64_table[get_output_index<1>(source, input_position)]);
+            destination.emplace_back(base64_table[get_output_index<2>(source, input_position)]);
+            destination.emplace_back(base64_table[get_output_index<3>(source, input_position)]);
             output_position += 4;
         }
         input_position = calc_length;
@@ -99,17 +101,18 @@ namespace moreland::base64::converters
         switch(length_mod_3)
         {
         case 2: 
-            destination[output_position] = base64_table[get_output_index<0>(source, input_position)];
-            destination[output_position+1] = base64_table[get_output_index<1>(source, input_position)];
-            destination[output_position+2] = base64_table[get_output_index<2>(source, input_position)];
-            destination[output_position+3] = base64_table[64]; //Pad
+            destination.emplace_back(base64_table[get_output_index<0>(source, input_position)]);
+            destination.emplace_back(base64_table[get_output_index<1>(source, input_position)]);
+            destination.emplace_back(base64_table[(static_cast<size_type>(source[input_position+1]&to_byte(0x0f)))<<2]);
+            destination.emplace_back(base64_table[64]); //Pad
             output_position += 4;
             break;
         case 1: // Two character padding needed
-            destination[output_position] = base64_table[get_output_index<0>(source, input_position)];
-            destination[output_position+1] = base64_table[get_output_index<1>(source, input_position)];
-            destination[output_position+2] = base64_table[64]; 
-            destination[output_position+3] = base64_table[64]; 
+            destination.emplace_back(base64_table[get_output_index<0>(source, input_position)]);
+            destination.emplace_back(base64_table[get_output_index<1>(source, input_position)]);
+            destination.emplace_back(base64_table[(static_cast<size_type>(source[input_position] & to_byte(0x03)))<<4]);
+            destination.emplace_back(base64_table[64]); //Pad
+            destination.emplace_back(base64_table[64]); //Pad
             output_position += 4;
             break;
         default:
@@ -139,6 +142,10 @@ namespace moreland::base64::converters
         size_type const new_line_size = 2;
         size_type const ONE = 1;
         auto size = source.size() / 3 * 4;       
+        size += source.size() % 3 != 0
+            ? 4
+            : 0;
+
         if (size == 0)
             return 0;
         if (insert_line_breaks) {
@@ -158,12 +165,12 @@ namespace moreland::base64::converters
     
     encoder make_encoder() noexcept
     {
-        encoder rfc4648{false, false, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
+        encoder const rfc4648{false, false, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
         return rfc4648;
     }
     encoder make_url_encoder() noexcept  // NOLINT(clang-diagnostic-exit-time-destructors)
     {
-        encoder rfc4648_url_safe{true, false, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
+        encoder const rfc4648_url_safe{true, false, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
         return rfc4648_url_safe;
     }
 
