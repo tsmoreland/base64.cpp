@@ -1,5 +1,7 @@
 # Base64 CLI
 
+![MSBuild](https://github.com/tsmoreland/base64.cpp/workflows/MSBuild/badge.svg)
+
 Simple command line utility intended to take a file source and encode to or decode from Base64
 
 The general idea is to eventually support the following usage:
