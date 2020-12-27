@@ -4,6 +4,7 @@
     <ClCompile Include="scoped_se_translator.cpp" />
     <ClCompile Include="seh_exception.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="convert.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="optional_functions.h" />

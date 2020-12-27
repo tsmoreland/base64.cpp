@@ -11,20 +11,15 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "convert.h"
 
-#define WIN32_LEAN_AND_MEAN 
 
-#include <Windows.h>
-#include <eh.h>
+namespace moreland::base64::shared
+{
+    std::string to_string(std::span<byte const> const source)
+    {
+        return std::string(begin(source), end(source));
+    }
 
-#include <exception>
-#include <iomanip> 
-
-#include <optional>
-#include <string>
-#include <sstream>
-#include <type_traits>
-
-#include <cuchar>
-#include <cassert>
+}

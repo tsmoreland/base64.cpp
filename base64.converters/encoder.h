@@ -54,9 +54,6 @@ namespace moreland::base64::converters
 
     private:
         [[nodiscard]]
-        std::optional<size_type> get_output_length(std::span<byte const> const source) const noexcept;
-
-        [[nodiscard]]
         static std::optional<size_type> calculate_output_length(std::span<byte const> const source, bool const insert_line_breaks);
 
     };

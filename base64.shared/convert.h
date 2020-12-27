@@ -15,7 +15,6 @@
 
 #include <string>
 #include <span>
-#include <type_traits>
 
 namespace moreland::base64::shared
 {
@@ -29,9 +28,6 @@ namespace moreland::base64::shared
     }
     
     [[nodiscard]]
-    inline std::string to_string(std::span<byte const> const source)
-    {
-        return std::string(begin(source), end(source));
-    }
+    std::string to_string(std::span<byte const> const source);
 
 }

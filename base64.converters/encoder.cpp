@@ -22,6 +22,7 @@ using std::move;
 using std::optional;
 using std::vector;
 using std::span;
+using std::string;
 using std::nullopt;
 
 using moreland::base64::shared::map;
@@ -43,20 +44,15 @@ namespace moreland::base64::converters
 
     optional<vector<byte>> encoder::encode(span<byte const> const source) const
     {
-        auto const output_length = get_output_length(source);
-        if (output_length.value_or(0UL) == 0UL) {
-            return nullopt;
-        }
         vector<byte> destination;
         return encode(source, destination).has_value()
             ? optional(destination)
             : nullopt;
     }
 
-
-    std::optional<encoder::size_type> encoder::encode(span<byte const> const source, vector<byte>& destination) const
+    optional<encoder::size_type> encoder::encode(span<byte const> const source, vector<byte>& destination) const
     {
-        auto const output_length = get_output_length(source);
+        auto const output_length = calculate_output_length(source, insert_line_break_);
         if (output_length.value_or(0UL) == 0UL) {
             return nullopt;
         }
@@ -122,19 +118,13 @@ namespace moreland::base64::converters
         return optional(output_position);
     }
 
-    std::string encoder::encode_to_string_or_empty(span<byte const> const source) const
+    string encoder::encode_to_string_or_empty(span<byte const> const source) const
     {
-        auto const output_length = get_output_length(source);
-        if (output_length.value_or(0UL) == 0UL) {
-            return "";
-        }
-
-        return std::string();
-    }
-
-    optional<size_type> encoder::get_output_length(span<byte const> const source) const noexcept
-    {
-        return calculate_output_length(source, insert_line_break_);
+        return map<string, vector<byte>>(encode(source), 
+            [](span<byte const> const source_view) -> string
+            {
+                return shared::to_string(source_view);
+            }).value_or("");
     }
 
     optional<size_type> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks) 
