@@ -92,6 +92,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="convert.h" />
     <ClInclude Include="optional_functions.h" />
     <ClInclude Include="pch.h" />
     <ClCompile Include="pch.cpp">

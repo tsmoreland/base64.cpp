@@ -10,5 +10,6 @@
     <ClInclude Include="scoped_se_translator.h" />
     <ClInclude Include="seh_exception.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="convert.h" />
   </ItemGroup>
 </Project>

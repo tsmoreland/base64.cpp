@@ -13,28 +13,17 @@
 
 #pragma once
 
-#include "encoder.h"
-#include <span>
+#include <type_traits>
 
-namespace moreland::base64::converters
+namespace moreland::base64::shared
 {
-    using size_type = typename std::vector<byte>::size_type;
-    using std::span;
-
-    [[nodiscard]]
-    constexpr auto get_base64_line_break_position()
-    {
-        return 76UL;
-    }
-
-    [[nodiscard]]
-    std::span<byte const> get_base64_table() noexcept;
+    using byte = unsigned char;
 
     template <typename T>
     constexpr byte to_byte(T const value) 
     {
+        static_assert(std::convertible_to<T, byte>(), "type must be convertable to byte (unsigned char)");
         return static_cast<byte>(value);
     }
-
-
+    
 }

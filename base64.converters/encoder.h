@@ -29,14 +29,14 @@ namespace moreland::base64::converters
     class BASE64_CONVERTER_EXPORT encoder final 
     {
         bool is_url_;
-        std::optional<std::vector<byte>> newline_;
-        std::optional<int const> line_max_;
+        bool insert_line_break_;
+        std::optional<int> line_max_;
         bool do_padding_;
 
     public:
         using size_type = std::vector<byte>::size_type;
 
-        explicit encoder(bool const is_url, std::optional<std::vector<byte>> newline, std::optional<int const> line_max, bool const do_padding) noexcept;
+        explicit encoder(bool const is_url, bool const insert_line_break, std::optional<int> const line_max, bool const do_padding) noexcept;
         ~encoder() = default;
         encoder(encoder const&) = default;
         encoder(encoder &&) noexcept = default;
@@ -47,7 +47,7 @@ namespace moreland::base64::converters
         std::optional<std::vector<byte>> encode(std::span<byte const> const source) const;
 
         [[nodiscard]]
-        size_type encode(std::span<byte const> const source, std::vector<byte>& destintation) const;
+        std::optional<size_type> encode(std::span<byte const> const source, std::vector<byte>& destination) const;
 
         [[nodiscard]]
         std::string encode_to_string_or_empty(std::span<byte const> const source) const;
@@ -57,7 +57,7 @@ namespace moreland::base64::converters
         std::optional<size_type> get_output_length(std::span<byte const> const source) const noexcept;
 
         [[nodiscard]]
-        static std::optional<size_type> calculate_output_length(std::span<byte const> const source, bool const insert_line_breaks, size_type const new_line_size);
+        static std::optional<size_type> calculate_output_length(std::span<byte const> const source, bool const insert_line_breaks);
 
     };
 #pragma warning(pop)

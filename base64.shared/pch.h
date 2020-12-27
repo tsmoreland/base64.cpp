@@ -25,4 +25,4 @@
 #include <string>
 #include <sstream>
 
-
+#include <cassert>

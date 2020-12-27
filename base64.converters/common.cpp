@@ -21,7 +21,7 @@ using std::span;
 
 namespace moreland::base64::converters
 {
-    std::span<byte> get_byte_to_char_mapping() noexcept
+    std::span<byte const> get_base64_table() noexcept
     {
         static auto values = std::vector<byte> {  // NOLINT(clang-diagnostic-exit-time-destructors)
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
