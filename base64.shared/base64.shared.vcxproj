@@ -93,15 +93,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="convert.h" />
-    <ClCompile Include="convert.cpp" >
+    <ClCompile Include="convert.cpp">
       <DependentUpon>convert.h</DependentUpon>
     </ClCompile>
+    <ClInclude Include="maybe.h" />
     <ClInclude Include="optional_functions.h" />
     <ClInclude Include="pch.h" />
     <ClCompile Include="pch.cpp">
       <DependentUpon>pch.h</DependentUpon>
     </ClCompile>
     <ClInclude Include="seh_exception.h" />
+    <ClCompile Include="scoped_signal_translator.cpp">
+      <DependentUpon>scoped_signal_translator.h</DependentUpon>
+    </ClCompile>
+    <ClInclude Include="scoped_signal_translator.h" />
     <ClCompile Include="seh_exception.cpp">
       <DependentUpon>seh_exception.h</DependentUpon>
     </ClCompile>

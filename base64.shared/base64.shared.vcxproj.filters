@@ -5,6 +5,7 @@
     <ClCompile Include="seh_exception.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="convert.cpp" />
+    <ClCompile Include="scoped_signal_translator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="optional_functions.h" />
@@ -12,5 +13,7 @@
     <ClInclude Include="seh_exception.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="convert.h" />
+    <ClInclude Include="scoped_signal_translator.h" />
+    <ClInclude Include="maybe.h" />
   </ItemGroup>
 </Project>

@@ -4,7 +4,6 @@
     <ClCompile Include="common.cpp" />
     <ClCompile Include="encoder.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="decode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -12,5 +11,7 @@
     <ClInclude Include="library_export.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="decoder.h" />
+    <ClInclude Include="base64_failure_reason.h" />
+    <ClInclude Include="maybe_encoded.h" />
   </ItemGroup>
 </Project>
