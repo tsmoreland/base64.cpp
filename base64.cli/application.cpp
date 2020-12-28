@@ -14,9 +14,12 @@
 #include "pch.h"
 #include "../base64.shared/seh_exception.h"
 #include "../../base64.converters/encoder.h"
+#include "../../base64.converters/decoder.h"
+#include "../../base64.shared/convert.h"
 
 using moreland::base64::shared::seh_exception;
 using moreland::base64::converters::make_encoder;
+using moreland::base64::converters::make_decoder;
 
 void force_exception()
 {
@@ -41,9 +44,10 @@ void force_exception_in_thread()
 using std::vector;
 using byte_string = std::basic_string<unsigned char>;
 
+namespace shared = moreland::base64::shared;  // NOLINT(misc-unused-alias-decls)
+
 int main()
 {
-
     try {
         seh_exception::initialize();
 
@@ -52,9 +56,19 @@ int main()
         std::string source_string = "hello world";
         byte_string source{begin(source_string), end(source_string)};
 
-        auto const encoded = encoder.encode(source);
-        if (!encoded.has_value())
-            return 1;
+        auto const encoded = encoder.encode_to_string_or_empty(source);
+
+        char const* str = encoded.c_str(); // for debugging ease, easier to view the contents as a char*
+        std::cout << str << std::endl;
+
+        std::string encoded_source_string = "aGVsbG8gd29ybGQ=";
+        source = byte_string{begin(encoded_source_string), end(encoded_source_string)};
+
+        auto const decoder = make_decoder();
+        auto const decoded = decoder.decode_to_string_or_empty(source);
+
+        str = decoded.c_str();
+        std::cout << str << std::endl;
 
         force_exception_in_thread();
         force_exception();

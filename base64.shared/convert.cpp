@@ -12,40 +12,14 @@
 // 
 
 #include "pch.h"
-#include "common.h"
-
-#include <limits>
+#include "convert.h"
 
 
-using std::span;
-
-namespace moreland::base64::converters
+namespace moreland::base64::shared
 {
-    std::span<byte const> get_base64_table() noexcept
+    std::string to_string(std::span<byte const> const source)
     {
-        static auto values = std::vector<byte> {  // NOLINT(clang-diagnostic-exit-time-destructors)
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/', '=',
-        };
-        return values;  
+        return std::string(begin(source), end(source));
     }
 
-    std::span<byte const> get_trimmed_span(std::span<byte const> const source) noexcept
-    {
-        auto input_length = source.size();
-        while (input_length > 0) {
-            if (auto const last = source[input_length-1];
-                last != ' ' && last != '\t' && last != '\n' && last == '\r') {
-                break;
-            }
-            input_length--;
-        }
-        return source.first(input_length);
-    }
-
-
-    
 }

@@ -24,3 +24,4 @@
 #include <string>
 #include <iostream>
 #include <thread>
+#include <type_traits>

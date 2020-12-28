@@ -13,12 +13,13 @@
 
 #pragma once
 
-#include "encoder.h"
 #include <span>
+#include <vector>
 
 namespace moreland::base64::converters
 {
-    using size_type = typename std::vector<byte>::size_type;
+    using byte = unsigned char;
+    using size_type = std::vector<byte>::size_type;
     using std::span;
 
     [[nodiscard]]
@@ -28,7 +29,9 @@ namespace moreland::base64::converters
     }
 
     [[nodiscard]]
-    std::span<byte> get_byte_to_char_mapping() noexcept;
+    std::span<byte const> get_base64_table() noexcept;
 
+    [[nodiscard]]
+    std::span<byte const> get_trimmed_span(std::span<byte const> const source) noexcept;
 
 }

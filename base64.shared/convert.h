@@ -13,18 +13,22 @@
 
 #pragma once
 
-#define WIN32_LEAN_AND_MEAN 
-
-#include <Windows.h>
-#include <eh.h>
-
-#include <exception>
-#include <iomanip> 
-
-#include <optional>
 #include <string>
-#include <sstream>
+#include <span>
 #include <type_traits>
 
-#include <cuchar>
-#include <cassert>
+namespace moreland::base64::shared
+{
+    using byte = unsigned char;
+
+    template <typename T>
+    constexpr byte to_byte(T const value) 
+    {
+        static_assert(std::is_convertible<T, byte>::value, "type must be convertable to byte (unsigned char)");
+        return static_cast<byte>(value);
+    }
+    
+    [[nodiscard]]
+    std::string to_string(std::span<byte const> const source);
+
+}
