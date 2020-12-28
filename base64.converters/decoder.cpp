@@ -74,10 +74,10 @@ namespace moreland::base64::converters
         constexpr byte zero_to_9        =  ('9' - '0');
 
         auto current = begin(source);
-        unsigned int value{}; 
         auto const after_last = end(source);
 
-        auto current_block_codes = 0x000000FFu;
+        unsigned int value{}; 
+        unsigned int current_block_codes = 255u;
 
         auto equality_encountered = [&value, output_length, &current_block_codes, &current, &after_last, &destination]()-> optional<size_t> {
             if (current == after_last) {
