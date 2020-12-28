@@ -31,6 +31,10 @@ using moreland::base64::shared::to_string;
 
 namespace moreland::base64::converters
 {
+    using iterator = span<byte const>::iterator;
+
+    optional<size_t> equality_encountered(size_t const output_length, unsigned int& current_block_codes, iterator& current, iterator const& after_last, vector<byte>& destination);
+
     decoder::decoder(bool const is_url, bool const insert_line_break, std::optional<int> const line_max, bool const do_padding) noexcept
         : is_url_{is_url}
         , insert_line_break_{insert_line_break}
@@ -60,85 +64,10 @@ namespace moreland::base64::converters
         destination.reserve(output_length);
         destination.clear();
 
-        constexpr byte upper_a          =  'A';            
-        constexpr byte a                =  'a';            
-        constexpr byte zero             =  '0';         
-        constexpr byte eq               =  '=';
-        constexpr byte plus             =  '+';
-        constexpr byte slash            =  '/';
-        constexpr byte space            =  ' ';
-        constexpr byte tab              =  '\t';
-        constexpr byte newline          =  '\n';
-        constexpr byte carriage_return  =  '\r';
-        constexpr byte a_to_z           =  ('Z' - 'A');  // = ('z' - 'a')
-        constexpr byte zero_to_9        =  ('9' - '0');
-
         auto current = begin(source);
         auto const after_last = end(source);
 
-        unsigned int value{}; 
         unsigned int current_block_codes = 255u;
-
-        auto equality_encountered = [&value, output_length, &current_block_codes, &current, &after_last, &destination]()-> optional<size_t> {
-            if (current == after_last) {
- 
-                // Code is zero for trailing '=':
-                current_block_codes <<= 6;
- 
-                // The '=' did not complete a 4-group. The input must be bad:
-                if ((current_block_codes & 0x80000000u) == 0u) {
-                    return nullopt;
-                }
- 
-                if (output_length - destination.size() < 2) {
-                    return nullopt;
-                }
- 
-                // We are good, store bytes form this past group. We had a single "=", so we take two bytes:
-                destination.emplace_back(current_block_codes >> 16);
-                destination.emplace_back(current_block_codes >> 8);
- 
-                current_block_codes = 0x000000FFu;                
- 
-            } else { // '=' can also be at the pre-last position iff the last is also a '=' excluding the white spaces:
-                
-                // We need to get rid of any intermediate white spaces.
-                // Otherwise we would be rejecting input such as "abc= =":
-                auto const last = after_last - 1;
-                while ((current <=> last) < nullptr) {
-                    
-                    if (auto const last_value = *current;
-                        last_value != ' ' && last_value != '\n' && last_value != '\r' && last_value != '\t') {
-                        break;
-                    }
-                    ++current;
-                }
-
-                if (current == after_last - 1 && *current == '=') {
-                
-                    // Code is zero for each of the two '=':
-                    current_block_codes <<= 12;
- 
-                    // The '=' did not complete a 4-group. The input must be bad:
-                    if ((current_block_codes & 0x80000000u) == 0u)
-                        return nullopt;
- 
-                    if (output_length - destination.size() < 1) {
-                        return nullopt;
-                    }
- 
-                    // We are good, store bytes form this past group. We had a "==", so we take only one byte:
-                    destination.emplace_back(current_block_codes >> 16);
-                    current_block_codes = 0x000000FFu;
-                    
-                } else  // '=' is not ok at places other than the end:
-                    return nullopt;
-                            
-            }
-            return (current_block_codes == 0x000000FFu) 
-                ? optional(output_length)
-                : nullopt;
-        };
 
         while (true) {
             if (current == after_last) {
@@ -147,36 +76,32 @@ namespace moreland::base64::converters
                     : nullopt;
             }
 
-            value = *current;
+            unsigned int value = *current;
             ++current;
-            if (value - upper_a <= a_to_z)
-                value -= upper_a;                
+            if (value - to_byte('A') <= to_byte('Z' - 'A'))
+                value -= to_byte('A');                
 
-            else if (value - a <= a_to_z)
-                value -= (a - 26u);                
+            else if (value - to_byte('a') <= to_byte('Z' - 'A'))
+                value -= 0x00000047u;                
 
-            else if (value - zero <= zero_to_9)
-                value -= (zero - 52u);
+            else if (value - to_byte('0') <= to_byte('9' - '0'))
+                value -= 0xfffffffcu;
 
             else {
-                // Use the slower switch for less common cases:
                 switch(value) {
-                    case plus:  
+                    case to_byte('+'):  
                         value = 62u;
                         break;
-                    case slash: 
+                    case to_byte('/'): 
                         value = 63u;
                         break;
-                    case carriage_return:  
-                    case newline:
-                    case space:
-                    case tab:                             
+                    case to_byte('\r'):  
+                    case to_byte('\n'):
+                    case to_byte(' '):
+                    case to_byte('\t'):                             
                         continue;
-
-                    // The equality char is only legal at the end of the input.
-                    // Jump after the loop to make it easier for the JIT register predictor to do a good job for the loop itself:
-                    case eq:
-                        return equality_encountered();
+                    case to_byte('='):
+                        return equality_encountered(output_length, current_block_codes, current, after_last, destination);
                     default:
                         return nullopt;
                 }
@@ -264,4 +189,59 @@ namespace moreland::base64::converters
         return decoder{true, false, nullopt, true};  
     }
 
+    optional<size_t> equality_encountered(size_t const output_length, unsigned int& current_block_codes, iterator& current, iterator const& after_last, vector<byte>& destination)
+    {
+        if (current == after_last) {
+
+            // Code is zero for trailing '=':
+            current_block_codes <<= 6;
+
+            if ((current_block_codes & 0x80000000u) == 0u) {
+                return nullopt;
+            }
+
+            if (output_length - destination.size() < 2) {
+                return nullopt;
+            }
+
+            // We are good, store bytes form this past group. We had a single "=", so we take two bytes:
+            destination.emplace_back(current_block_codes >> 16);
+            destination.emplace_back(current_block_codes >> 8);
+
+            current_block_codes = 0x000000FFu;                
+
+        } else { // '=' can also be at the pre-last position iff the last is also a '=' excluding the white spaces:
+            
+            // We need to get rid of any intermediate white spaces.
+            // Otherwise we would be rejecting input such as "abc= =":
+            auto const last = after_last - 1;
+            while ((current <=> last) < nullptr) {
+                
+                if (auto const last_value = *current;
+                    last_value != ' ' && last_value != '\n' && last_value != '\r' && last_value != '\t') {
+                    break;
+                }
+                ++current;
+            }
+
+            if (current == after_last - 1 && *current == '=') {
+            
+                current_block_codes <<= 12;
+                if ((current_block_codes & 0x80000000u) == 0u)
+                    return nullopt;
+
+                if (output_length - destination.size() < 1) {
+                    return nullopt;
+                }
+                destination.emplace_back(current_block_codes >> 16);
+                current_block_codes = 0x000000FFu;
+                
+            } else  // '=' is not ok at places other than the end:
+                return nullopt;
+                        
+        }
+        return (current_block_codes == 0x000000FFu) 
+            ? optional(output_length)
+            : nullopt;
+    }
 }
