@@ -54,9 +54,15 @@ namespace moreland::base64::converters
     private:
 
         [[nodiscard]]
-        static std::size_t calculate_output_length(std::span<byte const> const source);
+        static std::optional<std::size_t> calculate_output_length(std::span<byte const> const source);
     };
 #pragma warning(pop)
+
+    [[nodiscard]]
+    BASE64_CONVERTER_EXPORT decoder make_decoder() noexcept;
+
+    [[nodiscard]]
+    BASE64_CONVERTER_EXPORT decoder make_url_decoder() noexcept;
 
 }
 

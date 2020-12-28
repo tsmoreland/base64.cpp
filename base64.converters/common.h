@@ -14,6 +14,7 @@
 #pragma once
 
 #include <span>
+#include <vector>
 
 namespace moreland::base64::converters
 {
