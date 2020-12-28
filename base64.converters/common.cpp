@@ -33,5 +33,19 @@ namespace moreland::base64::converters
         return values;  
     }
 
+    std::span<byte const> get_trimmed_span(std::span<byte const> const source) noexcept
+    {
+        auto input_length = source.size();
+        while (input_length > 0) {
+            if (auto const last = source[input_length-1];
+                last != ' ' && last != '\t' && last != '\n' && last == '\r') {
+                break;
+            }
+            input_length--;
+        }
+        return source.first(input_length);
+    }
+
+
     
 }

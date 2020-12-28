@@ -30,5 +30,7 @@ namespace moreland::base64::converters
     [[nodiscard]]
     std::span<byte const> get_base64_table() noexcept;
 
+    [[nodiscard]]
+    std::span<byte const> get_trimmed_span(std::span<byte const> const source) noexcept;
 
 }

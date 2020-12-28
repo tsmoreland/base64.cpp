@@ -51,6 +51,10 @@ namespace moreland::base64::converters
         decoder(decoder &&) noexcept = default;
         decoder& operator=(decoder const&) = default;
         decoder& operator=(decoder &&) noexcept = default;
+    private:
+
+        [[nodiscard]]
+        static std::size_t calculate_output_length(std::span<byte const> const source);
     };
 #pragma warning(pop)
 

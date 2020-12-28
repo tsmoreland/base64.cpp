@@ -50,6 +50,8 @@ namespace moreland::base64::converters
 
     optional<size_t> decoder::decode(span<byte const> const source, vector<byte>& destination) const
     {
+
+
         return nullopt;
     }
 
@@ -67,6 +69,15 @@ namespace moreland::base64::converters
     {
         vector<byte> source_bytes(begin(source), end(source));
         return decode_to_string_or_empty(source_bytes);
+    }
+
+    size_t decoder::calculate_output_length(span<byte const> const source)
+    {
+        span<byte const> trimmed_source = get_trimmed_span(source);
+
+
+
+        return std::size_t();
     }
 
 }
