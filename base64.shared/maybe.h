@@ -37,6 +37,12 @@ namespace moreland::base64::shared
         constexpr explicit maybe(error_type reason) noexcept
             : reason_(reason)
         {}
+        constexpr explicit maybe(TVALUE&& value)
+            : value_{std::move(value)}
+        {}
+        constexpr explicit maybe(TVALUE const& value)
+            : value_{value}
+        {}
 
         template <class... TYPES, std::enable_if_t<std::is_constructible_v<TVALUE, TYPES...>, int> = 0>
         constexpr explicit maybe(std::in_place_t, TYPES&&... args)
@@ -53,11 +59,40 @@ namespace moreland::base64::shared
         {
             return value_.has_value();
         }
+
         [[nodiscard]]
-        constexpr TVALUE& value()
+        constexpr TVALUE& value() &
         {
             return value_.value();
         }
+        [[nodiscard]]
+        constexpr TVALUE const& value() const&
+        {
+            return value_.value();
+        }
+        [[nodiscard]]
+        constexpr TVALUE&& value() &&
+        {
+            return value_.value();
+        }
+        [[nodiscard]]
+        constexpr TVALUE const&& value() const&&
+        {
+            return value_.value();
+        }
+        template <typename TVALUE2>
+        [[nodiscard]]
+        constexpr typename std::remove_cv<TVALUE>::type value_or(TVALUE2&& alternate) const&
+        {
+            return value_.value_or(alternate);
+        }
+        template <typename TVALUE2>
+        [[nodiscard]]
+        constexpr typename std::remove_cv<TVALUE>::type value_or(TVALUE2&& alternate) &&
+        {
+            return value_.value_or(std::move(alternate));
+        }
+
         constexpr std::optional<TREASON> const& error()
         {
             return reason_;
@@ -96,23 +131,21 @@ namespace moreland::base64::shared
         template <typename TDESTINATION_RESULT, class TMAPPER>
         [[nodiscard]]
         maybe<TDESTINATION_RESULT, TREASON, UNKNOWN_ERROR> map(
-            maybe<TVALUE, TREASON, UNKNOWN_ERROR> const& source, 
             TMAPPER mapper)
         {
-            return source.has_value()
-                ? maybe(mapper(source.value()))
-                : source.reason_.value_or(UNKNOWN_ERROR); 
+            return has_value()
+                ? maybe<TDESTINATION_RESULT, TREASON, UNKNOWN_ERROR>(mapper(value()))
+                : maybe<TDESTINATION_RESULT, TREASON, UNKNOWN_ERROR>(reason_.value_or(UNKNOWN_ERROR)); 
         }
 
         template <typename TDESTINATION_RESULT, class TMAPPER>
         [[nodiscard]]
         maybe<TDESTINATION_RESULT, TREASON, UNKNOWN_ERROR> flat_map(
-            maybe<TVALUE, TREASON, UNKNOWN_ERROR> source, 
             TMAPPER mapper)
         {
-            return source.has_value()
-                ? mapper(source.value())
-                : source.reason_.value_or(UNKNOWN_ERROR); 
+            return has_value()
+                ? mapper(value())
+                : maybe<TDESTINATION_RESULT, TREASON, UNKNOWN_ERROR>(reason_.value_or(UNKNOWN_ERROR)); 
         }
 
     };
