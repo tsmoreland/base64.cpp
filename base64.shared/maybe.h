@@ -21,6 +21,20 @@ namespace moreland::base64::shared
     template <typename T>
     concept enum_t = std::is_enum<T>::value;
 
+    template <class TVALUE>
+    using remove_cvref_t = typename std::remove_cv<typename std::remove_reference<TVALUE>::type>::type;
+
+    template <typename TVALUE, class TVALUE2, class container>
+    using allow_direct_conversion = 
+        std::bool_constant<std::conjunction_v<std::negation<
+            std::is_same<remove_cvref_t<TVALUE2>, container>>,
+            std::negation<std::is_same<remove_cvref_t<TVALUE2>, std::in_place_t>>,
+            std::is_constructible<TVALUE, TVALUE2>>>;
+
+    template <typename TVALUE, class TVALUE2, class container>
+    concept directly_convertable = allow_direct_conversion<TVALUE, TVALUE2, container>::value;
+
+
     template <typename TVALUE, enum_t TREASON, TREASON UNKNOWN_ERROR>
     class maybe final
     {
@@ -30,19 +44,46 @@ namespace moreland::base64::shared
         using value_type = TVALUE;
         using error_type = TREASON;
 
+        template <class TVALUE2>
+        struct allow_unwrapping
+            : std::bool_constant<!std::disjunction_v<std::is_same<TVALUE, TVALUE2>
+            , std::is_constructible<TVALUE, maybe<TVALUE2, TREASON, UNKNOWN_ERROR>&>
+            , std::is_constructible<TVALUE, const maybe<TVALUE2, TREASON, UNKNOWN_ERROR>&>
+            , std::is_constructible<TVALUE, const maybe<TVALUE2, TREASON, UNKNOWN_ERROR>>
+            , std::is_constructible<TVALUE, maybe<TVALUE2, TREASON, UNKNOWN_ERROR>>
+            , std::is_convertible<maybe<TVALUE2, TREASON, UNKNOWN_ERROR>&, TVALUE>
+            , std::is_convertible<const maybe<TVALUE2, TREASON, UNKNOWN_ERROR>&, TVALUE>
+            , std::is_convertible<const maybe<TVALUE2, TREASON, UNKNOWN_ERROR>, TVALUE>
+            , std::is_convertible<maybe<TVALUE2, TREASON, UNKNOWN_ERROR>, TVALUE>>>
+        {};
+
+        static constexpr auto failed(error_type reason)
+        {
+            return maybe<TVALUE, TREASON, UNKNOWN_ERROR>(reason);
+        }
+
         constexpr explicit maybe() noexcept 
             : reason_{UNKNOWN_ERROR}
         {
         }
-        constexpr explicit maybe(error_type reason) noexcept
-            : reason_(reason)
+
+        template <directly_convertable<TVALUE, maybe<TVALUE, TREASON, UNKNOWN_ERROR>> TVALUE2 = TVALUE>
+        constexpr explicit(!std::is_convertible_v<TVALUE2, TVALUE>) maybe(TVALUE2&& right)
+            : value_(std::in_place, std::forward<TVALUE2>(right))
         {}
-        constexpr explicit maybe(TVALUE&& value)
-            : value_{std::move(value)}
-        {}
-        constexpr explicit maybe(TVALUE const& value)
-            : value_{value}
-        {}
+        template <class TVALUE2,
+            std::enable_if_t<std::conjunction_v<allow_unwrapping<TVALUE2>, std::is_constructible<TVALUE, TVALUE2 const&>>, int> = 0>
+        explicit(!std::is_convertible_v<TVALUE2 const&, TVALUE>) maybe(maybe<TVALUE2, TREASON, UNKNOWN_ERROR> const& right)
+            : value_{right}
+        {
+        }
+
+        template <class TVALUE2,
+            std::enable_if_t<std::conjunction_v<allow_unwrapping<TVALUE2>, std::is_constructible<TVALUE, TVALUE2>>, int> = 0>
+        explicit(!std::is_convertible_v<TVALUE2, TVALUE>) maybe(maybe<TVALUE2, TREASON, UNKNOWN_ERROR>&& right) 
+            : value_{std::move(right)}
+        {
+        }
 
         template <class... TYPES, std::enable_if_t<std::is_constructible_v<TVALUE, TYPES...>, int> = 0>
         constexpr explicit maybe(std::in_place_t, TYPES&&... args)
@@ -53,6 +94,11 @@ namespace moreland::base64::shared
             std::enable_if_t<std::is_constructible_v<TVALUE, std::initializer_list<ELEM>&, TYPES...>, int> = 0>
         constexpr explicit maybe(std::in_place_t, std::initializer_list<ELEM> init_list, TYPES&&... args)
             : value_(std::in_place, init_list, std::forward<TYPES>(args)...) {}
+
+        constexpr explicit maybe(error_type reason) noexcept
+            : reason_(reason)
+        {}
+
 
         [[nodiscard]]
         constexpr bool has_value()
