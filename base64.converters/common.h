@@ -14,12 +14,10 @@
 #pragma once
 
 #include <span>
-#include <vector>
 
 namespace moreland::base64::converters
 {
     using byte = unsigned char;
-    using size_type = std::vector<byte>::size_type;
     using std::span;
 
     [[nodiscard]]
