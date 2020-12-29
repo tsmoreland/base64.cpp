@@ -33,7 +33,7 @@ namespace moreland::base64::converters
 {
     using iterator = span<byte const>::iterator;
 
-    optional<size_t> equality_encountered(size_t const output_length, unsigned int& current_block_codes, iterator& current, iterator const& after_last, vector<byte>& destination);
+    maybe_encoded<size_t> equality_encountered(size_t const output_length, unsigned int& current_block_codes, iterator& current, iterator const& after_last, vector<byte>& destination);
 
     decoder::decoder(bool const is_url, bool const insert_line_break, std::optional<int> const line_max, bool const do_padding) noexcept
         : is_url_{is_url}
@@ -43,22 +43,22 @@ namespace moreland::base64::converters
     {
     }
 
-    optional<vector<byte>> decoder::decode(span<byte const> const source) const
+    maybe_encoded<vector<byte>> decoder::decode(span<byte const> const source) const
     {
         vector<byte> destination;
-        return map<size_t, vector<byte>>(decode(source, destination), 
+        return decode(source, destination).map<vector<byte>>(
             [&destination](auto const&) {
                 return destination;
             });
     }
 
-    optional<size_t> decoder::decode(span<byte const> const source, vector<byte>& destination) const
+    maybe_encoded<size_t> decoder::decode(span<byte const> const source, vector<byte>& destination) const
     {
         span<byte const> trimmed_source = get_trimmed_span(source);
 
-        auto const output_length = calculate_output_length(source).value_or(0);
+        auto const output_length = calculate_output_length(source).value_or(static_cast<size_t>(0));
         if (output_length == 0) {
-            return nullopt;
+            return maybe_size_t(base64_failure_reason::bad_length);
         }
 
         destination.reserve(output_length);
@@ -72,8 +72,8 @@ namespace moreland::base64::converters
         while (true) {
             if (current == after_last) {
                 return (current_block_codes == 0x000000FFu) 
-                    ? optional(output_length)
-                    : nullopt;
+                    ? maybe_size_t(output_length)
+                    : maybe_size_t(base64_failure_reason::bad_format);
             }
 
             unsigned int value = *current;
@@ -103,7 +103,7 @@ namespace moreland::base64::converters
                     case to_byte('='):
                         return equality_encountered(output_length, current_block_codes, current, after_last, destination);
                     default:
-                        return nullopt;
+                        return maybe_size_t(base64_failure_reason::bad_format);
                 }
             }
 
@@ -115,12 +115,12 @@ namespace moreland::base64::converters
             if ((current_block_codes & 0x80000000u) != 0u) {
 
                 if (output_length - destination.size() < 3) {
-                    return nullopt;
+                    return maybe_size_t(base64_failure_reason::bad_length);
                 }
 
-                destination.emplace_back(current_block_codes >> 16);
-                destination.emplace_back(current_block_codes >> 8);
-                destination.emplace_back(current_block_codes);
+                destination.emplace_back(to_byte(to_byte(current_block_codes >> 16)));
+                destination.emplace_back(to_byte(to_byte(current_block_codes >> 8)));
+                destination.emplace_back(to_byte(to_byte(current_block_codes)));
 
                 current_block_codes = 0x000000FFu;
             }
@@ -131,7 +131,7 @@ namespace moreland::base64::converters
     string decoder::decode_to_string_or_empty(span<byte const> const source) const
     {
         vector<byte> destination;
-        return map<size_t, string>(decode(source, destination), 
+        return decode(source, destination).map<string>( 
             [&destination](auto const&) {
                 span<byte const> const destination_view = destination;
                 return to_string(destination_view);
@@ -144,7 +144,7 @@ namespace moreland::base64::converters
         return decode_to_string_or_empty(source_bytes);
     }
 
-    optional<size_t> decoder::calculate_output_length(span<byte const> const source)
+    maybe_size_t decoder::calculate_output_length(span<byte const> const source)
     {
         constexpr byte equals = '=';
         constexpr byte space = ' ';
@@ -155,11 +155,11 @@ namespace moreland::base64::converters
         for (auto const value : source) {
             if (value <= space) {
                 if (--useful_input_length == 0) {
-                    return nullopt;
+                    return maybe_size_t(base64_failure_reason::bad_length);
                 }
             } else if (value == equals) {
                 if (--useful_input_length == 0) {
-                    return nullopt;
+                    return maybe_size_t(base64_failure_reason::bad_length);
                 }
                 padding++;
             }
@@ -167,7 +167,7 @@ namespace moreland::base64::converters
 
         switch (padding) {
         default: // > 2
-            return nullopt;
+            return maybe_size_t(base64_failure_reason::bad_format);
         case 2:
             padding += 1;
             break;
@@ -177,7 +177,7 @@ namespace moreland::base64::converters
         case 0:
             break;
         }
-        return optional((useful_input_length / 4) * 3 + padding);
+        return maybe_size_t((useful_input_length / 4) * 3 + padding);
     }
 
     decoder make_decoder() noexcept
@@ -189,7 +189,7 @@ namespace moreland::base64::converters
         return decoder{true, false, nullopt, true};  
     }
 
-    optional<size_t> equality_encountered(size_t const output_length, unsigned int& current_block_codes, iterator& current, iterator const& after_last, vector<byte>& destination)
+    maybe_size_t equality_encountered(size_t const output_length, unsigned int& current_block_codes, iterator& current, iterator const& after_last, vector<byte>& destination)
     {
         if (current == after_last) {
 
@@ -197,16 +197,16 @@ namespace moreland::base64::converters
             current_block_codes <<= 6;
 
             if ((current_block_codes & 0x80000000u) == 0u) {
-                return nullopt;
+                return maybe_size_t(base64_failure_reason::bad_format);
             }
 
             if (output_length - destination.size() < 2) {
-                return nullopt;
+                return maybe_size_t(base64_failure_reason::bad_format);
             }
 
             // We are good, store bytes form this past group. We had a single "=", so we take two bytes:
-            destination.emplace_back(current_block_codes >> 16);
-            destination.emplace_back(current_block_codes >> 8);
+            destination.emplace_back(to_byte(current_block_codes >> 16));
+            destination.emplace_back(to_byte(current_block_codes >> 8));
 
             current_block_codes = 0x000000FFu;                
 
@@ -228,20 +228,20 @@ namespace moreland::base64::converters
             
                 current_block_codes <<= 12;
                 if ((current_block_codes & 0x80000000u) == 0u)
-                    return nullopt;
+                    return maybe_size_t(base64_failure_reason::bad_format);
 
                 if (output_length - destination.size() < 1) {
-                    return nullopt;
+                    return maybe_size_t(base64_failure_reason::bad_format);
                 }
-                destination.emplace_back(current_block_codes >> 16);
+                destination.emplace_back(to_byte(current_block_codes >> 16));
                 current_block_codes = 0x000000FFu;
                 
             } else  // '=' is not ok at places other than the end:
-                return nullopt;
+                return maybe_size_t(base64_failure_reason::bad_format);
                         
         }
         return (current_block_codes == 0x000000FFu) 
-            ? optional(output_length)
-            : nullopt;
+            ? maybe_size_t(output_length)
+            : maybe_size_t(base64_failure_reason::bad_format);
     }
 }

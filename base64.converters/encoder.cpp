@@ -76,8 +76,8 @@ namespace moreland::base64::converters
         for (input_position = 0; input_position < calc_length; input_position += 3) {
             if (insert_line_break_) {
                 if (character_count == line_break_position) {
-                    destination.emplace_back(static_cast<byte>('\r'));
-                    destination.emplace_back(static_cast<byte>('\n'));
+                    destination.emplace_back(to_byte('\r'));
+                    destination.emplace_back(to_byte('\n'));
                     output_position += 2;
                     character_count = 0UL;
                 }
