@@ -48,6 +48,21 @@ namespace moreland::base64::shared
         constexpr explicit maybe(std::in_place_t, std::initializer_list<ELEM> init_list, TYPES&&... args)
             : value_(std::in_place, init_list, std::forward<TYPES>(args)...) {}
 
+        [[nodiscard]]
+        constexpr bool has_value()
+        {
+            return value_.has_value();
+        }
+        [[nodiscard]]
+        constexpr TVALUE& value()
+        {
+            return value_.value();
+        }
+        constexpr std::optional<TREASON> const& error()
+        {
+            return reason_;
+        }
+
         void reset()
         {
             value_.reset();
@@ -77,6 +92,29 @@ namespace moreland::base64::shared
             }
             return *this;
         }
+
+        template <typename TDESTINATION_RESULT, class TMAPPER>
+        [[nodiscard]]
+        maybe<TDESTINATION_RESULT, TREASON, UNKNOWN_ERROR> map(
+            maybe<TVALUE, TREASON, UNKNOWN_ERROR> const& source, 
+            TMAPPER mapper)
+        {
+            return source.has_value()
+                ? maybe(mapper(source.value()))
+                : source.reason_.value_or(UNKNOWN_ERROR); 
+        }
+
+        template <typename TDESTINATION_RESULT, class TMAPPER>
+        [[nodiscard]]
+        maybe<TDESTINATION_RESULT, TREASON, UNKNOWN_ERROR> flat_map(
+            maybe<TVALUE, TREASON, UNKNOWN_ERROR> source, 
+            TMAPPER mapper)
+        {
+            return source.has_value()
+                ? mapper(source.value())
+                : source.reason_.value_or(UNKNOWN_ERROR); 
+        }
+
     };
 
 }
