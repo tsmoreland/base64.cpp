@@ -40,8 +40,8 @@ namespace moreland::base64::converters::tests
         auto const expected_size = expected.size();
 
         // semi-defy 1 assert per test, but these are just variations of the same check 
-        BOOST_CHECK(actual_size == expected_size, "lengths do not match");
-        BOOST_CHECK(actual_view == expected, "values do not match");
+        BOOST_CHECK_MESSAGE(actual_size == expected_size, "lengths do not match");
+        BOOST_CHECK_MESSAGE(actual_view == expected, "values do not match");
     }
 
     BOOST_AUTO_TEST_SUITE_END()
