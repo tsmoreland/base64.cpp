@@ -1,0 +1,7 @@
+{
+  "name": "base64-converters-test",
+  "version-string": "0.0.1",
+  "dependencies": [
+    "boost-test"
+  ]
+}

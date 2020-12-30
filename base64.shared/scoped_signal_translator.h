@@ -13,23 +13,11 @@
 
 #pragma once
 
-#include <span>
-
-namespace moreland::base64::converters
+namespace moreland::base64::shared
 {
-    using byte = unsigned char;
-    using std::span;
-
-    [[nodiscard]]
-    constexpr auto get_base64_line_break_position()
+    class scoped_signal_translator final
     {
-        return 76UL;
-    }
-
-    [[nodiscard]]
-    std::span<byte const> get_base64_table() noexcept;
-
-    [[nodiscard]]
-    std::span<byte const> get_trimmed_span(std::span<byte const> const source) noexcept;
-
+    public:
+    };
 }
+

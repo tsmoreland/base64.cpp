@@ -11,25 +11,24 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "test_data.h"
 
-#include <span>
+using std::string_view;
+using moreland::base64::shared::to_string;
 
-namespace moreland::base64::converters
+namespace moreland::base64::converters::tests
 {
-    using byte = unsigned char;
-    using std::span;
+    BOOST_FIXTURE_TEST_SUITE(rfc4648_decoder_tests, rfc4648_decoder_fixture)
 
-    [[nodiscard]]
-    constexpr auto get_base64_line_break_position()
+    BOOST_AUTO_TEST_CASE(docode__returns_vector__when_input_is_valid)
     {
-        return 76UL;
+        auto const decoded = decoder().decode(get_encoded_bytes());
+
+        BOOST_CHECK(decoded.has_value());
     }
 
-    [[nodiscard]]
-    std::span<byte const> get_base64_table() noexcept;
-
-    [[nodiscard]]
-    std::span<byte const> get_trimmed_span(std::span<byte const> const source) noexcept;
+    BOOST_AUTO_TEST_SUITE_END()
 
 }
+

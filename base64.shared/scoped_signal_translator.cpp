@@ -11,25 +11,9 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "scoped_signal_translator.h"
 
-#include <span>
-
-namespace moreland::base64::converters
+namespace moreland::base64::shared
 {
-    using byte = unsigned char;
-    using std::span;
-
-    [[nodiscard]]
-    constexpr auto get_base64_line_break_position()
-    {
-        return 76UL;
-    }
-
-    [[nodiscard]]
-    std::span<byte const> get_base64_table() noexcept;
-
-    [[nodiscard]]
-    std::span<byte const> get_trimmed_span(std::span<byte const> const source) noexcept;
-
 }

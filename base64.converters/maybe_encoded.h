@@ -1,3 +1,4 @@
+
 //
 // Copyright © 2020 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
@@ -13,23 +14,16 @@
 
 #pragma once
 
-#include <span>
+#include "base64_failure_reason.h"
+#include "../base64.shared/maybe.h"
 
 namespace moreland::base64::converters
 {
-    using byte = unsigned char;
-    using std::span;
+    template <typename TVALUE>
+    using maybe_encoded = moreland::base64::shared::maybe<TVALUE, base64_failure_reason, base64_failure_reason::unkonwn>;
 
-    [[nodiscard]]
-    constexpr auto get_base64_line_break_position()
-    {
-        return 76UL;
-    }
+    using maybe_bytes = maybe_encoded<unsigned char>;
+    using maybe_size_t = maybe_encoded<std::size_t>;
 
-    [[nodiscard]]
-    std::span<byte const> get_base64_table() noexcept;
-
-    [[nodiscard]]
-    std::span<byte const> get_trimmed_span(std::span<byte const> const source) noexcept;
 
 }

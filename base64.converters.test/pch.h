@@ -13,23 +13,13 @@
 
 #pragma once
 
-#include <span>
+#include <algorithm>
+#include <string_view>
 
-namespace moreland::base64::converters
-{
-    using byte = unsigned char;
-    using std::span;
+#define BOOST_TEST_MODULE converter_tests  // NOLINT(cppcoreguidelines-macro-usage)
+#include <boost/test/unit_test.hpp>
 
-    [[nodiscard]]
-    constexpr auto get_base64_line_break_position()
-    {
-        return 76UL;
-    }
+#include "encoder_test_fixture.h"
+#include "decoder_test_fixture.h"
 
-    [[nodiscard]]
-    std::span<byte const> get_base64_table() noexcept;
-
-    [[nodiscard]]
-    std::span<byte const> get_trimmed_span(std::span<byte const> const source) noexcept;
-
-}
+#include "../base64.shared/convert.h"

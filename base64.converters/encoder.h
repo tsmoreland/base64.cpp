@@ -38,7 +38,7 @@ namespace moreland::base64::converters
         std::optional<std::vector<byte>> encode(std::span<byte const> const source) const;
 
         [[nodiscard]]
-        std::optional<size_type> encode(std::span<byte const> const source, std::vector<byte>& destination) const;
+        std::optional<std::size_t> encode(std::span<byte const> const source, std::vector<byte>& destination) const;
 
         [[nodiscard]]
         std::string encode_to_string_or_empty(std::span<byte const> const source) const;
@@ -53,7 +53,7 @@ namespace moreland::base64::converters
         encoder& operator=(encoder &&) noexcept = default;
     private:
         [[nodiscard]]
-        static std::optional<size_type> calculate_output_length(std::span<byte const> const source, bool const insert_line_breaks);
+        static std::optional<size_t> calculate_output_length(std::span<byte const> const source, bool const insert_line_breaks);
 
     };
 #pragma warning(pop)

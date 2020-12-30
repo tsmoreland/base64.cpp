@@ -11,25 +11,37 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "test_data.h"
 
-#include <span>
+using std::ranges::transform;
+using std::back_inserter;
 
-namespace moreland::base64::converters
+namespace moreland::base64::converters::tests
 {
-    using byte = unsigned char;
-    using std::span;
 
     [[nodiscard]]
-    constexpr auto get_base64_line_break_position()
+    std::vector<unsigned char> get_bytes(std::string_view const source)
     {
-        return 76UL;
+        std::vector<unsigned char> bytes{};
+        transform(source, back_inserter(bytes), 
+            [](auto const& value) {
+                return static_cast<unsigned char>(value);
+            });
+        return bytes;
     }
 
-    [[nodiscard]]
-    std::span<byte const> get_base64_table() noexcept;
+    std::vector<unsigned char> get_decoded_bytes()
+    {
+        return get_bytes(DECODED);
+    }
 
-    [[nodiscard]]
-    std::span<byte const> get_trimmed_span(std::span<byte const> const source) noexcept;
-
+    std::vector<unsigned char> get_encoded_bytes()
+    {
+        return get_bytes(ENCODED);
+    }
+    std::vector<unsigned char> get_encoded_with_line_breaks_bytes()
+    {
+        return get_bytes(ENCODED_WITH_LINE_BREAKS);
+    }
 }

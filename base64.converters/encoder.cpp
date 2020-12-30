@@ -31,9 +31,9 @@ using moreland::base64::shared::to_byte;
 
 namespace moreland::base64::converters
 {
-    template <size_type position>
+    template <size_t position>
     [[nodiscard]]
-    size_type get_output_index(span<byte const> const source, size_type const input_position);
+    size_t get_output_index(span<byte const> const source, size_t const input_position);
 
     encoder::encoder(bool const is_url, bool const insert_line_break, optional<int> const line_max, bool const do_padding) noexcept
         : is_url_{is_url}
@@ -52,7 +52,7 @@ namespace moreland::base64::converters
             });
     }
 
-    optional<size_type> encoder::encode(span<byte const> const source, vector<byte>& destination) const
+    optional<size_t> encoder::encode(span<byte const> const source, vector<byte>& destination) const
     {
         auto const output_length = calculate_output_length(source, insert_line_break_);
         if (output_length.value_or(0UL) == 0UL) {
@@ -68,16 +68,16 @@ namespace moreland::base64::converters
         auto const length_mod_3 = length % 3;
         auto const calc_length = length - length_mod_3;
         constexpr auto line_break_position = get_base64_line_break_position();
-        size_type character_count = 0;
+        size_t character_count = 0;
 
-        size_type input_position;
-        size_type output_position = 0;
+        size_t input_position;
+        size_t output_position = 0;
         
         for (input_position = 0; input_position < calc_length; input_position += 3) {
             if (insert_line_break_) {
                 if (character_count == line_break_position) {
-                    destination.emplace_back(static_cast<byte>('\r'));
-                    destination.emplace_back(static_cast<byte>('\n'));
+                    destination.emplace_back(to_byte('\r'));
+                    destination.emplace_back(to_byte('\n'));
                     output_position += 2;
                     character_count = 0UL;
                 }
@@ -101,14 +101,14 @@ namespace moreland::base64::converters
         case 2: 
             destination.emplace_back(base64_table[get_output_index<0>(source, input_position)]);
             destination.emplace_back(base64_table[get_output_index<1>(source, input_position)]);
-            destination.emplace_back(base64_table[(static_cast<size_type>(source[input_position+1]&to_byte(0x0f)))<<2]);
+            destination.emplace_back(base64_table[(static_cast<size_t>(source[input_position+1]&to_byte(0x0f)))<<2]);
             destination.emplace_back(base64_table[64]); //Pad
             output_position += 4;
             break;
         case 1: // Two character padding needed
             destination.emplace_back(base64_table[get_output_index<0>(source, input_position)]);
             destination.emplace_back(base64_table[get_output_index<1>(source, input_position)]);
-            destination.emplace_back(base64_table[(static_cast<size_type>(source[input_position] & to_byte(0x03)))<<4]);
+            destination.emplace_back(base64_table[(static_cast<size_t>(source[input_position] & to_byte(0x03)))<<4]);
             destination.emplace_back(base64_table[64]); //Pad
             destination.emplace_back(base64_table[64]); //Pad
             output_position += 4;
@@ -136,10 +136,10 @@ namespace moreland::base64::converters
         return encode_to_string_or_empty(source_bytes);
     }
 
-    optional<size_type> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks) 
+    optional<size_t> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks) 
     {
-        size_type const new_line_size = 2;
-        size_type const ONE = 1;
+        size_t const new_line_size = 2;
+        size_t const ONE = 1;
         auto size = source.size() / 3 * 4;       
         size += source.size() % 3 != 0
             ? 4
@@ -155,7 +155,7 @@ namespace moreland::base64::converters
             size += new_line_count * new_line_size;
         }
 
-        if (size > static_cast<size_type>(numeric_limits::maximum<int>())) {
+        if (size > static_cast<size_t>(numeric_limits::maximum<int>())) {
             return nullopt;
         }
 
@@ -173,33 +173,33 @@ namespace moreland::base64::converters
         return rfc4648_url_safe;
     }
 
-    template <size_type position>
+    template <size_t position>
     [[nodiscard]]
-    size_type get_output_index(span<byte const> const source, size_type const input_position)
+    size_t get_output_index(span<byte const> const source, size_t const input_position)
     {
-        size_type index;
+        size_t index;
 
         static_assert(position >= 0 && position < 4, "position must be in range of [0:4)");
 
         switch (position)
         {
         case 0:
-            index = static_cast<size_type>((source[input_position]&0xfc) >> 2);
+            index = static_cast<size_t>((source[input_position]&0xfc) >> 2);
             break;
         case 1: {
-            size_type const input_position_plus_1 = input_position + 1;
-            index = static_cast<size_type>((source[input_position] & to_byte(0x03))<<4 | (source[input_position_plus_1]&to_byte(0xf0))>>4);
+            size_t const input_position_plus_1 = input_position + 1;
+            index = static_cast<size_t>((source[input_position] & to_byte(0x03))<<4 | (source[input_position_plus_1]&to_byte(0xf0))>>4);
             break;
         }
         case 2: {
-            size_type const input_position_plus_1 = input_position + 1;
-            size_type const input_position_plus_2 = input_position + 2;
-            index = static_cast<size_type>((source[input_position_plus_1]&to_byte(0x0f))<<2 | ((source[input_position_plus_2]&to_byte(0xc0))>>6));
+            size_t const input_position_plus_1 = input_position + 1;
+            size_t const input_position_plus_2 = input_position + 2;
+            index = static_cast<size_t>((source[input_position_plus_1]&to_byte(0x0f))<<2 | ((source[input_position_plus_2]&to_byte(0xc0))>>6));
             break;
         }
         case 3: {
-            size_type const input_position_plus_2 = input_position + 2;
-            index = static_cast<size_type>(source[input_position_plus_2]&to_byte(0x3f));
+            size_t const input_position_plus_2 = input_position + 2;
+            index = static_cast<size_t>(source[input_position_plus_2]&to_byte(0x3f));
             break;
         }
         default:

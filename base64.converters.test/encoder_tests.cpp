@@ -11,25 +11,39 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "test_data.h"
 
-#include <span>
+using std::string_view;
+using moreland::base64::shared::to_string;
 
-namespace moreland::base64::converters
+namespace moreland::base64::converters::tests
 {
-    using byte = unsigned char;
-    using std::span;
+    BOOST_FIXTURE_TEST_SUITE(rfc4648_encoder_tests, rfc4648_encoder_fixture)
 
-    [[nodiscard]]
-    constexpr auto get_base64_line_break_position()
+    BOOST_AUTO_TEST_CASE(encode__returns_vector__when_input_is_non_empty)
     {
-        return 76UL;
+        auto const encoded = encoder().encode(get_decoded_bytes());
+
+        BOOST_CHECK(encoded.has_value());
     }
 
-    [[nodiscard]]
-    std::span<byte const> get_base64_table() noexcept;
+    BOOST_AUTO_TEST_CASE(encode__returns_expected_value__when_input_is_non_empty)
+    {
+        auto const encoded = encoder().encode(get_decoded_bytes());
 
-    [[nodiscard]]
-    std::span<byte const> get_trimmed_span(std::span<byte const> const source) noexcept;
+        auto const actual = to_string(encoded.value());
+        auto const actual_view = string_view(actual);
+        auto const expected = ENCODED;
+
+        auto const actual_size = actual_view.size();
+        auto const expected_size = expected.size();
+
+        // semi-defy 1 assert per test, but these are just variations of the same check 
+        BOOST_CHECK_MESSAGE(actual_size == expected_size, "lengths do not match");
+        BOOST_CHECK_MESSAGE(actual_view == expected, "values do not match");
+    }
+
+    BOOST_AUTO_TEST_SUITE_END()
 
 }

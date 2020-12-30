@@ -20,8 +20,9 @@ namespace moreland::base64::shared
 {
 
     template <typename TSOURCE_RESULT, typename TDESTINATION_RESULT, class TMAPPER>
+    [[nodiscard]]
     std::optional<TDESTINATION_RESULT> map(
-        std::optional<TSOURCE_RESULT> source, 
+        std::optional<TSOURCE_RESULT> const& source, 
         TMAPPER mapper)
     {
         return source.has_value()
@@ -30,8 +31,9 @@ namespace moreland::base64::shared
     }
 
     template <typename TSOURCE_RESULT, typename TDESTINATION_RESULT, class TMAPPER>
+    [[nodiscard]]
     std::optional<TDESTINATION_RESULT> flat_map(
-        std::optional<TSOURCE_RESULT> source, 
+        std::optional<TSOURCE_RESULT> const& source, 
         TMAPPER mapper)
     {
         return source.has_value()
