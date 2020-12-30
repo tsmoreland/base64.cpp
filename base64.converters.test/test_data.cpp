@@ -14,27 +14,33 @@
 #include "pch.h"
 #include "test_data.h"
 
+using std::ranges::transform;
+using std::back_inserter;
+
 namespace moreland::base64::converters::tests
 {
 
     [[nodiscard]]
-    std::span<unsigned char const> get_bytes(std::string_view const source)
+    std::vector<unsigned char> get_bytes(std::string_view const source)
     {
-        return std::span<unsigned char const>{
-            reinterpret_cast<unsigned char const*const>(std::string(source).c_str()),
-            source.size()};
+        std::vector<unsigned char> bytes{};
+        transform(source, back_inserter(bytes), 
+            [](auto const& value) {
+                return static_cast<unsigned char>(value);
+            });
+        return bytes;
     }
 
-    std::span<unsigned char const> get_decoded_bytes()
+    std::vector<unsigned char> get_decoded_bytes()
     {
         return get_bytes(DECODED);
     }
 
-    std::span<unsigned char const> get_encoded_bytes()
+    std::vector<unsigned char> get_encoded_bytes()
     {
         return get_bytes(ENCODED);
     }
-    std::span<unsigned char const> get_encoded_with_line_breaks_bytes()
+    std::vector<unsigned char> get_encoded_with_line_breaks_bytes()
     {
         return get_bytes(ENCODED_WITH_LINE_BREAKS);
     }

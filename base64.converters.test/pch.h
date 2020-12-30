@@ -13,9 +13,12 @@
 
 #pragma once
 
+#include <algorithm>
 #include <string_view>
 
 #define BOOST_TEST_MODULE converter_tests  // NOLINT(cppcoreguidelines-macro-usage)
 #include <boost/test/unit_test.hpp>
 
 #include "encoder_test_fixture.h"
+
+#include "../base64.shared/convert.h"

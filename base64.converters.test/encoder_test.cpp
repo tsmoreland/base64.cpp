@@ -14,6 +14,9 @@
 #include "pch.h"
 #include "test_data.h"
 
+using std::string_view;
+using moreland::base64::shared::to_string;
+
 namespace moreland::base64::converters::tests
 {
     BOOST_FIXTURE_TEST_SUITE(rfc4648_encoder_tests, rfc4648_fixture)
@@ -23,6 +26,22 @@ namespace moreland::base64::converters::tests
         auto const encoded = encoder().encode(get_decoded_bytes());
 
         BOOST_CHECK(encoded.has_value());
+    }
+
+    BOOST_AUTO_TEST_CASE(encode__returns_expected_value__when_input_is_non_empty)
+    {
+        auto const encoded = encoder().encode(get_decoded_bytes());
+
+        auto const actual = to_string(encoded.value());
+        auto const actual_view = string_view(actual);
+        auto const expected = ENCODED;
+
+        auto const actual_size = actual_view.size();
+        auto const expected_size = expected.size();
+
+        // semi-defy 1 assert per test, but these are just variations of the same check 
+        BOOST_CHECK(actual_size == expected_size, "lengths do not match");
+        BOOST_CHECK(actual_view == expected, "values do not match");
     }
 
     BOOST_AUTO_TEST_SUITE_END()

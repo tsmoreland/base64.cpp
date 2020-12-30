@@ -70,8 +70,12 @@
     <ProjectReference Include="..\base64.converters\base64.converters.vcxproj">
       <Project>{50bcb9b5-16fe-4380-be28-d3e5c847a981}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\base64.shared\base64.shared.vcxproj">
+      <Project>{afe4772a-fa26-4758-b8a0-9a30e45be129}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="vcpkg.json" />
   </ItemGroup>
   <ItemDefinitionGroup />
