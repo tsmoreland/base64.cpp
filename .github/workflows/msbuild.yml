@@ -27,19 +27,16 @@ jobs:
     - name: Bootstrap vcpkg
       id: vckpg_bootstrap
       shell: 'powershell'
-      working-directory: ./cpp
       run: |
         vcpkg/bootstrap-vcpkg.bat
     - name: Integrate vcpkg
       id: vckpkg_integrate
       shell: 'powershell'
-      working-directory: ./cpp
       run: |
         vcpkg/vcpkg.exe integrate install
     - name: Install boost test package
       id: vckpkg_install_boosttest
       shell: 'powershell'
-      working-directory: ./cpp
       run: |
         vcpkg/vcpkg.exe install boost-test:x64-windows
     - name: Add MSBuild to PATH
