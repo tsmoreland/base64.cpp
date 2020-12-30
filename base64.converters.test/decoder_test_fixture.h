@@ -13,34 +13,33 @@
 
 #pragma once
 
-#include "../base64.converters/encoder.h"
+#include "../base64.converters/decoder.h"
 
 namespace moreland::base64::converters::tests
 {
     template <bool is_url, bool insert_line_break, int line_max, bool do_padding>
-    class encoder_test_fixture 
+    class decoder_test_fixture 
     {
-        encoder encoder_{is_url, insert_line_break, line_max >= 0 ? std::optional(line_max) : std::nullopt, do_padding};
+        decoder decoder_{is_url, insert_line_break, line_max >= 0 ? std::optional(line_max) : std::nullopt, do_padding};
 
     public:
-        constexpr encoder_test_fixture() = default;
-        virtual ~encoder_test_fixture() = default;
+        constexpr decoder_test_fixture() = default;
+        virtual ~decoder_test_fixture() = default;
 
         [[nodiscard]]
-        constexpr encoder const& encoder() const&
+        constexpr decoder const& decoder() const&
         {
-            return encoder_;
+            return decoder_;
         }
 
-        encoder_test_fixture(encoder_test_fixture const&) = default;
-        encoder_test_fixture(encoder_test_fixture &&) noexcept = default;
-        encoder_test_fixture& operator=(encoder_test_fixture const&) = default;
-        encoder_test_fixture& operator=(encoder_test_fixture &&) noexcept = default;
+        decoder_test_fixture(decoder_test_fixture const&) = default;
+        decoder_test_fixture(decoder_test_fixture &&) noexcept = default;
+        decoder_test_fixture& operator=(decoder_test_fixture const&) = default;
+        decoder_test_fixture& operator=(decoder_test_fixture &&) noexcept = default;
     };
 
-    using rfc4648_encoder_fixture = encoder_test_fixture<false, false, -1, false>;
-    using url_rfc4648_encoder_fixture = encoder_test_fixture<true, false, -1, false>;
-    using rfc2045_encoder_fixture = encoder_test_fixture<false, true, -1, false>;
-    using url_rfc2045_encoder_fixture = encoder_test_fixture<true, true, -1, false>;
-
+    using rfc4648_decoder_fixture = decoder_test_fixture<false, false, -1, false>;
+    using url_rfc4648_decoder_fixture = decoder_test_fixture<true, false, -1, false>;
+    using rfc2045_decoder_fixture = decoder_test_fixture<false, true, -1, false>;
+    using url_rfc2045_decoder_fixture = decoder_test_fixture<true, true, -1, false>;
 }

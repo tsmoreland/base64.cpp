@@ -1,4 +1,3 @@
-
 //
 // Copyright © 2020 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
@@ -12,18 +11,24 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "test_data.h"
 
-#include "base64_failure_reason.h"
-#include "../base64.shared/maybe.h"
+using std::string_view;
+using moreland::base64::shared::to_string;
 
-namespace moreland::base64::converters
+namespace moreland::base64::converters::tests
 {
-    template <typename TVALUE>
-    using maybe_encoded = moreland::base64::shared::maybe<TVALUE, base64_failure_reason, base64_failure_reason::unkonwn>;
+    BOOST_FIXTURE_TEST_SUITE(rfc4648_decoder_tests, rfc4648_decoder_fixture)
 
-    using maybe_bytes = maybe_encoded<unsigned char>;
-    using maybe_size_t = maybe_encoded<std::size_t>;
+    BOOST_AUTO_TEST_CASE(docode__returns_vector__when_input_is_valid)
+    {
+        auto const decoded = decoder().decode(get_encoded_bytes());
 
+        BOOST_CHECK(decoded.has_value());
+    }
+
+    BOOST_AUTO_TEST_SUITE_END()
 
 }
+

@@ -19,7 +19,7 @@ using moreland::base64::shared::to_string;
 
 namespace moreland::base64::converters::tests
 {
-    BOOST_FIXTURE_TEST_SUITE(rfc4648_encoder_tests, rfc4648_fixture)
+    BOOST_FIXTURE_TEST_SUITE(rfc4648_encoder_tests, rfc4648_encoder_fixture)
 
     BOOST_AUTO_TEST_CASE(encode__returns_vector__when_input_is_non_empty)
     {

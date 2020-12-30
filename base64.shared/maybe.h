@@ -101,7 +101,7 @@ namespace moreland::base64::shared
 
 
         [[nodiscard]]
-        constexpr bool has_value()
+        constexpr bool has_value() const
         {
             return value_.has_value();
         }
