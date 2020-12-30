@@ -34,11 +34,6 @@ jobs:
       shell: 'powershell'
       run: |
         vcpkg/vcpkg.exe integrate install
-    - name: Install boost test package
-      id: vckpkg_install_boosttest
-      shell: 'powershell'
-      run: |
-        vcpkg/vcpkg.exe install boost-test:x64-windows
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1
 
