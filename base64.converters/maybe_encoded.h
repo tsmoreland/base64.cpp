@@ -20,7 +20,7 @@
 namespace moreland::base64::converters
 {
     template <typename TVALUE>
-    using maybe_encoded = moreland::base64::shared::maybe<TVALUE, base64_failure_reason, base64_failure_reason::unkonwn>;
+    using maybe_encoded = shared::maybe<TVALUE, base64_failure_reason, base64_failure_reason::unkonwn>;
 
     using maybe_bytes = maybe_encoded<unsigned char>;
     using maybe_size_t = maybe_encoded<std::size_t>;
