@@ -14,6 +14,7 @@
 #include "pch.h"
 #include "seh_exception.h"
 #include "scoped_se_translator.h"
+#include "scoped_signal_translator.h"
 
 using std::string;
 
@@ -32,6 +33,20 @@ namespace moreland::base64::shared
             return builder.str();
 
         return builder.str();
+    }
+
+    [[noreturn]]
+    void __cdecl signal_handler(int signal)
+    {
+        switch (signal)
+        {
+        case SIGABRT:
+        case SIGFPE:
+        case SIGILL:
+        case SIGSEGV:
+        case SIGTERM:
+            break;
+        }
     }
 
     [[noreturn]]
@@ -68,5 +83,6 @@ namespace moreland::base64::shared
         // no real harm
         thread_local scoped_se_translator translator(seh_translator);  // NOLINT(clang-diagnostic-exit-time-destructors)
 
+        //thread_local scoped_signal_translator translator(signal_handler);
     }
 }

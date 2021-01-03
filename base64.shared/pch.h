@@ -17,6 +17,7 @@
 
 #include <Windows.h>
 #include <eh.h>
+#include <signal.h>
 
 #include <exception>
 #include <iomanip> 

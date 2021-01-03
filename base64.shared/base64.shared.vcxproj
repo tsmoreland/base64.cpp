@@ -111,9 +111,6 @@
       <DependentUpon>seh_exception.h</DependentUpon>
     </ClCompile>
     <ClInclude Include="scoped_se_translator.h" />
-    <ClCompile Include="scoped_se_translator.cpp">
-      <DependentUpon>scoped_se_translator.h</DependentUpon>
-    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

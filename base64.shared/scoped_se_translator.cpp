@@ -17,13 +17,5 @@
 namespace moreland::base64::shared
 {
 
-    scoped_se_translator::scoped_se_translator(translator_function translator) noexcept
-        : previous_handler_{_set_se_translator(translator)}
-    {
-    }
-    scoped_se_translator::~scoped_se_translator()
-    {
-        _set_se_translator(previous_handler_);
-    }
 
 }
