@@ -15,31 +15,10 @@
 #include "../base64.shared/seh_exception.h"
 #include "../../base64.converters/encoder.h"
 #include "../../base64.converters/decoder.h"
-#include "../../base64.shared/convert.h"
 
 using moreland::base64::shared::seh_exception;
 using moreland::base64::converters::make_encoder;
 using moreland::base64::converters::make_decoder;
-
-void force_exception()
-{
-    int x = 9;
-    int const y = 0;
-    x = x / y;  // NOLINT(clang-diagnostic-division-by-zero) -- intended
-}
-void force_exception_in_thread()
-{
-    std::thread exception_in_thread([]() -> void
-    {
-        seh_exception::initialize();
-        try {
-            force_exception();
-        } catch (std::exception const& e) {
-            std::cout << e.what() << std::endl;
-        }
-    });
-    exception_in_thread.join();
-}
 
 using std::vector;
 using byte_string = std::basic_string<unsigned char>;
@@ -69,10 +48,6 @@ int main()
 
         str = decoded.c_str();
         std::cout << str << std::endl;
-
-        force_exception_in_thread();
-        force_exception();
-
 
     } catch (std::exception const& e) {
         std::cout << e.what() << std::endl;
