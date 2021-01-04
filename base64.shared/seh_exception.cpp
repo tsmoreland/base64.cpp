@@ -41,11 +41,17 @@ namespace moreland::base64::shared
         switch (signal)
         {
         case SIGABRT:
+            throw seh_exception(STATUS_FATAL_APP_EXIT);
         case SIGFPE:
+            throw seh_exception(STATUS_FLOAT_INVALID_OPERATION);
         case SIGILL:
+            throw seh_exception(STATUS_ILLEGAL_INSTRUCTION);
         case SIGSEGV:
+            throw seh_exception(STATUS_ACCESS_VIOLATION);
         case SIGTERM:
-            break;
+            throw seh_exception(STATUS_FATAL_APP_EXIT);
+        default:
+            throw seh_exception(signal);
         }
     }
 
