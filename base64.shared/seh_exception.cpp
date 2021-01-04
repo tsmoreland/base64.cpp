@@ -88,7 +88,5 @@ namespace moreland::base64::shared
         // failure to call destructor means we won't unregister the translator for this process, but its exiting anyway so
         // no real harm
         thread_local scoped_se_translator translator(seh_translator);  // NOLINT(clang-diagnostic-exit-time-destructors)
-
-        //thread_local scoped_signal_translator translator(signal_handler);
     }
 }
