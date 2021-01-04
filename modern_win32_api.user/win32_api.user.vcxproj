@@ -16,7 +16,7 @@
     <ProjectGuid>{a01ba854-afd9-43db-aff4-01d6ac2e1ab6}</ProjectGuid>
     <RootNamespace>win32_api::user</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>win32_api.user</ProjectName>
+    <ProjectName>modern_win32_api.user</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -52,9 +52,9 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;MODERN_WIN32_API_USER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ExceptionHandling>Async</ExceptionHandling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -68,11 +68,11 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;MODERN_WIN32_API_USER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ExceptionHandling>Async</ExceptionHandling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -88,13 +88,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="clipboard.h" />
-    <ClCompile Include="clipboard.cpp" >
+    <ClCompile Include="clipboard.cpp">
       <DependentUpon>clipboard.h</DependentUpon>
     </ClCompile>
+    <ClInclude Include="library_export.h" />
     <ClInclude Include="pch.h" />
     <ClCompile Include="pch.cpp">
       <DependentUpon>pch.h</DependentUpon>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

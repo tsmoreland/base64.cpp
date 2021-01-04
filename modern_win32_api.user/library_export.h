@@ -10,19 +10,11 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
+
 #pragma once
 
-#include <optional>
-#include <string>
-#include <string_view>
-
-namespace win32_api::user
-{
-    [[nodiscard]]
-    bool set_clipboard(std::string_view const data);
-
-    [[nodiscard]]
-    std::optional<std::string> get_clipboard();
-
-}
-
+#ifdef MODERN_WIN32_API_USER_EXPORTS
+#define MODERN_WIN32_API_USER_EXPORT __declspec(dllexport)
+#else
+#define MODERN_WIN32_API_USER_EXPORT __declspec(dllimport)
+#endif

@@ -16,7 +16,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base64.converters", "base64
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base64.converters.test", "base64.converters.test\base64.converters.test.vcxproj", "{296A9CDB-A1E7-4E94-8F4F-5A6EDB8B80A7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "win32_api.user", "win32_api.user\win32_api.user.vcxproj", "{A01BA854-AFD9-43DB-AFF4-01D6AC2E1AB6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "modern_win32_api.user", "modern_win32_api.user\win32_api.user.vcxproj", "{A01BA854-AFD9-43DB-AFF4-01D6AC2E1AB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

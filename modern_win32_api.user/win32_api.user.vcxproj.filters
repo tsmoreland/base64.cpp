@@ -3,9 +3,13 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="clipboard.h" />
+    <ClInclude Include="library_export.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="clipboard.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>
