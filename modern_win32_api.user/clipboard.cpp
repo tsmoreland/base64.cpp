@@ -14,7 +14,7 @@
 #include "pch.h"
 #include "clipboard.h"
 
-namespace win32_api::user
+namespace modern_win32_api::user
 {
     class clipboard final
     {

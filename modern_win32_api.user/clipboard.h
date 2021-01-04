@@ -17,7 +17,7 @@
 #include <string_view>
 #include "library_export.h"
 
-namespace win32_api::user
+namespace modern_win32_api::user
 {
     [[nodiscard]]
     MODERN_WIN32_API_USER_EXPORT bool set_clipboard(std::string_view const data);
