@@ -18,18 +18,11 @@ using std::string;
 
 namespace modern_win32_api::user::tests
 {
-    BOOST_AUTO_TEST_CASE(placeholder)
-    {
-        bool const true_value = true;
-
-        BOOST_TEST(true_value);
-    }
-
     BOOST_AUTO_TEST_CASE(set_clipboard__returns_true__when_have_desktop_access)
     {
         string const data = "sample-text";
 
-        auto const actual = set_clipboard(data);
+        auto const actual = set_clipboard(data, GetDesktopWindow());
 
         BOOST_TEST(actual);
     }
@@ -39,7 +32,7 @@ namespace modern_win32_api::user::tests
         string const expected = "sample-text";
         static_cast<void>(set_clipboard(expected));
 
-        auto actual = get_clipboard().value_or("");
+        auto actual = get_clipboard(GetDesktopWindow()).value_or("");
 
         BOOST_TEST(actual == expected);
     }
