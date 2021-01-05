@@ -28,9 +28,6 @@ namespace modern_win32_api::user
         explicit clipboard(window_handle handle)
             : handle_{handle}
         {
-            if (handle_ == nullptr)
-                throw std::invalid_argument("handle cannot be null");
-
             if (OpenClipboard(handle_) != TRUE)
                 throw std::runtime_error("failed to open clipboard");
         }
@@ -82,25 +79,39 @@ namespace modern_win32_api::user
         global_lock& operator=(global_lock &&) noexcept = delete;
     };
 
-    bool set_clipboard(std::string_view const data) 
+    bool set_clipboard(std::string_view const data)
     {
-        clipboard desktop{};
-        auto *const global_mem = GlobalAlloc(GMEM_MOVEABLE, data.size() * sizeof(char));
+        return set_clipboard(data, nullptr);
+    }
+    bool set_clipboard(std::string_view const data, window_handle handle) 
+    {
+        clipboard desktop{handle};
+        auto *const global_mem = GlobalAlloc(GMEM_MOVEABLE, (data.size() +1) * sizeof(char));
         if (global_lock const locked_memory(global_mem); locked_memory.is_locked()) {
-            strcpy_s(static_cast<char *>(*locked_memory), data.size(), &data[0]);
+            auto *destination = static_cast<char *>(*locked_memory);
+            for (auto value : data) {
+                (*destination++) = value;
+            }
+            *destination = '\0';
         } else {
             return false;
         }
 
         EmptyClipboard();
-        if (SetClipboardData(CF_TEXT,  global_mem) != nullptr)
+        if (!SetClipboardData(CF_TEXT,  global_mem)) {
             return false;
+        }
         
         return true;
     }
+
     std::optional<std::string> get_clipboard() 
     {
-        clipboard desktop{};
+        return get_clipboard(nullptr);
+    }
+    std::optional<std::string> get_clipboard(window_handle handle) 
+    {
+        clipboard desktop{handle};
 
         if (auto *const data_handle = GetClipboardData(CF_TEXT);
             data_handle != nullptr) {

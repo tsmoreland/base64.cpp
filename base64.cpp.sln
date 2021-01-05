@@ -18,6 +18,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base64.converters.test", "b
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "modern_win32_api.user", "modern_win32_api.user\win32_api.user.vcxproj", "{A01BA854-AFD9-43DB-AFF4-01D6AC2E1AB6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "modern_win32_api.user.test", "modern_win32_api.user.test\modern_win32_api.user.test.vcxproj", "{58299302-595C-4DF7-B976-84148D950FE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -58,6 +60,14 @@ Global
 		{A01BA854-AFD9-43DB-AFF4-01D6AC2E1AB6}.Release|x64.ActiveCfg = Release|x64
 		{A01BA854-AFD9-43DB-AFF4-01D6AC2E1AB6}.Release|x64.Build.0 = Release|x64
 		{A01BA854-AFD9-43DB-AFF4-01D6AC2E1AB6}.Release|x86.ActiveCfg = Release|x64
+		{58299302-595C-4DF7-B976-84148D950FE2}.Debug|x64.ActiveCfg = Debug|x64
+		{58299302-595C-4DF7-B976-84148D950FE2}.Debug|x64.Build.0 = Debug|x64
+		{58299302-595C-4DF7-B976-84148D950FE2}.Debug|x86.ActiveCfg = Debug|Win32
+		{58299302-595C-4DF7-B976-84148D950FE2}.Debug|x86.Build.0 = Debug|Win32
+		{58299302-595C-4DF7-B976-84148D950FE2}.Release|x64.ActiveCfg = Release|x64
+		{58299302-595C-4DF7-B976-84148D950FE2}.Release|x64.Build.0 = Release|x64
+		{58299302-595C-4DF7-B976-84148D950FE2}.Release|x86.ActiveCfg = Release|Win32
+		{58299302-595C-4DF7-B976-84148D950FE2}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

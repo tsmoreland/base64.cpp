@@ -10,29 +10,14 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
+
 #pragma once
 
-#include <optional>
-#include <string>
+
+#include <algorithm>
 #include <string_view>
-#include "library_export.h"
-#include <Windows.h>
 
-namespace modern_win32_api::user
-{
-    using window_handle = HWND;
+#define BOOST_TEST_MODULE modern_win32_api_user_tests  // NOLINT(cppcoreguidelines-macro-usage)
+#include <boost/test/unit_test.hpp>
 
-    [[nodiscard]]
-    MODERN_WIN32_API_USER_EXPORT bool set_clipboard(std::string_view const data);
-
-    [[nodiscard]]
-    MODERN_WIN32_API_USER_EXPORT bool set_clipboard(std::string_view const data, window_handle handle);
-
-    [[nodiscard]]
-    MODERN_WIN32_API_USER_EXPORT std::optional<std::string> get_clipboard();
-
-    [[nodiscard]]
-    MODERN_WIN32_API_USER_EXPORT std::optional<std::string> get_clipboard(window_handle handle);
-
-}
 

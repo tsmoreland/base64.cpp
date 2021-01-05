@@ -10,29 +10,38 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
-#pragma once
 
-#include <optional>
-#include <string>
-#include <string_view>
-#include "library_export.h"
-#include <Windows.h>
+#include "pch.h"
+#include "../modern_win32_api.user/clipboard.h"
 
-namespace modern_win32_api::user
+using std::string;
+
+namespace modern_win32_api::user::tests
 {
-    using window_handle = HWND;
+    BOOST_AUTO_TEST_CASE(placeholder)
+    {
+        bool const true_value = true;
 
-    [[nodiscard]]
-    MODERN_WIN32_API_USER_EXPORT bool set_clipboard(std::string_view const data);
+        BOOST_TEST(true_value);
+    }
 
-    [[nodiscard]]
-    MODERN_WIN32_API_USER_EXPORT bool set_clipboard(std::string_view const data, window_handle handle);
+    BOOST_AUTO_TEST_CASE(set_clipboard__returns_true__when_have_desktop_access)
+    {
+        string const data = "sample-text";
 
-    [[nodiscard]]
-    MODERN_WIN32_API_USER_EXPORT std::optional<std::string> get_clipboard();
+        auto const actual = set_clipboard(data);
 
-    [[nodiscard]]
-    MODERN_WIN32_API_USER_EXPORT std::optional<std::string> get_clipboard(window_handle handle);
+        BOOST_TEST(actual);
+    }
+
+    BOOST_AUTO_TEST_CASE(get_clipboard__returns_set_value__when_set_clipboard_used)
+    {
+        string const expected = "sample-text";
+        static_cast<void>(set_clipboard(expected));
+
+        auto actual = get_clipboard().value_or("");
+
+        BOOST_TEST(actual == expected);
+    }
 
 }
-
