@@ -22,16 +22,20 @@ namespace moreland::base64::shared
         using translator_function = _se_translator_function;
         translator_function const previous_handler_;
     public:
-        explicit scoped_se_translator(translator_function translator) noexcept;
-        ~scoped_se_translator();
+        explicit scoped_se_translator(translator_function translator) noexcept
+            : previous_handler_{_set_se_translator(translator)}
+        {
+        }
+
+        ~scoped_se_translator()
+        {
+            _set_se_translator(previous_handler_);
+        }
         scoped_se_translator(scoped_se_translator const&) = delete;
         scoped_se_translator(scoped_se_translator &&) noexcept = delete;
 
         scoped_se_translator& operator=(scoped_se_translator const&) = delete;
         scoped_se_translator& operator=(scoped_se_translator &&) noexcept = delete;
-
-    private:
-
     };
 
 }

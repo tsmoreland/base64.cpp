@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Terry Moreland
+// Copyright © 2021 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
 // to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
 // and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -11,11 +11,19 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "scoped_se_translator.h"
+#pragma once
 
-namespace moreland::base64::shared
-{
+#define WIN32_LEAN_AND_MEAN 
 
+#include <Windows.h>
 
-}
+#include <exception>
+#include <iomanip> 
+
+#include <optional>
+#include <string>
+#include <sstream>
+#include <type_traits>
+
+#include <cuchar>
+#include <cassert>

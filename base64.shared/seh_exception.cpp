@@ -14,6 +14,7 @@
 #include "pch.h"
 #include "seh_exception.h"
 #include "scoped_se_translator.h"
+#include "scoped_signal_translator.h"
 
 using std::string;
 
@@ -32,6 +33,26 @@ namespace moreland::base64::shared
             return builder.str();
 
         return builder.str();
+    }
+
+    [[noreturn]]
+    void __cdecl signal_handler(int signal)
+    {
+        switch (signal)
+        {
+        case SIGABRT:
+            throw seh_exception(STATUS_FATAL_APP_EXIT);
+        case SIGFPE:
+            throw seh_exception(STATUS_FLOAT_INVALID_OPERATION);
+        case SIGILL:
+            throw seh_exception(STATUS_ILLEGAL_INSTRUCTION);
+        case SIGSEGV:
+            throw seh_exception(STATUS_ACCESS_VIOLATION);
+        case SIGTERM:
+            throw seh_exception(STATUS_FATAL_APP_EXIT);
+        default:
+            throw seh_exception(signal);
+        }
     }
 
     [[noreturn]]
@@ -67,6 +88,5 @@ namespace moreland::base64::shared
         // failure to call destructor means we won't unregister the translator for this process, but its exiting anyway so
         // no real harm
         thread_local scoped_se_translator translator(seh_translator);  // NOLINT(clang-diagnostic-exit-time-destructors)
-
     }
 }
