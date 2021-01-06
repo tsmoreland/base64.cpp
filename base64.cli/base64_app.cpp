@@ -52,7 +52,7 @@ namespace moreland::base64::cli
 
         return std::tuple<operation_type, output_type>(operation, output);
     }
-    std::vector<std::string_view> vector_of(char const* source[], std::size_t const length)
+    std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t const length)
     {
         std::vector<std::string_view> vector;
 

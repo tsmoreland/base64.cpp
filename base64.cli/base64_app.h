@@ -90,7 +90,7 @@ namespace moreland::base64::cli
     std::tuple<operation_type, output_type> get_operation_and_output_from_arguments(std::span<std::string_view const> const arguments);
 
     [[nodiscard]]
-    std::vector<std::string_view> vector_of(char const* source[], std::size_t const length);
+    std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t const length);
 
     template <Encoder ENCODER = encoder, Decoder DECODER = decoder, Clipboard CLIPBOARD = clipboard_traits>
     [[nodiscard]]
@@ -104,15 +104,22 @@ namespace moreland::base64::cli
 
         switch (output)
         {
-        case output_type::clipboard:
+        case output_type::clipboard: {
             auto const source = CLIPBOARD::get_clipboard();
-            byte_string const byte_source{begin(source), end(source)};
+            if (!source.has_value())
+                return false;
+            
+            byte_string const byte_source{begin(source.value()), end(source.value())};
 
             auto const converted = operation == operation_type::encode
-                ? encoder.encoder_to_string_or_empty(byte_source)
+                ? encoder.encode_to_string_or_empty(byte_source)
                 : decoder.decode_to_string_or_empty(byte_source);
             
+            if (converted.empty())
+                return byte_source.empty(); 
+
             break;
+        }
         case output_type::file_to_clipboard:
             break;
         case output_type::file_to_file:

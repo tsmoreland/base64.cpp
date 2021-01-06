@@ -26,11 +26,8 @@ using moreland::base64::converters::decoder;
 using std::vector;
 using byte_string = std::basic_string<unsigned char>;
 
-using moreland::base64::cli::vector_of;
+using moreland::base64::cli::as_vector_of_views;
 using moreland::base64::cli::base64_run;
-using moreland::base64::cli::base64_run2;
-using moreland::base64::cli::base64_run3;
-using moreland::base64::cli::base64_run4;
 
 namespace shared = moreland::base64::shared;  // NOLINT(misc-unused-alias-decls)
 
@@ -42,7 +39,10 @@ int main(int const argc, char const* argv[])
         auto const base64_encoder = make_encoder();
         auto const base64_decoder = make_decoder();
 
-        auto const arguments = vector_of(argv, argc);
+        auto const arguments = as_vector_of_views(argv, argc);
+        if (auto const result = base64_run(arguments, base64_encoder, base64_decoder); !result) {
+            std::cout << "operation failed" << std::endl;
+        }
 
         std::string source_string = "hello world";
         byte_string source{begin(source_string), end(source_string)};

@@ -103,6 +103,9 @@
     <ProjectReference Include="..\base64.shared\base64.shared.vcxproj">
       <Project>{afe4772a-fa26-4758-b8a0-9a30e45be129}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\modern_win32_api.user\win32_api.user.vcxproj">
+      <Project>{a01ba854-afd9-43db-aff4-01d6ac2e1ab6}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp" />
