@@ -20,23 +20,34 @@
 using moreland::base64::shared::seh_exception;
 using moreland::base64::converters::make_encoder;
 using moreland::base64::converters::make_decoder;
+using moreland::base64::converters::encoder;
+using moreland::base64::converters::decoder;
 
 using std::vector;
 using byte_string = std::basic_string<unsigned char>;
 
+using moreland::base64::cli::vector_of;
+using moreland::base64::cli::base64_run;
+using moreland::base64::cli::base64_run2;
+using moreland::base64::cli::base64_run3;
+using moreland::base64::cli::base64_run4;
+
 namespace shared = moreland::base64::shared;  // NOLINT(misc-unused-alias-decls)
 
-int main()
+int main(int const argc, char const* argv[])
 {
     try {
         seh_exception::initialize();
 
-        auto const encoder = make_encoder();
+        auto const base64_encoder = make_encoder();
+        auto const base64_decoder = make_decoder();
+
+        auto const arguments = vector_of(argv, argc);
 
         std::string source_string = "hello world";
         byte_string source{begin(source_string), end(source_string)};
 
-        auto const encoded = encoder.encode_to_string_or_empty(source);
+        auto const encoded = base64_encoder.encode_to_string_or_empty(source);
 
         char const* str = encoded.c_str(); // for debugging ease, easier to view the contents as a char*
         std::cout << str << std::endl;
@@ -44,8 +55,7 @@ int main()
         std::string encoded_source_string = "aGVsbG8gd29ybGQ=";
         source = byte_string{begin(encoded_source_string), end(encoded_source_string)};
 
-        auto const decoder = make_decoder();
-        auto const decoded = decoder.decode_to_string_or_empty(source);
+        auto const decoded = base64_decoder.decode_to_string_or_empty(source);
 
         str = decoded.c_str();
         std::cout << str << std::endl;

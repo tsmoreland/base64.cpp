@@ -19,21 +19,29 @@
 #include <optional>
 #include <vector>
 
+#include "../base64.converters/decoder.h"
+#include "../base64.converters/encoder.h"
+#include "../base64.converters/maybe_encoded.h"
+#include "../modern_win32_api.user/clipboard.h"
+
 namespace moreland::base64::cli
 {
     using byte_string = std::basic_string<unsigned char>;
 
+    using converters::encoder;
+    using converters::decoder;
+
     template <typename TEncoder>
-    concept Encoder = requires(TEncoder const& encoder, std::span<unsigned char const> const source)
+    concept Encoder = requires(TEncoder const& encoder, std::span<unsigned char const> const source, int x)
     {
-        { encoder.encoder(source) } -> std::convertible_to<std::optional<std::vector<unsigned char >>>;
-        { encoder.encoder_to_string_or_empty(source) } -> std::convertible_to<std::string>;
+        { encoder.encode(source) } -> std::convertible_to<std::optional<std::vector<unsigned char >>>;
+        { encoder.encode_to_string_or_empty(source) } -> std::convertible_to<std::string>;
     };
 
     template <typename TDecoder>
     concept Decoder = requires(TDecoder const& decoder, std::span<unsigned char const> const source)
     {
-        { decoder.decode(source) } -> std::convertible_to<std::optional<std::vector<unsigned char >>>;
+        { decoder.decode(source) } -> std::convertible_to<converters::maybe_encoded<std::vector<unsigned char >>>;
         { decoder.decode_to_string_or_empty(source) } -> std::convertible_to<std::string>;
     };
 
@@ -59,13 +67,32 @@ namespace moreland::base64::cli
         file_to_file,
     };
 
+    struct clipboard_traits
+    {
+        [[nodiscard]]
+        static std::optional<std::string> get_clipboard() 
+        {
+            return modern_win32_api::user::get_clipboard();
+        }
+
+        [[nodiscard]]
+        static bool set_clipboard(std::string_view const data)
+        {
+            return modern_win32_api::user::set_clipboard(data);
+        }
+    };
+
+
     [[nodiscard]]
     bool string_lower_equals(std::string_view const first, std::string_view const second);
 
     [[nodiscard]]
     std::tuple<operation_type, output_type> get_operation_and_output_from_arguments(std::span<std::string_view const> const arguments);
 
-    template <Encoder ENCODER, Decoder DECODER, Clipboard CLIPBOARD>
+    [[nodiscard]]
+    std::vector<std::string_view> vector_of(char const* source[], std::size_t const length);
+
+    template <Encoder ENCODER = encoder, Decoder DECODER = decoder, Clipboard CLIPBOARD = clipboard_traits>
     [[nodiscard]]
     bool base64_run(std::span<std::string_view const> const arguments, ENCODER const& encoder, DECODER const& decoder)
     {

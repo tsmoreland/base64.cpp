@@ -52,4 +52,14 @@ namespace moreland::base64::cli
 
         return std::tuple<operation_type, output_type>(operation, output);
     }
+    std::vector<std::string_view> vector_of(char const* source[], std::size_t const length)
+    {
+        std::vector<std::string_view> vector;
+
+        for (std::size_t i=0; i< length; ++i) {
+            vector.emplace_back(source[i], strlen(source[i]));
+        }
+
+        return vector;
+    }
 }

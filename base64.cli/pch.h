@@ -26,3 +26,5 @@
 #include <iostream>
 #include <thread>
 #include <type_traits>
+
+#include "base64_app.h"
