@@ -12,6 +12,7 @@
 // 
 
 #include "pch.h"
+#include "base64_app.h"
 #include "../base64.shared/seh_exception.h"
 #include "../../base64.converters/encoder.h"
 #include "../../base64.converters/decoder.h"

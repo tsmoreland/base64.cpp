@@ -60,7 +60,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ExceptionHandling>Async</ExceptionHandling>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)base64.shared\include</AdditionalIncludeDirectories>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableModules>true</EnableModules>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -84,7 +84,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ExceptionHandling>Async</ExceptionHandling>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)base64.shared\include</AdditionalIncludeDirectories>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableModules>true</EnableModules>
     </ClCompile>
@@ -106,8 +106,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp" />
+    <ClInclude Include="base64_app.h" />
     <ClInclude Include="pch.h" />
-    <ClCompile Include="pch.cpp" >
+    <ClCompile Include="base64_app.cpp" />
+    <ClCompile Include="pch.cpp">
       <DependentUpon>pch.h</DependentUpon>
     </ClCompile>
   </ItemGroup>
