@@ -12,6 +12,7 @@
 // 
 
 #include "pch.h"
+#include "base64_app.h"
 #include "../base64.shared/seh_exception.h"
 #include "../../base64.converters/encoder.h"
 #include "../../base64.converters/decoder.h"
@@ -19,43 +20,44 @@
 using moreland::base64::shared::seh_exception;
 using moreland::base64::converters::make_encoder;
 using moreland::base64::converters::make_decoder;
+using moreland::base64::converters::encoder;
+using moreland::base64::converters::decoder;
 
 using std::vector;
 using byte_string = std::basic_string<unsigned char>;
 
+using moreland::base64::cli::as_vector_of_views;
+using moreland::base64::cli::base64_run;
+
 namespace shared = moreland::base64::shared;  // NOLINT(misc-unused-alias-decls)
 
-int main()
+int main(int argc, char const* argv[])
 {
     try {
         seh_exception::initialize();
 
-        auto const encoder = make_encoder();
+        auto const base64_encoder = make_encoder();
+        auto const base64_decoder = make_decoder();
 
-        std::string source_string = "hello world";
-        byte_string source{begin(source_string), end(source_string)};
+        ++argv;
+        if (--argc < 0)
+            return -1;
 
-        auto const encoded = encoder.encode_to_string_or_empty(source);
+        auto const arguments = as_vector_of_views(argv, argc);
+        if (auto const result = base64_run(arguments, base64_encoder, base64_decoder); !result) {
+            std::cout << "operation failed" << std::endl;
+        }
 
-        char const* str = encoded.c_str(); // for debugging ease, easier to view the contents as a char*
-        std::cout << str << std::endl;
-
-        std::string encoded_source_string = "aGVsbG8gd29ybGQ=";
-        source = byte_string{begin(encoded_source_string), end(encoded_source_string)};
-
-        auto const decoder = make_decoder();
-        auto const decoded = decoder.decode_to_string_or_empty(source);
-
-        str = decoded.c_str();
-        std::cout << str << std::endl;
+        return 0;
 
     } catch (std::exception const& e) {
         std::cout << e.what() << std::endl;
+        return -1;
 
     } catch (...) {
         std::cout << "unknown error occurred" << std::endl;
+        return -1;
     }
 
-    return 0;
 }
 

@@ -3,8 +3,10 @@
   <ItemGroup>
     <ClCompile Include="application.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="base64_app.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="base64_app.h" />
   </ItemGroup>
 </Project>
