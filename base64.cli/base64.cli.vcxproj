@@ -110,8 +110,10 @@
   <ItemGroup>
     <ClCompile Include="application.cpp" />
     <ClInclude Include="base64_app.h" />
+    <ClCompile Include="base64_app.cpp" >
+      <DependentUpon>base64_app.h</DependentUpon>
+    </ClCompile>
     <ClInclude Include="pch.h" />
-    <ClCompile Include="base64_app.cpp" />
     <ClCompile Include="pch.cpp">
       <DependentUpon>pch.h</DependentUpon>
     </ClCompile>

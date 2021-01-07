@@ -107,10 +107,11 @@ namespace moreland::base64::converters
             break;
         case 1: // Two character padding needed
             destination.emplace_back(base64_table[get_output_index<0>(source, input_position)]);
-            destination.emplace_back(base64_table[get_output_index<1>(source, input_position)]);
             destination.emplace_back(base64_table[(static_cast<size_t>(source[input_position] & to_byte(0x03)))<<4]);
             destination.emplace_back(base64_table[64]); //Pad
             destination.emplace_back(base64_table[64]); //Pad
+
+            //outChars[j+1] = base64[(inData[i]&0x03)<<4]
             output_position += 4;
             break;
         default:
