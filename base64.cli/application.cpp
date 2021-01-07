@@ -31,7 +31,7 @@ using moreland::base64::cli::base64_run;
 
 namespace shared = moreland::base64::shared;  // NOLINT(misc-unused-alias-decls)
 
-int main(int const argc, char const* argv[])
+int main(int argc, char const* argv[])
 {
     try {
         seh_exception::initialize();
@@ -39,34 +39,25 @@ int main(int const argc, char const* argv[])
         auto const base64_encoder = make_encoder();
         auto const base64_decoder = make_decoder();
 
+        ++argv;
+        if (--argc < 0)
+            return -1;
+
         auto const arguments = as_vector_of_views(argv, argc);
         if (auto const result = base64_run(arguments, base64_encoder, base64_decoder); !result) {
             std::cout << "operation failed" << std::endl;
         }
 
-        std::string source_string = "hello world";
-        byte_string source{begin(source_string), end(source_string)};
-
-        auto const encoded = base64_encoder.encode_to_string_or_empty(source);
-
-        char const* str = encoded.c_str(); // for debugging ease, easier to view the contents as a char*
-        std::cout << str << std::endl;
-
-        std::string encoded_source_string = "aGVsbG8gd29ybGQ=";
-        source = byte_string{begin(encoded_source_string), end(encoded_source_string)};
-
-        auto const decoded = base64_decoder.decode_to_string_or_empty(source);
-
-        str = decoded.c_str();
-        std::cout << str << std::endl;
+        return 0;
 
     } catch (std::exception const& e) {
         std::cout << e.what() << std::endl;
+        return -1;
 
     } catch (...) {
         std::cout << "unknown error occurred" << std::endl;
+        return -1;
     }
 
-    return 0;
 }
 

@@ -118,7 +118,7 @@ namespace moreland::base64::cli
             if (converted.empty())
                 return byte_source.empty(); 
 
-            break;
+            return CLIPBOARD::set_clipboard(converted);
         }
         case output_type::file_to_clipboard:
             break;

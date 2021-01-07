@@ -18,9 +18,11 @@ using std::string_view;
 using std::vector;
 
 using moreland::base64::shared::to_string;
+using byte_string = std::basic_string<unsigned char>;
 
 namespace moreland::base64::converters::tests
 {
+
     BOOST_FIXTURE_TEST_SUITE(rfc4648_encoder_tests, rfc4648_encoder_fixture)
 
     BOOST_AUTO_TEST_CASE(encode__returns_vector__when_input_is_non_empty)
@@ -66,6 +68,16 @@ namespace moreland::base64::converters::tests
         auto const encoded = encoder().encode_to_string_or_empty(get_decoded_bytes());
 
         BOOST_CHECK_MESSAGE(encoded == ENCODED, "values do not match");
+    }
+
+    BOOST_AUTO_TEST_CASE(encode__returns_value__when_input_requires_one_padding)
+    {
+        std::string source{"hello world, from the clipboard"};
+        byte_string const source_bytes{begin(source), end(source)};
+
+        auto const actual = encoder().encode(source_bytes);
+
+        BOOST_TEST(actual.has_value());
     }
 
     BOOST_AUTO_TEST_SUITE_END()

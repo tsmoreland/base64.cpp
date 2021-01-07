@@ -15,16 +15,33 @@
 
 #define WIN32_LEAN_AND_MEAN 
 
-#include <Windows.h>
-#include <eh.h>
-#include <signal.h>
-
 #include <exception>
 #include <iomanip> 
 #include <optional>
+#include <limits>
 #include <string>
 #include <iostream>
 #include <thread>
 #include <type_traits>
 
+namespace moreland::limits
+{
+    template <std::integral T>
+    constexpr auto minimum(T first, T second)
+    {
+        return std::numeric_limits<T>::min(first, second);
+    }
+
+    template <std::integral T>
+    constexpr auto maximum(T first, T second)
+    {
+        return std::numeric_limits<T>::max(first, second);
+    }
+}
+
+#include <Windows.h>
+#include <eh.h>
+#include <csignal>
+
 #include "base64_app.h"
+
