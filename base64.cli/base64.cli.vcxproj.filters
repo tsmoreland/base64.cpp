@@ -8,5 +8,7 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="base64_app.h" />
+    <ClInclude Include="output_type.h" />
+    <ClInclude Include="operation_type.h" />
   </ItemGroup>
 </Project>
