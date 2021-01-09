@@ -42,8 +42,20 @@
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="..\base64.cli\base64_app.h" />
-    <ClCompile Include="..\base64.cli\base64_app.cpp" >
+    <ClCompile Include="..\base64.cli\base64_app.cpp">
       <DependentUpon>..\base64.cli\base64_app.h</DependentUpon>
+    </ClCompile>
+    <ClInclude Include="mock_clipboard_traits.h" />
+    <ClCompile Include="mock_clipboard_traits.cpp" >
+      <DependentUpon>mock_clipboard_traits.h</DependentUpon>
+    </ClCompile>
+    <ClInclude Include="mock_decoder.h" />
+    <ClCompile Include="mock_decoder.cpp" >
+      <DependentUpon>mock_decoder.h</DependentUpon>
+    </ClCompile>
+    <ClInclude Include="mock_encoder.h" />
+    <ClCompile Include="mock_encoder.cpp" >
+      <DependentUpon>mock_encoder.h</DependentUpon>
     </ClCompile>
     <ClInclude Include="pch.h" />
     <ClCompile Include="pch.cpp">
