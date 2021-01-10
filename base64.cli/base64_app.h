@@ -15,7 +15,6 @@
 
 #include <span>
 #include <string>
-#include <string_view>
 #include <vector>
 
 #include "output_type.h"
@@ -31,13 +30,13 @@ namespace moreland::base64::cli
 {
 
     [[nodiscard]]
-    bool string_lower_equals(std::string_view const first, std::string_view const second);
+    bool string_lower_equals(std::string_view first, std::string_view second);
 
     [[nodiscard]]
-    std::tuple<operation_type, output_type> get_operation_and_output_from_arguments(std::span<std::string_view const> const arguments);
+    std::tuple<operation_type, output_type> get_operation_and_output_from_arguments(std::span<std::string_view const> arguments);
 
     [[nodiscard]]
-    std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t const length);
+    std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t length);
 
     template <
         converters::Encoder ENCODER = converters::encoder,

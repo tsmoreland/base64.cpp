@@ -33,7 +33,7 @@ namespace moreland::base64::converters
 {
     template <size_t position>
     [[nodiscard]]
-    size_t get_output_index(span<byte const> const source, size_t const input_position);
+    size_t get_output_index(span<byte const> source, size_t input_position);
 
     encoder::encoder(bool const is_url, bool const insert_line_break, optional<int> const line_max, bool const do_padding) noexcept
         : is_url_{is_url}
@@ -176,7 +176,7 @@ namespace moreland::base64::converters
 
     template <size_t position>
     [[nodiscard]]
-    size_t get_output_index(span<byte const> const source, size_t const input_position)
+    size_t get_output_index(span<byte const> source, size_t input_position)
     {
         size_t index;
 

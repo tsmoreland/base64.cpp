@@ -22,7 +22,7 @@ namespace modern_win32_api::user
         return modern_win32_api::user::get_clipboard();
     }
 
-    bool clipboard_traits::set_clipboard(std::string_view const data)
+    bool clipboard_traits::set_clipboard(std::string_view data)
     {
         return modern_win32_api::user::set_clipboard(data);
     }

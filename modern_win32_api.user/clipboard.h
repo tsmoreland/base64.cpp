@@ -23,10 +23,10 @@ namespace modern_win32_api::user
     using window_handle = HWND;
 
     [[nodiscard]]
-    MODERN_WIN32_API_USER_EXPORT bool set_clipboard(std::string_view const data);
+    MODERN_WIN32_API_USER_EXPORT bool set_clipboard(std::string_view data);
 
     [[nodiscard]]
-    MODERN_WIN32_API_USER_EXPORT bool set_clipboard(std::string_view const data, window_handle handle);
+    MODERN_WIN32_API_USER_EXPORT bool set_clipboard(std::string_view data, window_handle handle);
 
     [[nodiscard]]
     MODERN_WIN32_API_USER_EXPORT std::optional<std::string> get_clipboard();

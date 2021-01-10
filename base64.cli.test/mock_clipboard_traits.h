@@ -15,7 +15,6 @@
 
 #include <optional>
 #include <string>
-#include <string_view>
 
 namespace moreland::base64::cli::tests
 {
@@ -27,7 +26,7 @@ namespace moreland::base64::cli::tests
 
     public:
         static auto set_get_clipboard_return_value(std::optional<std::string> const& data) -> void;
-        static auto set_set_clipboard_return_value(bool const result) -> void;
+        static auto set_set_clipboard_return_value(bool result) -> void;
 
         static auto get_clipboard() -> std::optional<std::string>;
         static auto set_clipboard(std::string_view const data) -> bool;

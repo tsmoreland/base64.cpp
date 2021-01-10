@@ -17,7 +17,7 @@
 
 namespace moreland::base64::cli
 {
-    bool string_lower_equals(std::string_view const first, std::string_view const second)
+    bool string_lower_equals(std::string_view first, std::string_view second)
     {
         if (first.size() != second.size())
             return false;
@@ -32,7 +32,7 @@ namespace moreland::base64::cli
 
         return true;
     }
-    std::tuple<operation_type, output_type> get_operation_and_output_from_arguments(std::span<std::string_view const> const arguments)
+    std::tuple<operation_type, output_type> get_operation_and_output_from_arguments(std::span<std::string_view const> arguments)
     {
         auto const arguments_length = arguments.size();
 
@@ -52,7 +52,7 @@ namespace moreland::base64::cli
 
         return std::tuple<operation_type, output_type>(operation, output);
     }
-    std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t const length)
+    std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t length)
     {
         std::vector<std::string_view> vector;
 

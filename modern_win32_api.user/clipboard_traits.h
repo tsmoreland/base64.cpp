@@ -26,7 +26,7 @@ namespace modern_win32_api::user
         MODERN_WIN32_API_USER_EXPORT static std::optional<std::string> get_clipboard();
 
         [[nodiscard]]
-        MODERN_WIN32_API_USER_EXPORT static bool set_clipboard(std::string_view const data);
+        MODERN_WIN32_API_USER_EXPORT static bool set_clipboard(std::string_view data);
     };
 
 }

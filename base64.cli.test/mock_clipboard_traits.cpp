@@ -38,7 +38,7 @@ namespace moreland::base64::cli::tests
     {
         get_result_ = data;
     }
-    auto mock_clipboard_traits::set_set_clipboard_return_value(bool const result) -> void
+    auto mock_clipboard_traits::set_set_clipboard_return_value(bool result) -> void
     {
         set_result_ = result;
     }
