@@ -52,6 +52,14 @@ namespace moreland::base64::cli
 
         return std::tuple<operation_type, output_type>(operation, output);
     }
+    std::optional<std::string> get_input_filename(std::span<std::string_view const> arguments)
+    {
+        return std::optional<std::string>();
+    }
+    std::optional<std::tuple<std::string, std::string>> get_filenames(std::span<std::string_view const> arguments)
+    {
+        return std::optional<std::tuple<std::string, std::string>>();
+    }
     std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t length)
     {
         std::vector<std::string_view> vector;

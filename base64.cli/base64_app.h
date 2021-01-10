@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <fstream>
 #include <span>
 #include <string>
 #include <vector>
@@ -36,6 +37,12 @@ namespace moreland::base64::cli
     std::tuple<operation_type, output_type> get_operation_and_output_from_arguments(std::span<std::string_view const> arguments);
 
     [[nodiscard]]
+    std::optional<std::string> get_input_filename(std::span<std::string_view const> arguments);
+
+    [[nodiscard]]
+    std::optional<std::tuple<std::string, std::string>> get_filenames(std::span<std::string_view const> arguments);
+
+    [[nodiscard]]
     std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t length);
 
     template <
@@ -46,14 +53,16 @@ namespace moreland::base64::cli
     [[nodiscard]]
     bool base64_run(std::span<std::string_view const> const arguments, ENCODER const& encoder, DECODER const& decoder)
     {
-        using byte_string = std::basic_string<unsigned char>;
-        auto [operation, output] = get_operation_and_output_from_arguments(arguments);
+        using byte = unsigned char;
+        using byte_string = std::basic_string<byte>;
+        using file_byte_stream = std::basic_fstream<byte, std::char_traits<byte>>;
+        auto [operation, output_type] = get_operation_and_output_from_arguments(arguments);
 
         if (operation == operation_type::unknown) {
             return false;
         }
 
-        switch (output)
+        switch (output_type)
         {
         case output_type::clipboard: {
             auto const source = CLIPBOARD::get_clipboard();
@@ -71,10 +80,64 @@ namespace moreland::base64::cli
 
             return CLIPBOARD::set_clipboard(converted);
         }
-        case output_type::file_to_clipboard:
+        case output_type::file_to_clipboard: {
+            auto filename = get_input_filename(arguments.subspan(1, arguments.size() - 2));
+            if (!filename.has_value())
+                return false;
+            auto const& input_filename = filename.value();
+
+            byte buffer[4096]{};
+            if (std::fstream input{input_filename, std::ios::in}; input.is_open()) {
+                input.read(reinterpret_cast<char *>(buffer), 4096);
+                auto count = input
+                    ? static_cast<std::size_t>(4096)
+                    : static_cast<std::size_t>(input.gcount());
+
+                auto const converted = operation == operation_type::encode
+                    ? encoder.encode_to_string_or_empty(std::span<byte const>{buffer, count})
+                    : decoder.decode_to_string_or_empty(std::span<byte const>{buffer, count});
+                input.close();
+
+                return CLIPBOARD::set_clipboard(converted);
+            }
+
             break;
-        case output_type::file_to_file:
-            break;
+        }
+        case output_type::file_to_file: {
+            auto filenames = get_filenames(arguments.subspan(1, arguments.size() - 2));
+            if (filenames.has_value())
+                return false;
+            auto const& [input_filename, output_filename] = filenames.value();
+
+            unsigned char buffer[4096]{};
+            if (file_byte_stream input{input_filename, std::ios::in}; input.is_open()) {
+                input.read(buffer, 4096);
+
+                auto count = input
+                    ? static_cast<std::size_t>(4096)
+                    : static_cast<std::size_t>(input.gcount());
+
+                if (file_byte_stream output{output_filename, std::ios::out}; output.is_open()) {
+                    // TODO: move encode to use maybe_encoded so we can check has_value and log error rather than using value_or
+                    auto const converted = operation == operation_type::encode
+                        ? encoder.encode(std::span<unsigned char const>{buffer, count}).value_or(std::vector<byte>{})
+                        : decoder.decode(std::span<unsigned char const>{buffer, count}).value_or(std::vector<byte>{});
+
+                    if (converted.empty()) {
+                        input.close();
+                        output.close();
+                        return false;
+                    }
+
+                    output.write(&converted[0], converted.size());
+                    output.close();
+                }
+
+                input.close();
+            }
+
+            return true;
+        }
         default:
             return false;
         }
