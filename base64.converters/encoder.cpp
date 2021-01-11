@@ -43,16 +43,16 @@ namespace moreland::base64::converters
     {
     }
 
-    maybe_encoded<vector<byte>> encoder::encode(span<byte const> const source) const
+    maybe_converted<vector<byte>> encoder::convert(span<byte const> const source) const
     {
         vector<byte> destination;
-        return encode(source, destination).map<vector<byte>>(
+        return convert(source, destination).map<vector<byte>>(
             [&destination](auto const&) {
                 return destination;
             });
     }
 
-    maybe_encoded<size_t> encoder::encode(span<byte const> const source, vector<byte>& destination) const
+    maybe_converted<size_t> encoder::convert(span<byte const> const source, vector<byte>& destination) const
     {
         auto const output_length = calculate_output_length(source, insert_line_break_);
         if (output_length.value_or(0UL) == 0UL) {
@@ -121,10 +121,10 @@ namespace moreland::base64::converters
         return maybe_size_t{static_cast<size_t>(output_position)};
     }
 
-    string encoder::encode_to_string_or_empty(span<byte const> const source) const
+    string encoder::convert_to_string_or_empty(span<byte const> const source) const
     {
         vector<byte> destination;
-        return encode(source, destination).map<string>(
+        return convert(source, destination).map<string>(
             [&destination](auto const&) -> string {
                 span<byte const> const destination_view{destination};
                 return shared::to_string(destination_view);
@@ -132,13 +132,13 @@ namespace moreland::base64::converters
             .value_or("");
     }
 
-    string encoder::encode_to_string_or_empty(span<char const> const source) const
+    string encoder::convert_to_string_or_empty(span<char const> const source) const
     {
         vector<byte> source_bytes(begin(source), end(source));
-        return encode_to_string_or_empty(source_bytes);
+        return convert_to_string_or_empty(source_bytes);
     }
 
-    maybe_encoded<size_t> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks) 
+    maybe_converted<size_t> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks) 
     {
         size_t const new_line_size = 2;
         size_t const ONE = 1;

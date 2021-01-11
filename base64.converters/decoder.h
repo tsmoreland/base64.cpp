@@ -19,7 +19,7 @@
 #include <optional>
 #include <string>
 #include <span>
-#include "maybe_encoded.h"
+#include "maybe_converted.h"
 
 namespace moreland::base64::converters
 {
@@ -36,16 +36,16 @@ namespace moreland::base64::converters
         explicit decoder(bool const is_url, bool const insert_line_break, std::optional<int> const line_max, bool const do_padding) noexcept;
 
         [[nodiscard]]
-        maybe_encoded<std::vector<byte>> decode(std::span<byte const> const source) const;
+        maybe_converted<std::vector<byte>> convert(std::span<byte const> const source) const;
 
         [[nodiscard]]
-        maybe_encoded<std::size_t> decode(std::span<byte const> const source, std::vector<byte>& destination) const;
+        maybe_converted<std::size_t> convert(std::span<byte const> const source, std::vector<byte>& destination) const;
 
         [[nodiscard]]
-        std::string decode_to_string_or_empty(std::span<byte const> const source) const;
+        std::string convert_to_string_or_empty(std::span<byte const> const source) const;
 
         [[nodiscard]]
-        std::string decode_to_string_or_empty(std::span<char const> const source) const;
+        std::string convert_to_string_or_empty(std::span<char const> const source) const;
 
         ~decoder() = default;
         decoder(decoder const&) = default;
@@ -55,7 +55,7 @@ namespace moreland::base64::converters
     private:
 
         [[nodiscard]]
-        static maybe_encoded<std::size_t> calculate_output_length(std::span<byte const> const source);
+        static maybe_converted<std::size_t> calculate_output_length(std::span<byte const> const source);
     };
 #pragma warning(pop)
 

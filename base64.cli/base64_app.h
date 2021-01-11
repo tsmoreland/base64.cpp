@@ -21,7 +21,7 @@
 #include "output_type.h"
 #include "operation_type.h"
 
-#include "../base64.converters/concepts.h"
+#include "../base64.converters/converter.h"
 #include "../base64.converters/decoder.h"
 #include "../base64.converters/encoder.h"
 #include "../modern_win32_api.user/clipboard_concept.h"
@@ -46,8 +46,8 @@ namespace moreland::base64::cli
     std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t length);
 
     template <
-        converters::Encoder ENCODER = converters::encoder,
-        converters::Decoder DECODER = converters::decoder,
+        converters::Converter ENCODER = converters::encoder,
+        converters::Converter DECODER = converters::decoder,
         modern_win32_api::user::Clipboard CLIPBOARD = modern_win32_api::user::clipboard_traits
     >
     [[nodiscard]]
@@ -72,8 +72,8 @@ namespace moreland::base64::cli
             byte_string const byte_source{begin(source.value()), end(source.value())};
 
             auto const converted = operation == operation_type::encode
-                ? encoder.encode_to_string_or_empty(byte_source)
-                : decoder.decode_to_string_or_empty(byte_source);
+                ? encoder.convert_to_string_or_empty(byte_source)
+                : decoder.convert_to_string_or_empty(byte_source);
             
             if (converted.empty())
                 return byte_source.empty(); 
@@ -94,8 +94,8 @@ namespace moreland::base64::cli
                     : static_cast<std::size_t>(input.gcount());
 
                 auto const converted = operation == operation_type::encode
-                    ? encoder.encode_to_string_or_empty(std::span<byte const>{buffer, count})
-                    : decoder.decode_to_string_or_empty(std::span<byte const>{buffer, count});
+                    ? encoder.convert_to_string_or_empty(std::span<byte const>{buffer, count})
+                    : decoder.convert_to_string_or_empty(std::span<byte const>{buffer, count});
                 input.close();
 
                 return CLIPBOARD::set_clipboard(converted);
@@ -118,10 +118,10 @@ namespace moreland::base64::cli
                     : static_cast<std::size_t>(input.gcount());
 
                 if (file_byte_stream output{output_filename, std::ios::out}; output.is_open()) {
-                    // TODO: move encode to use maybe_encoded so we can check has_value and log error rather than using value_or
+                    // TODO: move convert to use maybe_converted so we can check has_value and log error rather than using value_or
                     auto const converted = operation == operation_type::encode
-                        ? encoder.encode(std::span<unsigned char const>{buffer, count}).value_or(std::vector<byte>{})
-                        : decoder.decode(std::span<unsigned char const>{buffer, count}).value_or(std::vector<byte>{});
+                        ? encoder.convert(std::span<unsigned char const>{buffer, count}).value_or(std::vector<byte>{})
+                        : decoder.convert(std::span<unsigned char const>{buffer, count}).value_or(std::vector<byte>{});
 
                     if (converted.empty()) {
                         input.close();

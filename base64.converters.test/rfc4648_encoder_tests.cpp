@@ -27,14 +27,14 @@ namespace moreland::base64::converters::tests
 
     BOOST_AUTO_TEST_CASE(encode__returns_vector__when_input_is_non_empty)
     {
-        auto const encoded = encoder().encode(get_decoded_bytes());
+        auto const encoded = encoder().convert(get_decoded_bytes());
 
         BOOST_CHECK(encoded.has_value());
     }
 
     BOOST_AUTO_TEST_CASE(encode__returns_expected_value__when_input_is_non_empty)
     {
-        auto const encoded = encoder().encode(get_decoded_bytes());
+        auto const encoded = encoder().convert(get_decoded_bytes());
 
         auto const actual = to_string(encoded.value());
         auto const actual_view = string_view(actual);
@@ -51,21 +51,21 @@ namespace moreland::base64::converters::tests
     BOOST_AUTO_TEST_CASE(encode__return_value_matches_destination_size__when_success)
     {
         std::vector<unsigned char> destination{};
-        auto const size = encoder().encode(get_decoded_bytes(), destination);
+        auto const size = encoder().convert(get_decoded_bytes(), destination);
 
         BOOST_CHECK(size.value_or(0) == destination.size());
     }
 
     BOOST_AUTO_TEST_CASE(encode_to_string_or_empty__returns_non_empty_string__when_input_is_non_empty)
     {
-        auto const encoded = encoder().encode_to_string_or_empty(get_decoded_bytes());
+        auto const encoded = encoder().convert_to_string_or_empty(get_decoded_bytes());
 
         BOOST_CHECK(!encoded.empty());
     }
 
     BOOST_AUTO_TEST_CASE(encode_to_string_or_empty__returns_expected_value__when_input_is_non_empty)
     {
-        auto const encoded = encoder().encode_to_string_or_empty(get_decoded_bytes());
+        auto const encoded = encoder().convert_to_string_or_empty(get_decoded_bytes());
 
         BOOST_CHECK_MESSAGE(encoded == ENCODED, "values do not match");
     }
@@ -75,7 +75,7 @@ namespace moreland::base64::converters::tests
         std::string source{"hello world, from the clipboard"};
         byte_string const source_bytes{begin(source), end(source)};
 
-        auto const actual = encoder().encode(source_bytes);
+        auto const actual = encoder().convert(source_bytes);
 
         BOOST_TEST(actual.has_value());
     }

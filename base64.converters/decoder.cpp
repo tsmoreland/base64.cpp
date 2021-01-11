@@ -33,7 +33,7 @@ namespace moreland::base64::converters
 {
     using iterator = span<byte const>::iterator;
 
-    maybe_encoded<size_t> equality_encountered(size_t const output_length, unsigned int& current_block_codes, iterator& current, iterator const& after_last, vector<byte>& destination);
+    maybe_converted<size_t> equality_encountered(size_t const output_length, unsigned int& current_block_codes, iterator& current, iterator const& after_last, vector<byte>& destination);
 
     decoder::decoder(bool const is_url, bool const insert_line_break, std::optional<int> const line_max, bool const do_padding) noexcept
         : is_url_{is_url}
@@ -43,16 +43,16 @@ namespace moreland::base64::converters
     {
     }
 
-    maybe_encoded<vector<byte>> decoder::decode(span<byte const> const source) const
+    maybe_converted<vector<byte>> decoder::convert(span<byte const> const source) const
     {
         vector<byte> destination;
-        return decode(source, destination).map<vector<byte>>(
+        return convert(source, destination).map<vector<byte>>(
             [&destination](auto const&) {
                 return destination;
             });
     }
 
-    maybe_encoded<size_t> decoder::decode(span<byte const> const source, vector<byte>& destination) const
+    maybe_converted<size_t> decoder::convert(span<byte const> const source, vector<byte>& destination) const
     {
         span<byte const> trimmed_source = get_trimmed_span(source);
 
@@ -128,20 +128,20 @@ namespace moreland::base64::converters
         }
     }
 
-    string decoder::decode_to_string_or_empty(span<byte const> const source) const
+    string decoder::convert_to_string_or_empty(span<byte const> const source) const
     {
         vector<byte> destination;
-        return decode(source, destination).map<string>( 
+        return convert(source, destination).map<string>( 
             [&destination](auto const&) {
                 span<byte const> const destination_view = destination;
                 return to_string(destination_view);
             })
             .value_or("");
     }
-    string decoder::decode_to_string_or_empty(span<char const> const source) const
+    string decoder::convert_to_string_or_empty(span<char const> const source) const
     {
         vector<byte> source_bytes(begin(source), end(source));
-        return decode_to_string_or_empty(source_bytes);
+        return convert_to_string_or_empty(source_bytes);
     }
 
     maybe_size_t decoder::calculate_output_length(span<byte const> const source)

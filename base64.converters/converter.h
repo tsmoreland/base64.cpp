@@ -17,21 +17,15 @@
 #include <string_view>
 #include <vector>
 
-#include "../base64.converters/maybe_encoded.h"
+#include "../base64.converters/maybe_converted.h"
 
 namespace moreland::base64::converters
 {
-    template <typename TEncoder>
-    concept Encoder = requires(TEncoder const& encoder, std::span<unsigned char const> const source, int x)
+    template <typename TCONVERTER>
+    concept Converter = requires(TCONVERTER const& converter, std::span<unsigned char const> const source)
     {
-        { encoder.encode(source) } -> std::convertible_to<maybe_encoded<std::vector<unsigned char >>>;
-        { encoder.encode_to_string_or_empty(source) } -> std::convertible_to<std::string>;
+        { converter.convert(source) } -> std::convertible_to<maybe_converted<std::vector<unsigned char >>>;
+        { converter.convert_to_string_or_empty(source) } -> std::convertible_to<std::string>;
     };
 
-    template <typename TDecoder>
-    concept Decoder = requires(TDecoder const& decoder, std::span<unsigned char const> const source)
-    {
-        { decoder.decode(source) } -> std::convertible_to<converters::maybe_encoded<std::vector<unsigned char >>>;
-        { decoder.decode_to_string_or_empty(source) } -> std::convertible_to<std::string>;
-    };
 }

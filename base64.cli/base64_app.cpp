@@ -38,9 +38,9 @@ namespace moreland::base64::cli
 
         operation_type operation{operation_type::unknown};
         if (arguments_length > 0) {
-            if (string_lower_equals(arguments[0], "decode"))
+            if (string_lower_equals(arguments[0], "convert"))
                 operation = operation_type::decode;
-            else if (string_lower_equals(arguments[0], "encode"))
+            else if (string_lower_equals(arguments[0], "convert"))
                 operation = operation_type::encode;
         }
 

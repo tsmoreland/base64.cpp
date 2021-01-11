@@ -23,13 +23,13 @@ namespace moreland::base64::converters::tests
 
     BOOST_AUTO_TEST_CASE(docode__returns_vector__when_input_is_valid)
     {
-        auto const decoded = decoder().decode(get_encoded_bytes());
+        auto const decoded = decoder().convert(get_encoded_bytes());
 
         BOOST_CHECK(decoded.has_value());
     }
     BOOST_AUTO_TEST_CASE(docode__returns_expected_value__when_input_is_valid)
     {
-        auto const decoded = decoder().decode(get_encoded_bytes());
+        auto const decoded = decoder().convert(get_encoded_bytes());
 
         auto const actual = to_string(decoded.value());
         auto const actual_view = string_view(actual);
