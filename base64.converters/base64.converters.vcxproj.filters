@@ -12,7 +12,8 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="decoder.h" />
     <ClInclude Include="base64_failure_reason.h" />
-    <ClInclude Include="maybe_encoded.h" />
     <ClInclude Include="concepts.h" />
+    <ClInclude Include="converter.h" />
+    <ClInclude Include="maybe_converted.h" />
   </ItemGroup>
 </Project>
