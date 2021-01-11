@@ -19,6 +19,7 @@
 #include <optional>
 #include <string>
 #include <span>
+#include "maybe_encoded.h"
 
 namespace moreland::base64::converters
 {
@@ -35,10 +36,10 @@ namespace moreland::base64::converters
         explicit encoder(bool const is_url, bool const insert_line_break, std::optional<int> const line_max, bool const do_padding) noexcept;
 
         [[nodiscard]]
-        std::optional<std::vector<byte>> encode(std::span<byte const> const source) const;
+        maybe_encoded<std::vector<byte>> encode(std::span<byte const> const source) const;
 
         [[nodiscard]]
-        std::optional<std::size_t> encode(std::span<byte const> const source, std::vector<byte>& destination) const;
+        maybe_encoded<std::size_t> encode(std::span<byte const> const source, std::vector<byte>& destination) const;
 
         [[nodiscard]]
         std::string encode_to_string_or_empty(std::span<byte const> const source) const;
@@ -53,7 +54,7 @@ namespace moreland::base64::converters
         encoder& operator=(encoder &&) noexcept = default;
     private:
         [[nodiscard]]
-        static std::optional<size_t> calculate_output_length(std::span<byte const> const source, bool const insert_line_breaks);
+        static maybe_encoded<size_t> calculate_output_length(std::span<byte const> const source, bool const insert_line_breaks);
 
     };
 #pragma warning(pop)

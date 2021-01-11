@@ -43,20 +43,20 @@ namespace moreland::base64::converters
     {
     }
 
-    optional<vector<byte>> encoder::encode(span<byte const> const source) const
+    maybe_encoded<vector<byte>> encoder::encode(span<byte const> const source) const
     {
         vector<byte> destination;
-        return map<size_t, vector<byte>>(encode(source, destination),
+        return encode(source, destination).map<vector<byte>>(
             [&destination](auto const&) {
                 return destination;
             });
     }
 
-    optional<size_t> encoder::encode(span<byte const> const source, vector<byte>& destination) const
+    maybe_encoded<size_t> encoder::encode(span<byte const> const source, vector<byte>& destination) const
     {
         auto const output_length = calculate_output_length(source, insert_line_break_);
         if (output_length.value_or(0UL) == 0UL) {
-            return nullopt;
+            return maybe_size_t(base64_failure_reason::bad_format);
         }
 
         auto const base64_table = get_base64_table();
@@ -118,15 +118,16 @@ namespace moreland::base64::converters
             break;
         }
 
-        return optional(output_position);
+        return maybe_size_t{static_cast<size_t>(output_position)};
     }
 
     string encoder::encode_to_string_or_empty(span<byte const> const source) const
     {
-        return map<vector<byte>, string>(encode(source), 
-            [](span<byte const> const source_view) -> string
-            {
-                return shared::to_string(source_view);
+        vector<byte> destination;
+        return encode(source, destination).map<string>(
+            [&destination](auto const&) -> string {
+                span<byte const> const destination_view{destination};
+                return shared::to_string(destination_view);
             })
             .value_or("");
     }
@@ -137,11 +138,11 @@ namespace moreland::base64::converters
         return encode_to_string_or_empty(source_bytes);
     }
 
-    optional<size_t> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks) 
+    maybe_encoded<size_t> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks) 
     {
         size_t const new_line_size = 2;
         size_t const ONE = 1;
-        auto size = source.size() / 3 * 4;       
+        size_t size = source.size() / 3 * 4;       
         size += source.size() % 3 != 0
             ? 4
             : 0;
@@ -157,10 +158,10 @@ namespace moreland::base64::converters
         }
 
         if (size > static_cast<size_t>(numeric_limits::maximum<int>())) {
-            return nullopt;
+            return maybe_size_t(base64_failure_reason::bad_length);
         }
 
-        return optional(size);
+        return maybe_size_t{static_cast<size_t>(size)};
     }
     
     encoder make_encoder() noexcept

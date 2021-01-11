@@ -13,7 +13,6 @@
 
 #pragma once
 
-#include <optional>
 #include <span>
 #include <string_view>
 #include <vector>
@@ -25,7 +24,7 @@ namespace moreland::base64::converters
     template <typename TEncoder>
     concept Encoder = requires(TEncoder const& encoder, std::span<unsigned char const> const source, int x)
     {
-        { encoder.encode(source) } -> std::convertible_to<std::optional<std::vector<unsigned char >>>;
+        { encoder.encode(source) } -> std::convertible_to<maybe_encoded<std::vector<unsigned char >>>;
         { encoder.encode_to_string_or_empty(source) } -> std::convertible_to<std::string>;
     };
 
