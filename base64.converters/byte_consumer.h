@@ -14,10 +14,7 @@
 #pragma once
 
 #include <optional>
-#include <span>
 #include <vector>
-
-#include "byte_producer.h"
 
 namespace moreland::base64::converters
 {

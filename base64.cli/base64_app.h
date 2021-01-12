@@ -45,6 +45,22 @@ namespace moreland::base64::cli
     [[nodiscard]]
     std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t length);
 
+#ifdef _DEBUG
+    template <
+        converters::Converter ENCODER = converters::encoder,
+        converters::Converter DECODER = converters::decoder,
+        modern_win32_api::user::Clipboard CLIPBOARD = modern_win32_api::user::clipboard_traits
+    >
+    [[nodiscard]]
+    bool run(std::span<std::string_view const> const arguments, ENCODER const& encoder, DECODER const& decoder)
+    {
+        return app(encoder, decoder)
+            .with<CLIPBOARD>()
+            .build(arguments)
+            .run();
+    }
+#endif
+
     template <
         converters::Converter ENCODER = converters::encoder,
         converters::Converter DECODER = converters::decoder,
