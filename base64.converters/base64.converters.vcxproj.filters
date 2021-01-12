@@ -14,5 +14,7 @@
     <ClInclude Include="converter.h" />
     <ClInclude Include="maybe_converted.h" />
     <ClInclude Include="encoder.h" />
+    <ClInclude Include="byte_producer.h" />
+    <ClInclude Include="byte_consumer.h" />
   </ItemGroup>
 </Project>

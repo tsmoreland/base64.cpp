@@ -13,33 +13,20 @@
 
 #pragma once
 
+#include <optional>
 #include <span>
-#include <string_view>
 #include <vector>
 
-#include "../base64.converters/maybe_converted.h"
 #include "byte_producer.h"
 
 namespace moreland::base64::converters
 {
-    template <typename TCONVERTER>
-    concept Converter = requires(TCONVERTER const& converter, std::span<unsigned char const> const source)
+    template <typename TCONSUMER, typename TPRODUCER>
+    concept ByteConsumer = requires(TCONSUMER const& consumer, TPRODUCER& producer) 
     {
-        { converter.convert(source) } -> std::convertible_to<maybe_converted<std::vector<unsigned char >>>;
-        { converter.convert_to_string_or_empty(source) } -> std::convertible_to<std::string>;
-    };
-
-    template <Converter CONVERTER, ByteProducer BYTE_PRODUCER>
-    class converter final
-    {
-        CONVERTER const& converter_;
-        BYTE_PRODUCER& producer_;
-    public:
-        constexpr explicit converter(CONVERTER const& converter, BYTE_PRODUCER producer)
-            : converter_{converter}
-            , producer_{producer}
-        {
-        }
+        // can't use ByteProducer concept so duplicate it
+        { producer.chunk_or_empty() } -> std::same_as<std::optional<std::vector<unsigned char const>>>;
+        { consumer.consume(producer) } -> std::same_as<bool>;
     };
 
 }
