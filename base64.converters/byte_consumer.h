@@ -13,17 +13,17 @@
 
 #pragma once
 
-#include <optional>
 #include <vector>
 
 namespace moreland::base64::converters
 {
     template <typename TCONSUMER, typename TPRODUCER>
-    concept ByteConsumer = requires(TCONSUMER const& consumer, TPRODUCER& producer) 
+    concept ByteConsumer = requires(TCONSUMER const& consumer, std::vector<unsigned char const> const& source, std::span<std::string_view const> const arguments) 
     {
-        // can't use ByteProducer concept so duplicate it
-        { producer.chunk_or_empty() } -> std::same_as<std::optional<std::vector<unsigned char const>>>;
-        { consumer.consume(producer) } -> std::same_as<bool>;
+        consumer(arguments);
+        { consumer.consume(source) } -> std::same_as<bool>;
+        { consumer.flush() } -> std::same_as<void>;
+        { consumer.remaining_arguments() } -> std::convertible_to<std::span<std::string_view const>>;
     };
 
 }

@@ -24,6 +24,8 @@
 #include "../base64.converters/converter.h"
 #include "../base64.converters/decoder.h"
 #include "../base64.converters/encoder.h"
+#include "../base64.converters/byte_producer.h"
+#include "../base64.converters/byte_consumer.h"
 #include "../modern_win32_api.user/clipboard_concept.h"
 #include "../modern_win32_api.user/clipboard_traits.h"
 
@@ -46,6 +48,39 @@ namespace moreland::base64::cli
     std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t length);
 
 #ifdef _DEBUG
+
+    struct app_base
+    {
+        constexpr explicit app_base() = default;
+        virtual ~app_base() = default;
+        app_base(app_base const&) = default;
+        app_base(app_base&&) noexcept = default;
+        app_base& operator=(app_base const&) = default;
+        app_base& operator=(app_base&&) noexcept = default;
+    };
+
+    template <converters::Converter CONVERTER>
+    class app : public app_base
+    {
+        CONVERTER const& converter_;
+    public:
+        constexpr explicit app(CONVERTER const& converter) 
+            : app_base()
+            , converter_{converter}
+
+        {
+        }
+        ~app() override = default;
+        app(app const&) = default;
+        app(app&&) noexcept = default;
+        app& operator=(app const&) = default;
+        app& operator=(app&&) noexcept = default;
+    };
+
+
+
+
+
     template <
         converters::Converter ENCODER = converters::encoder,
         converters::Converter DECODER = converters::decoder,
