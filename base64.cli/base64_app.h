@@ -21,6 +21,7 @@
 #include "output_type.h"
 #include "operation_type.h"
 
+#include "../base64.shared/optional_functions.h"
 #include "../base64.converters/converter.h"
 #include "../base64.converters/decoder.h"
 #include "../base64.converters/encoder.h"
@@ -28,6 +29,8 @@
 #include "../base64.converters/byte_consumer.h"
 #include "../modern_win32_api.user/clipboard_concept.h"
 #include "../modern_win32_api.user/clipboard_traits.h"
+
+using moreland::base64::shared::map;
 
 namespace moreland::base64::cli
 {
@@ -46,6 +49,23 @@ namespace moreland::base64::cli
 
     [[nodiscard]]
     std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t length);
+
+
+    template <modern_win32_api::user::Clipboard CLIPBOARD = modern_win32_api::user::clipboard_traits>
+    class clipboard_byte_producer final
+    {
+    public:
+        explicit clipboard_byte_producer() = default;
+
+        [[nodiscard]]
+        std::optional<std::vector<unsigned char>> chunk_or_empty()
+        {
+            return map(CLIPBOARD::get_clipboard(), 
+                [](auto const& original)  {
+                    return std::basic_string<unsigned char>(begin(original), end(original));
+                });
+        }
+    };
 
 #ifdef _DEBUG
 
@@ -91,6 +111,7 @@ namespace moreland::base64::cli
     {
         return app(encoder, decoder)
             .with<CLIPBOARD>()
+            .with<FILE>()
             .build(arguments)
             .run();
     }

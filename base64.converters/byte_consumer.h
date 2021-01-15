@@ -17,13 +17,12 @@
 
 namespace moreland::base64::converters
 {
-    template <typename TCONSUMER, typename TPRODUCER>
+    template <typename TCONSUMER>
     concept ByteConsumer = requires(TCONSUMER const& consumer, std::vector<unsigned char const> const& source, std::span<std::string_view const> const arguments) 
     {
-        consumer(arguments);
+        std::is_default_constructible<TCONSUMER>();
         { consumer.consume(source) } -> std::same_as<bool>;
         { consumer.flush() } -> std::same_as<void>;
-        { consumer.remaining_arguments() } -> std::convertible_to<std::span<std::string_view const>>;
     };
 
 }

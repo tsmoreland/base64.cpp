@@ -21,9 +21,8 @@ namespace moreland::base64::converters
     template <typename TPRODUCER>
     concept ByteProducer = requires(TPRODUCER& producer, std::span<std::string_view const> const arguments)
     {
-        producer(arguments);
+        std::is_default_constructible<TPRODUCER>();
         { producer.chunk_or_empty() } -> std::same_as<std::optional<std::vector<unsigned char const>>>;
-        { producer.remaining_arguments() } -> std::convertible_to<std::span<std::string_view const>>;
     };
 
 }
