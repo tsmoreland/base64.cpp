@@ -15,14 +15,21 @@
 
 #include <optional>
 #include <vector>
+#include <filesystem>
 
 namespace moreland::base64::converters
 {
     template <typename TPRODUCER>
-    concept ByteProducer = requires(TPRODUCER& producer, std::span<std::string_view const> const arguments)
+    concept ByteProducer = requires(TPRODUCER& producer, std::string_view const argument)
     {
-        std::is_default_constructible<TPRODUCER>();
+        std::is_default_constructible<TPRODUCER>::value;
         { producer.chunk_or_empty() } -> std::same_as<std::optional<std::vector<unsigned char const>>>;
+    };
+
+    template <typename T>
+    concept ConstructedFromFile = requires(std::filesystem::path const& file_path)
+    {
+        T(file_path);
     };
 
 }

@@ -50,21 +50,73 @@ namespace moreland::base64::cli
     [[nodiscard]]
     std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t length);
 
+    class byte_producer
+    {
+    public:
+        [[nodiscard]]
+        virtual std::optional<std::vector<unsigned char>> chunk_or_empty() = 0;
 
+
+        explicit byte_producer() = default;
+        virtual ~byte_producer() = default;
+        byte_producer(byte_producer const&) = default;
+        byte_producer(byte_producer&&) noexcept = default;
+        byte_producer& operator=(byte_producer const&) = default;
+        byte_producer& operator=(byte_producer&&) noexcept = default;
+    };
+
+
+    // TODO: move this to its own file
     template <modern_win32_api::user::Clipboard CLIPBOARD = modern_win32_api::user::clipboard_traits>
-    class clipboard_byte_producer final
+    class clipboard_byte_producer final : public byte_producer
     {
     public:
         explicit clipboard_byte_producer() = default;
 
         [[nodiscard]]
-        std::optional<std::vector<unsigned char>> chunk_or_empty()
+        std::optional<std::vector<unsigned char>> chunk_or_empty() override
         {
             return map(CLIPBOARD::get_clipboard(), 
                 [](auto const& original)  {
                     return std::basic_string<unsigned char>(begin(original), end(original));
                 });
         }
+    };
+
+    // TODO: move this to it's own file
+    class file_byte_producer final : public byte_producer
+    {
+    public:
+        explicit file_byte_producer(std::filesystem::path const& file_path);
+        [[nodiscard]]
+        std::optional<std::vector<unsigned char>> chunk_or_empty() override;
+    };
+
+
+    template <
+        converters::ByteProducer FILE_BYTE_PRODUCER = file_byte_producer,
+        converters::ByteProducer CLIPBOARD_BYTE_PRODUCER = clipboard_byte_producer<modern_win32_api::user::clipboard_traits>
+    > 
+        requires
+            converters::ConstructedFromFile<FILE_BYTE_PRODUCER> && 
+            std::is_default_constructible_v<CLIPBOARD_BYTE_PRODUCER>
+    class services_container final
+    {
+        CLIPBOARD_BYTE_PRODUCER clipboard_byte_producer_;
+        std::optional<FILE_BYTE_PRODUCER> file_byte_producer_;
+    public:
+        explicit services_container(std::span<std::string_view const> arguments)
+        {
+
+        }
+
+        byte_producer const& get_producer()
+        {
+            return
+                file_byte_producer_
+                    .value_or(clipboard_byte_producer_.value());
+        }
+
     };
 
 #ifdef _DEBUG

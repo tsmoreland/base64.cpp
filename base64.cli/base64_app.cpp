@@ -70,4 +70,12 @@ namespace moreland::base64::cli
 
         return vector;
     }
+    file_byte_producer::file_byte_producer(std::filesystem::path const& file_path)
+    {
+        static_assert(converters::ConstructedFromFile<file_byte_producer>);
+    }
+    std::optional<std::vector<unsigned char>> file_byte_producer::chunk_or_empty()
+    {
+        return std::optional<std::vector<unsigned char>>();
+    }
 }
