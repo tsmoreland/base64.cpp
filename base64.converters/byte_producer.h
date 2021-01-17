@@ -32,4 +32,19 @@ namespace moreland::base64::converters
         T(file_path);
     };
 
+    class byte_producer
+    {
+    public:
+        [[nodiscard]]
+        virtual std::optional<std::vector<unsigned char>> chunk_or_empty() = 0;
+
+        explicit byte_producer() = default;
+        virtual ~byte_producer() = default;
+        byte_producer(byte_producer const&) = default;
+        byte_producer(byte_producer&&) noexcept = default;
+        byte_producer& operator=(byte_producer const&) = default;
+        byte_producer& operator=(byte_producer&&) noexcept = default;
+    };
+
+
 }

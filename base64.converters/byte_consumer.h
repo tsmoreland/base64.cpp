@@ -13,16 +13,30 @@
 
 #pragma once
 
-#include <vector>
+#include <span>
 
 namespace moreland::base64::converters
 {
     template <typename TCONSUMER>
-    concept ByteConsumer = requires(TCONSUMER const& consumer, std::vector<unsigned char const> const& source, std::span<std::string_view const> const arguments) 
+    concept ByteConsumer = requires(TCONSUMER const& consumer, std::span<unsigned char const> const source) 
     {
         std::is_default_constructible<TCONSUMER>();
         { consumer.consume(source) } -> std::same_as<bool>;
         { consumer.flush() } -> std::same_as<void>;
+    };
+
+    class byte_consumer
+    {
+    public:
+        [[nodiscard]]
+        virtual bool consume(std::span<unsigned char const> const source) = 0;
+
+        explicit byte_consumer() = default;
+        virtual ~byte_consumer() = default;
+        byte_consumer(byte_consumer const&) = default;
+        byte_consumer(byte_consumer&&) noexcept = default;
+        byte_consumer& operator=(byte_consumer const&) = default;
+        byte_consumer& operator=(byte_consumer&&) noexcept = default;
     };
 
 }

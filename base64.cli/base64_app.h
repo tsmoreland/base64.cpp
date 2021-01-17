@@ -54,25 +54,10 @@ namespace moreland::base64::cli
     [[nodiscard]]
     std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t length);
 
-    class byte_producer
-    {
-    public:
-        [[nodiscard]]
-        virtual std::optional<std::vector<unsigned char>> chunk_or_empty() = 0;
-
-
-        explicit byte_producer() = default;
-        virtual ~byte_producer() = default;
-        byte_producer(byte_producer const&) = default;
-        byte_producer(byte_producer&&) noexcept = default;
-        byte_producer& operator=(byte_producer const&) = default;
-        byte_producer& operator=(byte_producer&&) noexcept = default;
-    };
-
 
     // TODO: move this to its own file
     template <modern_win32_api::user::Clipboard CLIPBOARD = modern_win32_api::user::clipboard_traits>
-    class clipboard_byte_producer final : public byte_producer
+    class clipboard_byte_producer final : public converters::byte_producer
     {
     public:
         explicit clipboard_byte_producer() = default;
@@ -88,7 +73,7 @@ namespace moreland::base64::cli
     };
 
     // TODO: move this to it's own file
-    class file_byte_producer final : public byte_producer
+    class file_byte_producer final : public converters::byte_producer
     {
     public:
         explicit file_byte_producer(std::filesystem::path const& file_path);
@@ -137,7 +122,7 @@ namespace moreland::base64::cli
         }
 
 
-        byte_producer const& get_producer()
+        converters::byte_producer const& get_producer()
         {
             return
                 file_byte_producer_

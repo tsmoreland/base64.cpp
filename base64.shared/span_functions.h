@@ -20,7 +20,7 @@ namespace moreland::base64::shared
 {
 
     template <typename T>
-    std::optional<T const&> first(std::span<T> const source)
+    std::optional<T> first(std::span<T> const source)
     {
         return source.size() > 1
             ? std::optional(source[0])
@@ -28,7 +28,7 @@ namespace moreland::base64::shared
     }
 
     template <typename T, std::predicate<T> PREDICATE>
-    std::optional<T const&> first(std::span<T> const source, PREDICATE predicate)
+    std::optional<T> first(std::span<T> const source, PREDICATE predicate)
     {
         for (auto const& item : source) {
             if (predicate(item))
