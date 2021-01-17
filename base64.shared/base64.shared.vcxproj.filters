@@ -1,11 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="scoped_se_translator.cpp" />
     <ClCompile Include="seh_exception.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="convert.cpp" />
-    <ClCompile Include="scoped_signal_translator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="optional_functions.h" />
@@ -15,5 +13,6 @@
     <ClInclude Include="convert.h" />
     <ClInclude Include="scoped_signal_translator.h" />
     <ClInclude Include="maybe.h" />
+    <ClInclude Include="span_functions.h" />
   </ItemGroup>
 </Project>

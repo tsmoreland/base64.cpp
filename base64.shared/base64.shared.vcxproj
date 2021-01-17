@@ -108,6 +108,7 @@
       <DependentUpon>seh_exception.h</DependentUpon>
     </ClCompile>
     <ClInclude Include="scoped_se_translator.h" />
+    <ClInclude Include="span_functions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

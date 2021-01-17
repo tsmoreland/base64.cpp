@@ -22,6 +22,7 @@
 #include "operation_type.h"
 
 #include "../base64.shared/optional_functions.h"
+#include "../base64.shared/span_functions.h"
 #include "../base64.converters/converter.h"
 #include "../base64.converters/decoder.h"
 #include "../base64.converters/encoder.h"
@@ -37,6 +38,9 @@ namespace moreland::base64::cli
 
     [[nodiscard]]
     bool string_lower_equals(std::string_view first, std::string_view second);
+
+    [[nodiscard]]
+    operation_type get_operation_type(std::string_view const type);
 
     [[nodiscard]]
     std::tuple<operation_type, output_type> get_operation_and_output_from_arguments(std::span<std::string_view const> arguments);
@@ -94,6 +98,8 @@ namespace moreland::base64::cli
 
 
     template <
+        converters::Converter ENCODER = converters::encoder,
+        converters::Converter DECODER = converters::decoder,
         converters::ByteProducer FILE_BYTE_PRODUCER = file_byte_producer,
         converters::ByteProducer CLIPBOARD_BYTE_PRODUCER = clipboard_byte_producer<modern_win32_api::user::clipboard_traits>
     > 
@@ -102,19 +108,53 @@ namespace moreland::base64::cli
             std::is_default_constructible_v<CLIPBOARD_BYTE_PRODUCER>
     class services_container final
     {
+        ENCODER encoder_;
+        DECODER decoder_;
         CLIPBOARD_BYTE_PRODUCER clipboard_byte_producer_;
         std::optional<FILE_BYTE_PRODUCER> file_byte_producer_;
     public:
         explicit services_container(std::span<std::string_view const> arguments)
         {
+            auto const operation = map(shared::first(arguments), 
+                [](auto const& type) {
+                    return get_operation_type(type);
+                });
 
+            if (arguments.size() > 0) {
+                arguments = arguments.subspan(1);
+            }
+
+            if (arguments.size() > 0) {
+                auto const file = from_file(shared::first(arguments));
+                file_byte_producer_ = std::optional<FILE_BYTE_PRODUCER>(file);
+                arguments = arguments.subspan(1);
+            } 
+
+            if (arguments.size() > 0) {
+
+                arguments = arguments.subspan(1);
+            }
         }
+
 
         byte_producer const& get_producer()
         {
             return
                 file_byte_producer_
                     .value_or(clipboard_byte_producer_.value());
+        }
+
+    private:
+        std::optional<FILE_BYTE_PRODUCER> from_file(std::string_view const path)
+        {
+            auto const file = map(path,
+                [](auto const& arg) {
+                    return std::filesystem::path(arg);
+                });
+            // TODO: add flat_map
+            return file.has_value()
+                ? std::optional<FILE_BYTE_PRODUCER>(file)
+                : std::nullopt;
         }
 
     };

@@ -32,16 +32,23 @@ namespace moreland::base64::cli
 
         return true;
     }
+    operation_type get_operation_type(std::string_view const type)
+    {
+        operation_type operation{operation_type::unknown};
+        if (string_lower_equals(type, "convert"))
+            operation = operation_type::decode;
+        else if (string_lower_equals(type, "convert"))
+            operation = operation_type::encode;
+        return operation;
+    }
+
     std::tuple<operation_type, output_type> get_operation_and_output_from_arguments(std::span<std::string_view const> arguments)
     {
         auto const arguments_length = arguments.size();
 
         operation_type operation{operation_type::unknown};
         if (arguments_length > 0) {
-            if (string_lower_equals(arguments[0], "convert"))
-                operation = operation_type::decode;
-            else if (string_lower_equals(arguments[0], "convert"))
-                operation = operation_type::encode;
+            operation = get_operation_type(arguments[0]);
         }
 
         output_type output = output_type::clipboard;

@@ -14,36 +14,27 @@
 #pragma once
 
 #include <span>
-#include <string_view>
-#include <vector>
+#include <optional>
 
-#include "../base64.converters/maybe_converted.h"
-#include "byte_producer.h"
-#include "byte_consumer.h"
-
-namespace moreland::base64::converters
+namespace moreland::base64::shared
 {
-    template <typename TCONVERTER>
-    concept Converter = requires(TCONVERTER const& converter, std::span<unsigned char const> const source)
-    {
-        std::is_default_constructible_v<TCONVERTER>;
-        { converter.convert(source) } -> std::convertible_to<maybe_converted<std::vector<unsigned char >>>;
-        { converter.convert_to_string_or_empty(source) } -> std::convertible_to<std::string>;
-    };
 
-    template <Converter CONVERTER, ByteProducer BYTE_PRODUCER, ByteConsumer BYTE_CONSUMER>
-    class converter final
+    template <typename T>
+    std::optional<T const&> first(std::span<T> const source)
     {
-        CONVERTER const& converter_;
-        BYTE_PRODUCER& producer_;
-        BYTE_CONSUMER& consumer_;
-    public:
-        constexpr explicit converter(CONVERTER const& converter, BYTE_PRODUCER& producer, BYTE_CONSUMER const& consumer)
-            : converter_{converter}
-            , producer_{producer}
-            , consumer_{consumer}
-        {
+        return source.size() > 1
+            ? std::optional(source[0])
+            : std::nullopt;
+    }
+
+    template <typename T, std::predicate<T> PREDICATE>
+    std::optional<T const&> first(std::span<T> const source, PREDICATE predicate)
+    {
+        for (auto const& item : source) {
+            if (predicate(item))
+                return std::optional<T const&>(item);
         }
-    };
+        return std::nullopt;
+    }
 
 }
