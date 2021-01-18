@@ -44,4 +44,3 @@ namespace moreland::limits
 #define BOOST_TEST_MODULE base64_cli_tests  // NOLINT(cppcoreguidelines-macro-usage)
 #include <boost/test/unit_test.hpp>
 
-#include "../base64.cli/base64_app.h"
