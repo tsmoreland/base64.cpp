@@ -1,6 +1,5 @@
-
 //
-// Copyright © 2020 Terry Moreland
+// Copyright © 2021 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
 // to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
 // and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -14,30 +13,26 @@
 
 #pragma once
 
-#include <optional>
+#include "../base64.converters/byte_producer.h"
+#include "../modern_win32_api.user/clipboard_concept.h"
+#include "../modern_win32_api.user/clipboard_traits.h"
 
-namespace moreland::base64::shared
+namespace moreland::base64::cli
 {
-
-    template <typename TSOURCE_RESULT, typename TDESTINATION_RESULT, class TMAPPER>
-    [[nodiscard]]
-    std::optional<TDESTINATION_RESULT> map(
-        std::optional<TSOURCE_RESULT> const& source, 
-        TMAPPER mapper)
+    template <modern_win32_api::user::Clipboard CLIPBOARD = modern_win32_api::user::clipboard_traits>
+    class clipboard_byte_producer final : public converters::byte_producer
     {
-        return source.has_value()
-            ? std::optional(mapper(source.value()))
-            : std::nullopt; 
-    }
+    public:
+        explicit clipboard_byte_producer() = default;
 
-    template <typename TSOURCE_RESULT, typename TDESTINATION_RESULT, class TMAPPER>
-    [[nodiscard]]
-    std::optional<TDESTINATION_RESULT> flat_map(
-        std::optional<TSOURCE_RESULT> const& source, 
-        TMAPPER mapper)
-    {
-        return source.has_value()
-            ? mapper(source.value())
-            : std::nullopt; 
-    }
+        [[nodiscard]]
+        std::optional<std::vector<unsigned char>> chunk_or_empty() override
+        {
+            return map(CLIPBOARD::get_clipboard(), 
+                [](auto const& original)  {
+                    return std::basic_string<unsigned char>(begin(original), end(original));
+                });
+        }
+    };
+
 }

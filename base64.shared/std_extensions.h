@@ -13,11 +13,13 @@
 
 #pragma once
 
-#include <span>
 #include <optional>
+#include <span>
 
-namespace moreland::base64::shared
+namespace moreland::std_extensions
 {
+    [[nodiscard]]
+    bool string_lower_equals(std::string_view first, std::string_view second);
 
     template <typename T>
     std::optional<T> first(std::span<T> const source)
@@ -36,5 +38,26 @@ namespace moreland::base64::shared
         }
         return std::nullopt;
     }
+    
+    template <typename TSOURCE_RESULT, typename TDESTINATION_RESULT, class TMAPPER>
+    [[nodiscard]]
+    std::optional<TDESTINATION_RESULT> map(
+        std::optional<TSOURCE_RESULT> const& source, 
+        TMAPPER mapper)
+    {
+        return source.has_value()
+            ? std::optional(mapper(source.value()))
+            : std::nullopt; 
+    }
 
+    template <typename TSOURCE_RESULT, typename TDESTINATION_RESULT, class TMAPPER>
+    [[nodiscard]]
+    std::optional<TDESTINATION_RESULT> flat_map(
+        std::optional<TSOURCE_RESULT> const& source, 
+        TMAPPER mapper)
+    {
+        return source.has_value()
+            ? mapper(source.value())
+            : std::nullopt; 
+    }
 }

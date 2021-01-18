@@ -21,24 +21,19 @@
 #include "output_type.h"
 #include "operation_type.h"
 
-#include "../base64.shared/optional_functions.h"
-#include "../base64.shared/span_functions.h"
+#include "../base64.shared/std_extensions.h"
 #include "../base64.converters/converter.h"
 #include "../base64.converters/decoder.h"
 #include "../base64.converters/encoder.h"
 #include "../base64.converters/byte_producer.h"
 #include "../base64.converters/byte_consumer.h"
-#include "../modern_win32_api.user/clipboard_concept.h"
-#include "../modern_win32_api.user/clipboard_traits.h"
+#include "clipboard_byte_producer.h"
+#include "file_byte_producer.h"
 
-using moreland::base64::shared::map;
+using moreland::std_extensions::map;
 
 namespace moreland::base64::cli
 {
-
-    [[nodiscard]]
-    bool string_lower_equals(std::string_view first, std::string_view second);
-
     [[nodiscard]]
     operation_type get_operation_type(std::string_view const type);
 
@@ -54,32 +49,6 @@ namespace moreland::base64::cli
     [[nodiscard]]
     std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t length);
 
-
-    // TODO: move this to its own file
-    template <modern_win32_api::user::Clipboard CLIPBOARD = modern_win32_api::user::clipboard_traits>
-    class clipboard_byte_producer final : public converters::byte_producer
-    {
-    public:
-        explicit clipboard_byte_producer() = default;
-
-        [[nodiscard]]
-        std::optional<std::vector<unsigned char>> chunk_or_empty() override
-        {
-            return map(CLIPBOARD::get_clipboard(), 
-                [](auto const& original)  {
-                    return std::basic_string<unsigned char>(begin(original), end(original));
-                });
-        }
-    };
-
-    // TODO: move this to it's own file
-    class file_byte_producer final : public converters::byte_producer
-    {
-    public:
-        explicit file_byte_producer(std::filesystem::path const& file_path);
-        [[nodiscard]]
-        std::optional<std::vector<unsigned char>> chunk_or_empty() override;
-    };
 
 
     template <
@@ -100,7 +69,7 @@ namespace moreland::base64::cli
     public:
         explicit services_container(std::span<std::string_view const> arguments)
         {
-            auto const operation = map(shared::first(arguments), 
+            auto const operation = map(std_extensions::first(arguments), 
                 [](auto const& type) {
                     return get_operation_type(type);
                 });
@@ -110,7 +79,7 @@ namespace moreland::base64::cli
             }
 
             if (arguments.size() > 0) {
-                auto const file = from_file(shared::first(arguments));
+                auto const file = from_file(std_extensions::first(arguments));
                 file_byte_producer_ = std::optional<FILE_BYTE_PRODUCER>(file);
                 arguments = arguments.subspan(1);
             } 

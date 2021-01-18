@@ -97,7 +97,6 @@
       <DependentUpon>convert.h</DependentUpon>
     </ClCompile>
     <ClInclude Include="maybe.h" />
-    <ClInclude Include="optional_functions.h" />
     <ClInclude Include="pch.h" />
     <ClCompile Include="pch.cpp">
       <DependentUpon>pch.h</DependentUpon>
@@ -108,7 +107,10 @@
       <DependentUpon>seh_exception.h</DependentUpon>
     </ClCompile>
     <ClInclude Include="scoped_se_translator.h" />
-    <ClInclude Include="span_functions.h" />
+    <ClInclude Include="std_extensions.h" />
+    <ClCompile Include="std_extensions.cpp" >
+      <DependentUpon>std_extensions.h</DependentUpon>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

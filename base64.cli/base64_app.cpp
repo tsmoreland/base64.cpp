@@ -14,30 +14,14 @@
 #include "pch.h"
 #include "base64_app.h"
 
-
 namespace moreland::base64::cli
 {
-    bool string_lower_equals(std::string_view first, std::string_view second)
-    {
-        if (first.size() != second.size())
-            return false;
-
-        for (auto first_index = begin(first), second_index = begin(second); 
-             first_index != end(first) && second_index != end(second); 
-             ++first_index, ++second_index) {
-
-            if (tolower(*first_index) != tolower(*second_index))
-                return false;
-        }
-
-        return true;
-    }
     operation_type get_operation_type(std::string_view const type)
     {
         operation_type operation{operation_type::unknown};
-        if (string_lower_equals(type, "convert"))
+        if (std_extensions::string_lower_equals(type, "convert"))
             operation = operation_type::decode;
-        else if (string_lower_equals(type, "convert"))
+        else if (std_extensions::string_lower_equals(type, "convert"))
             operation = operation_type::encode;
         return operation;
     }
@@ -76,13 +60,5 @@ namespace moreland::base64::cli
         }
 
         return vector;
-    }
-    file_byte_producer::file_byte_producer(std::filesystem::path const& file_path)
-    {
-        static_assert(converters::ConstructedFromFile<file_byte_producer>);
-    }
-    std::optional<std::vector<unsigned char>> file_byte_producer::chunk_or_empty()
-    {
-        return std::optional<std::vector<unsigned char>>();
     }
 }

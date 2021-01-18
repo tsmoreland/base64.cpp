@@ -15,7 +15,7 @@
 #include "common.h"
 #include "encoder.h"
 
-#include "../base64.shared/optional_functions.h"
+#include "../base64.shared/std_extensions.h"
 #include "../base64.shared/convert.h"
 
 using std::move;
@@ -26,7 +26,7 @@ using std::span;
 using std::string;
 using std::vector;
 
-using moreland::base64::shared::map;
+using moreland::std_extensions::map;
 using moreland::base64::shared::to_byte;
 
 namespace moreland::base64::converters

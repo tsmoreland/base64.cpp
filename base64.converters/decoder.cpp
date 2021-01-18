@@ -14,7 +14,7 @@
 #include "pch.h"
 #include "decoder.h"
 
-#include "../base64.shared/optional_functions.h"
+#include "../base64.shared/std_extensions.h"
 #include "../base64.shared/convert.h"
 
 using std::move;
@@ -25,7 +25,7 @@ using std::span;
 using std::string;
 using std::vector;
 
-using moreland::base64::shared::map;
+using moreland::std_extensions::map;
 using moreland::base64::shared::to_byte;
 using moreland::base64::shared::to_string;
 

@@ -4,15 +4,15 @@
     <ClCompile Include="seh_exception.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="convert.cpp" />
+    <ClCompile Include="std_extensions.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="optional_functions.h" />
     <ClInclude Include="scoped_se_translator.h" />
     <ClInclude Include="seh_exception.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="convert.h" />
     <ClInclude Include="scoped_signal_translator.h" />
     <ClInclude Include="maybe.h" />
-    <ClInclude Include="span_functions.h" />
+    <ClInclude Include="std_extensions.h" />
   </ItemGroup>
 </Project>

@@ -4,11 +4,14 @@
     <ClCompile Include="application.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="base64_app.cpp" />
+    <ClCompile Include="file_byte_producer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="base64_app.h" />
     <ClInclude Include="output_type.h" />
     <ClInclude Include="operation_type.h" />
+    <ClInclude Include="clipboard_byte_producer.h" />
+    <ClInclude Include="file_byte_producer.h" />
   </ItemGroup>
 </Project>

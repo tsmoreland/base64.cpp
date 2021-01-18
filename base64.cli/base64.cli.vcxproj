@@ -113,6 +113,11 @@
     <ClCompile Include="base64_app.cpp">
       <DependentUpon>base64_app.h</DependentUpon>
     </ClCompile>
+    <ClInclude Include="clipboard_byte_producer.h" />
+    <ClInclude Include="file_byte_producer.h" />
+    <ClCompile Include="file_byte_producer.cpp" >
+      <DependentUpon>file_byte_producer.h</DependentUpon>
+    </ClCompile>
     <ClInclude Include="operation_type.h" />
     <ClInclude Include="output_type.h" />
     <ClInclude Include="pch.h" />
