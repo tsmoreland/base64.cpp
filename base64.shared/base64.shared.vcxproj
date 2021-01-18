@@ -92,6 +92,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="concepts.h" />
     <ClInclude Include="convert.h" />
     <ClCompile Include="convert.cpp">
       <DependentUpon>convert.h</DependentUpon>
@@ -108,7 +109,7 @@
     </ClCompile>
     <ClInclude Include="scoped_se_translator.h" />
     <ClInclude Include="std_extensions.h" />
-    <ClCompile Include="std_extensions.cpp" >
+    <ClCompile Include="std_extensions.cpp">
       <DependentUpon>std_extensions.h</DependentUpon>
     </ClCompile>
   </ItemGroup>

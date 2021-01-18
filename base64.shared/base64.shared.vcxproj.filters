@@ -14,5 +14,6 @@
     <ClInclude Include="scoped_signal_translator.h" />
     <ClInclude Include="maybe.h" />
     <ClInclude Include="std_extensions.h" />
+    <ClInclude Include="concepts.h" />
   </ItemGroup>
 </Project>
