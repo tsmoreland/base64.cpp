@@ -92,11 +92,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base64_failure_reason.h" />
+    <ClInclude Include="byte_consumer.h" />
+    <ClInclude Include="converter.h" />
     <ClInclude Include="decoder.h" />
     <ClCompile Include="decoder.cpp">
       <DependentUpon>decoder.h</DependentUpon>
     </ClCompile>
-    <ClInclude Include="maybe_encoded.h" />
+    <ClInclude Include="maybe_converted.h" />
     <ClInclude Include="pch.h" />
     <ClCompile Include="pch.cpp">
       <DependentUpon>pch.h</DependentUpon>
@@ -110,6 +112,7 @@
       <DependentUpon>encoder.h</DependentUpon>
     </ClCompile>
     <ClInclude Include="library_export.h" />
+    <ClInclude Include="byte_producer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

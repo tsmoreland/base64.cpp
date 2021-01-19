@@ -91,6 +91,11 @@
     <ClCompile Include="clipboard.cpp">
       <DependentUpon>clipboard.h</DependentUpon>
     </ClCompile>
+    <ClInclude Include="clipboard_concept.h" />
+    <ClInclude Include="clipboard_traits.h" />
+    <ClCompile Include="clipboard_traits.cpp" >
+      <DependentUpon>clipboard_traits.h</DependentUpon>
+    </ClCompile>
     <ClInclude Include="library_export.h" />
     <ClInclude Include="pch.h" />
     <ClCompile Include="pch.cpp">

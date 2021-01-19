@@ -12,12 +12,12 @@
 // 
 
 #include "pch.h"
-#include "base64_app.h"
+#include "std_extensions.h"
 
-
-namespace moreland::base64::cli
+namespace moreland::std_extensions
 {
-    bool string_lower_equals(std::string_view const first, std::string_view const second)
+
+    bool string_lower_equals(std::string_view first, std::string_view second)
     {
         if (first.size() != second.size())
             return false;
@@ -29,37 +29,7 @@ namespace moreland::base64::cli
             if (tolower(*first_index) != tolower(*second_index))
                 return false;
         }
-
         return true;
     }
-    std::tuple<operation_type, output_type> get_operation_and_output_from_arguments(std::span<std::string_view const> const arguments)
-    {
-        auto const arguments_length = arguments.size();
 
-        operation_type operation{operation_type::unknown};
-        if (arguments_length > 0) {
-            if (string_lower_equals(arguments[0], "decode"))
-                operation = operation_type::decode;
-            else if (string_lower_equals(arguments[0], "encode"))
-                operation = operation_type::encode;
-        }
-
-        output_type output = output_type::clipboard;
-        if (arguments_length > 2)
-            output = output_type::file_to_file;
-        else if (arguments_length > 1)
-            output = output_type::file_to_clipboard;
-
-        return std::tuple<operation_type, output_type>(operation, output);
-    }
-    std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t const length)
-    {
-        std::vector<std::string_view> vector;
-
-        for (std::size_t i=0; i< length; ++i) {
-            vector.emplace_back(source[i], strlen(source[i]));
-        }
-
-        return vector;
-    }
 }

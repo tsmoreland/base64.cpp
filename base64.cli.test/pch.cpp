@@ -1,6 +1,5 @@
-
 //
-// Copyright © 2020 Terry Moreland
+// Copyright © 2021 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
 // to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
 // and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -12,18 +11,4 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
-
-#include "base64_failure_reason.h"
-#include "../base64.shared/maybe.h"
-
-namespace moreland::base64::converters
-{
-    template <typename TVALUE>
-    using maybe_encoded = shared::maybe<TVALUE, base64_failure_reason, base64_failure_reason::unkonwn>;
-
-    using maybe_bytes = maybe_encoded<unsigned char>;
-    using maybe_size_t = maybe_encoded<std::size_t>;
-
-
-}
+#include "pch.h"

@@ -22,6 +22,7 @@ namespace moreland::base64::converters::tests
     {
         encoder encoder_{is_url, insert_line_break, line_max >= 0 ? std::optional(line_max) : std::nullopt, do_padding};
 
+
     public:
         constexpr encoder_test_fixture() = default;
         virtual ~encoder_test_fixture() = default;

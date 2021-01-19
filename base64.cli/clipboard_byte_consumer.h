@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Terry Moreland
+// Copyright © 2021 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
 // to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
 // and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -13,33 +13,37 @@
 
 #pragma once
 
-#define WIN32_LEAN_AND_MEAN 
-
-#include <exception>
-#include <iomanip> 
-#include <optional>
-#include <limits>
 #include <string>
-#include <iostream>
-#include <thread>
-#include <type_traits>
+#include "../base64.converters/byte_consumer.h"
+#include "../modern_win32_api.user/clipboard_concept.h"
 
-namespace moreland::limits
+namespace moreland::base64::cli
 {
-    template <std::integral T>
-    constexpr auto minimum(T first, T second)
+    template <modern_win32_api::user::Clipboard CLIPBOARD>
+    class clipboard_byte_consumer final : public converters::byte_consumer
     {
-        return std::numeric_limits<T>::min(first, second);
-    }
+        using byte = unsigned char;
+        using byte_string = std::basic_string<byte>;
+        using byte_string_view = std::basic_string_view<byte>;
+        byte_string buffer_;
 
-    template <std::integral T>
-    constexpr auto maximum(T first, T second)
-    {
-        return std::numeric_limits<T>::max(first, second);
-    }
+    public:
+        [[nodiscard]]
+        bool consume(std::span<byte const> const source) override
+        {
+            byte_string_view const source_view(source.data(), source.size());
+            buffer_.append(source_view);
+            return true;
+        }
+        void flush() override
+        {
+            std::string_view buffer_view{reinterpret_cast<char const *>(buffer_.c_str()), buffer_.size()};
+            static_cast<void>(CLIPBOARD::set_clipboard(buffer_view));
+        }
+        void reset() noexcept override
+        {
+            buffer_.clear();
+        }
+    };
+
 }
-
-#include <Windows.h>
-#include <eh.h>
-#include <csignal>
-

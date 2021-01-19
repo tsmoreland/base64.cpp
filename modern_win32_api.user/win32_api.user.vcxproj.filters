@@ -4,10 +4,13 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="clipboard.h" />
     <ClInclude Include="library_export.h" />
+    <ClInclude Include="clipboard_traits.h" />
+    <ClInclude Include="clipboard_concept.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="clipboard.cpp" />
+    <ClCompile Include="clipboard_traits.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

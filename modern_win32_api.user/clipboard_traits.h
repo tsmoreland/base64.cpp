@@ -11,38 +11,22 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "test_data.h"
+#pragma once
 
-using std::string_view;
-using moreland::base64::shared::to_string;
+#include <optional>
+#include <string>
+#include "clipboard.h"
+#include "library_export.h"
 
-namespace moreland::base64::converters::tests
+namespace modern_win32_api::user
 {
-    BOOST_FIXTURE_TEST_SUITE(rfc4648_decoder_tests, rfc4648_decoder_fixture)
-
-    BOOST_AUTO_TEST_CASE(docode__returns_vector__when_input_is_valid)
+    struct clipboard_traits
     {
-        auto const decoded = decoder().convert(get_encoded_bytes());
+        [[nodiscard]]
+        MODERN_WIN32_API_USER_EXPORT static std::optional<std::string> get_clipboard();
 
-        BOOST_CHECK(decoded.has_value());
-    }
-    BOOST_AUTO_TEST_CASE(docode__returns_expected_value__when_input_is_valid)
-    {
-        auto const decoded = decoder().convert(get_encoded_bytes());
-
-        auto const actual = to_string(decoded.value());
-        auto const actual_view = string_view(actual);
-        auto const expected = DECODED;
-
-        auto const actual_size = actual_view.size();
-        auto const expected_size = expected.size();
-
-        BOOST_CHECK_MESSAGE(actual_size == expected_size, "lengths do not match");
-        BOOST_CHECK_MESSAGE(actual_view == expected, "values do not match");
-    }
-
-    BOOST_AUTO_TEST_SUITE_END()
+        [[nodiscard]]
+        MODERN_WIN32_API_USER_EXPORT static bool set_clipboard(std::string_view data);
+    };
 
 }
-

@@ -33,7 +33,7 @@ namespace moreland::base64::converters
         return values;  
     }
 
-    std::span<byte const> get_trimmed_span(std::span<byte const> const source) noexcept
+    std::span<byte const> get_trimmed_span(std::span<byte const> source) noexcept
     {
         auto input_length = source.size();
         while (input_length > 0) {

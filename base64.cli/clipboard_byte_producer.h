@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Terry Moreland
+// Copyright © 2021 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
 // to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
 // and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -11,38 +11,29 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "test_data.h"
+#pragma once
 
-using std::string_view;
-using moreland::base64::shared::to_string;
+#include "../base64.converters/byte_producer.h"
+#include "../base64.shared/std_extensions.h"
+#include "../modern_win32_api.user/clipboard_concept.h"
+#include "../modern_win32_api.user/clipboard_traits.h"
 
-namespace moreland::base64::converters::tests
+namespace moreland::base64::cli
 {
-    BOOST_FIXTURE_TEST_SUITE(rfc4648_decoder_tests, rfc4648_decoder_fixture)
-
-    BOOST_AUTO_TEST_CASE(docode__returns_vector__when_input_is_valid)
+    template <modern_win32_api::user::Clipboard CLIPBOARD = modern_win32_api::user::clipboard_traits>
+    class clipboard_byte_producer final : public converters::byte_producer
     {
-        auto const decoded = decoder().convert(get_encoded_bytes());
+    public:
+        explicit clipboard_byte_producer() = default;
 
-        BOOST_CHECK(decoded.has_value());
-    }
-    BOOST_AUTO_TEST_CASE(docode__returns_expected_value__when_input_is_valid)
-    {
-        auto const decoded = decoder().convert(get_encoded_bytes());
-
-        auto const actual = to_string(decoded.value());
-        auto const actual_view = string_view(actual);
-        auto const expected = DECODED;
-
-        auto const actual_size = actual_view.size();
-        auto const expected_size = expected.size();
-
-        BOOST_CHECK_MESSAGE(actual_size == expected_size, "lengths do not match");
-        BOOST_CHECK_MESSAGE(actual_view == expected, "values do not match");
-    }
-
-    BOOST_AUTO_TEST_SUITE_END()
+        [[nodiscard]]
+        std::optional<std::vector<unsigned char>> chunk_or_empty() override
+        {
+            return std_extensions::map<std::string, std::vector<unsigned char>>(CLIPBOARD::get_clipboard(), 
+                [](auto const& original)  {
+                    return std::vector<unsigned char>(begin(original), end(original));
+                });
+        }
+    };
 
 }
-

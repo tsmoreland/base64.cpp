@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Terry Moreland
+// Copyright © 2021 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
 // to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
 // and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -11,38 +11,34 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "test_data.h"
+#pragma once
 
-using std::string_view;
-using moreland::base64::shared::to_string;
+#include <span>
 
-namespace moreland::base64::converters::tests
+namespace moreland::base64::converters
 {
-    BOOST_FIXTURE_TEST_SUITE(rfc4648_decoder_tests, rfc4648_decoder_fixture)
-
-    BOOST_AUTO_TEST_CASE(docode__returns_vector__when_input_is_valid)
+    template <typename TCONSUMER>
+    concept ByteConsumer = requires(TCONSUMER consumer, std::span<unsigned char const> const source) 
     {
-        auto const decoded = decoder().convert(get_encoded_bytes());
+        { consumer.consume(source) } -> std::same_as<bool>;
+        { consumer.flush() } -> std::same_as<void>;
+        { consumer.reset() } -> std::same_as<void>;
+    };
 
-        BOOST_CHECK(decoded.has_value());
-    }
-    BOOST_AUTO_TEST_CASE(docode__returns_expected_value__when_input_is_valid)
+    class byte_consumer
     {
-        auto const decoded = decoder().convert(get_encoded_bytes());
+    public:
+        [[nodiscard]]
+        virtual bool consume(std::span<unsigned char const> const source) = 0;
+        virtual void flush() = 0;
+        virtual void reset() = 0;
 
-        auto const actual = to_string(decoded.value());
-        auto const actual_view = string_view(actual);
-        auto const expected = DECODED;
-
-        auto const actual_size = actual_view.size();
-        auto const expected_size = expected.size();
-
-        BOOST_CHECK_MESSAGE(actual_size == expected_size, "lengths do not match");
-        BOOST_CHECK_MESSAGE(actual_view == expected, "values do not match");
-    }
-
-    BOOST_AUTO_TEST_SUITE_END()
+        explicit byte_consumer() = default;
+        virtual ~byte_consumer() = default;
+        byte_consumer(byte_consumer const&) = default;
+        byte_consumer(byte_consumer&&) noexcept = default;
+        byte_consumer& operator=(byte_consumer const&) = default;
+        byte_consumer& operator=(byte_consumer&&) noexcept = default;
+    };
 
 }
-

@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Terry Moreland
+// Copyright © 2021 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
 // to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
 // and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -11,38 +11,39 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "test_data.h"
+#pragma once
 
-using std::string_view;
-using moreland::base64::shared::to_string;
+#include <optional>
+#include <vector>
+#include <filesystem>
 
-namespace moreland::base64::converters::tests
+namespace moreland::base64::converters
 {
-    BOOST_FIXTURE_TEST_SUITE(rfc4648_decoder_tests, rfc4648_decoder_fixture)
-
-    BOOST_AUTO_TEST_CASE(docode__returns_vector__when_input_is_valid)
+    template <typename TPRODUCER>
+    concept ByteProducer = requires(TPRODUCER producer, std::string_view const argument)
     {
-        auto const decoded = decoder().convert(get_encoded_bytes());
+        { producer.chunk_or_empty() } -> std::same_as<std::optional<std::vector<unsigned char>>>;
+    };
 
-        BOOST_CHECK(decoded.has_value());
-    }
-    BOOST_AUTO_TEST_CASE(docode__returns_expected_value__when_input_is_valid)
+    template <typename T>
+    concept ConstructedFromFile = requires(std::filesystem::path const& file_path)
     {
-        auto const decoded = decoder().convert(get_encoded_bytes());
+        T(file_path);
+    };
 
-        auto const actual = to_string(decoded.value());
-        auto const actual_view = string_view(actual);
-        auto const expected = DECODED;
+    class byte_producer
+    {
+    public:
+        [[nodiscard]]
+        virtual std::optional<std::vector<unsigned char>> chunk_or_empty() = 0;
 
-        auto const actual_size = actual_view.size();
-        auto const expected_size = expected.size();
+        explicit byte_producer() = default;
+        virtual ~byte_producer() = default;
+        byte_producer(byte_producer const&) = default;
+        byte_producer(byte_producer&&) noexcept = default;
+        byte_producer& operator=(byte_producer const&) = default;
+        byte_producer& operator=(byte_producer&&) noexcept = default;
+    };
 
-        BOOST_CHECK_MESSAGE(actual_size == expected_size, "lengths do not match");
-        BOOST_CHECK_MESSAGE(actual_view == expected, "values do not match");
-    }
-
-    BOOST_AUTO_TEST_SUITE_END()
 
 }
-

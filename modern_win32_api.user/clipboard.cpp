@@ -79,11 +79,11 @@ namespace modern_win32_api::user
         global_lock& operator=(global_lock &&) noexcept = delete;
     };
 
-    bool set_clipboard(std::string_view const data)
+    bool set_clipboard(std::string_view data)
     {
         return set_clipboard(data, nullptr);
     }
-    bool set_clipboard(std::string_view const data, window_handle handle) 
+    bool set_clipboard(std::string_view data, window_handle handle) 
     {
         clipboard desktop{handle};
         auto *const global_mem = GlobalAlloc(GMEM_MOVEABLE, (data.size() +1) * sizeof(char));

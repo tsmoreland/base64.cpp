@@ -15,7 +15,7 @@
 #include "common.h"
 #include "encoder.h"
 
-#include "../base64.shared/optional_functions.h"
+#include "../base64.shared/std_extensions.h"
 #include "../base64.shared/convert.h"
 
 using std::move;
@@ -26,14 +26,14 @@ using std::span;
 using std::string;
 using std::vector;
 
-using moreland::base64::shared::map;
+using moreland::std_extensions::map;
 using moreland::base64::shared::to_byte;
 
 namespace moreland::base64::converters
 {
     template <size_t position>
     [[nodiscard]]
-    size_t get_output_index(span<byte const> const source, size_t const input_position);
+    size_t get_output_index(span<byte const> source, size_t input_position);
 
     encoder::encoder(bool const is_url, bool const insert_line_break, optional<int> const line_max, bool const do_padding) noexcept
         : is_url_{is_url}
@@ -43,20 +43,20 @@ namespace moreland::base64::converters
     {
     }
 
-    optional<vector<byte>> encoder::encode(span<byte const> const source) const
+    maybe_converted<vector<byte>> encoder::convert(span<byte const> const source) const
     {
         vector<byte> destination;
-        return map<size_t, vector<byte>>(encode(source, destination),
+        return convert(source, destination).map<vector<byte>>(
             [&destination](auto const&) {
                 return destination;
             });
     }
 
-    optional<size_t> encoder::encode(span<byte const> const source, vector<byte>& destination) const
+    maybe_converted<size_t> encoder::convert(span<byte const> const source, vector<byte>& destination) const
     {
         auto const output_length = calculate_output_length(source, insert_line_break_);
         if (output_length.value_or(0UL) == 0UL) {
-            return nullopt;
+            return maybe_size_t(base64_failure_reason::bad_format);
         }
 
         auto const base64_table = get_base64_table();
@@ -107,40 +107,42 @@ namespace moreland::base64::converters
             break;
         case 1: // Two character padding needed
             destination.emplace_back(base64_table[get_output_index<0>(source, input_position)]);
-            destination.emplace_back(base64_table[get_output_index<1>(source, input_position)]);
             destination.emplace_back(base64_table[(static_cast<size_t>(source[input_position] & to_byte(0x03)))<<4]);
             destination.emplace_back(base64_table[64]); //Pad
             destination.emplace_back(base64_table[64]); //Pad
+
+            //outChars[j+1] = base64[(inData[i]&0x03)<<4]
             output_position += 4;
             break;
         default:
             break;
         }
 
-        return optional(output_position);
+        return maybe_size_t{static_cast<size_t>(output_position)};
     }
 
-    string encoder::encode_to_string_or_empty(span<byte const> const source) const
+    string encoder::convert_to_string_or_empty(span<byte const> const source) const
     {
-        return map<vector<byte>, string>(encode(source), 
-            [](span<byte const> const source_view) -> string
-            {
-                return shared::to_string(source_view);
+        vector<byte> destination;
+        return convert(source, destination).map<string>(
+            [&destination](auto const&) -> string {
+                span<byte const> const destination_view{destination};
+                return shared::to_string(destination_view);
             })
             .value_or("");
     }
 
-    string encoder::encode_to_string_or_empty(span<char const> const source) const
+    string encoder::convert_to_string_or_empty(span<char const> const source) const
     {
         vector<byte> source_bytes(begin(source), end(source));
-        return encode_to_string_or_empty(source_bytes);
+        return convert_to_string_or_empty(source_bytes);
     }
 
-    optional<size_t> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks) 
+    maybe_converted<size_t> encoder::calculate_output_length(span<byte const> const source, bool const insert_line_breaks) 
     {
         size_t const new_line_size = 2;
         size_t const ONE = 1;
-        auto size = source.size() / 3 * 4;       
+        size_t size = source.size() / 3 * 4;       
         size += source.size() % 3 != 0
             ? 4
             : 0;
@@ -156,10 +158,10 @@ namespace moreland::base64::converters
         }
 
         if (size > static_cast<size_t>(numeric_limits::maximum<int>())) {
-            return nullopt;
+            return maybe_size_t(base64_failure_reason::bad_length);
         }
 
-        return optional(size);
+        return maybe_size_t{static_cast<size_t>(size)};
     }
     
     encoder make_encoder() noexcept
@@ -167,7 +169,7 @@ namespace moreland::base64::converters
         encoder const rfc4648{false, false, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
         return rfc4648;
     }
-    encoder make_url_encoder() noexcept  // NOLINT(clang-diagnostic-exit-time-destructors)
+    encoder make_url_encoder() noexcept  
     {
         encoder const rfc4648_url_safe{true, false, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
         return rfc4648_url_safe;
@@ -175,7 +177,7 @@ namespace moreland::base64::converters
 
     template <size_t position>
     [[nodiscard]]
-    size_t get_output_index(span<byte const> const source, size_t const input_position)
+    size_t get_output_index(span<byte const> source, size_t input_position)
     {
         size_t index;
 
