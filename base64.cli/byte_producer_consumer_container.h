@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <memory>
 #include "../base64.shared/std_extensions.h"
 #include "../base64.converters/converter.h"
 #include "../base64.converters/byte_producer.h"
@@ -43,8 +44,8 @@ namespace moreland::base64::cli
     {
         CLIPBOARD_BYTE_PRODUCER clipboard_byte_producer_;
         CLIPBOARD_BYTE_CONSUMER clipboard_byte_consumer_;
-        std::optional<FILE_BYTE_PRODUCER> file_byte_producer_;
-        std::optional<FILE_BYTE_CONSUMER> file_byte_consumer_;
+        std::unique_ptr<FILE_BYTE_PRODUCER> file_byte_producer_;
+        std::unique_ptr<FILE_BYTE_CONSUMER> file_byte_consumer_;
     public:
         explicit byte_producer_consumer_container(std::span<std::string_view const> arguments)
         {
@@ -60,50 +61,53 @@ namespace moreland::base64::cli
         }
 
         [[nodiscard]]
-        constexpr converters::byte_producer& get_producer()
+        converters::byte_producer& get_producer()
         {
-            return file_byte_producer_
-                .value_or(clipboard_byte_producer_);
+            if (static_cast<bool>(file_byte_producer_))
+                return *file_byte_producer_;
+            return clipboard_byte_producer_;
         }
         [[nodiscard]]
-        constexpr converters::byte_producer const& get_producer() const
+        converters::byte_producer const& get_producer() const
         {
-            return file_byte_producer_
-                .value_or(clipboard_byte_producer_);
+            if (static_cast<bool>(file_byte_producer_))
+                return *file_byte_producer_;
+            return clipboard_byte_producer_;
         }
         [[nodiscard]]
-        constexpr converters::byte_consumer& get_consumer()
+        converters::byte_consumer& get_consumer()
         {
-            return file_byte_consumer_
-                .value_or(clipboard_byte_consumer_);
+            if (static_cast<bool>(file_byte_consumer_))
+                return *file_byte_consumer_;
+            return clipboard_byte_consumer_;
         }
         [[nodiscard]]
-        constexpr converters::byte_consumer const& get_consumer() const
+        converters::byte_consumer const& get_consumer() const
         {
-            return file_byte_consumer_
-                .value_or(clipboard_byte_consumer_);
+            if (static_cast<bool>(file_byte_consumer_))
+                return *file_byte_consumer_;
+            return clipboard_byte_consumer_;
         }
 
     private:
-        std::optional<FILE_BYTE_PRODUCER> get_producer_from_file(std::string_view const path)
+        std::unique_ptr<FILE_BYTE_PRODUCER> get_producer_from_file(std::string_view const path)
         {
             return get_from_file<FILE_BYTE_PRODUCER>(path);
         }
-        std::optional<FILE_BYTE_CONSUMER> get_consumer_from_file(std::string_view const path)
+        std::unique_ptr<FILE_BYTE_CONSUMER> get_consumer_from_file(std::string_view const path)
         {
             return get_from_file<FILE_BYTE_CONSUMER>(path);
         }
         template <typename T>
-        std::optional<T> get_from_file(std::string_view const path)
+        std::unique_ptr<T> get_from_file(std::string_view const path)
         {
             auto const file = std_extensions::map<std::string_view const, std::filesystem::path>(path,
                 [](auto const& arg) {
                     return std::filesystem::path(arg);
                 });
-            // TODO: add flat_map
             return file.has_value()
-                ? std::optional<T>(file)
-                : std::nullopt;
+                ? std::make_unique<T>(file.value_or(""))
+                : std::unique_ptr<T>{};
         }
 
     };

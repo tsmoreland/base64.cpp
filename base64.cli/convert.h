@@ -40,24 +40,30 @@ namespace moreland::base64::cli
             std::is_default_constructible_v<CLIPBOARD_BYTE_CONSUMER> &&
             std::is_default_constructible_v<CONVERTER_PRODUCER>
     [[nodiscard]]
-    bool convert(byte_producer_consumer_container<FILE_BYTE_PRODUCER, FILE_BYTE_CONSUMER, CLIPBOARD_BYTE_PRODUCER, CLIPBOARD_BYTE_CONSUMER> const& byte_producer_consumer)
+    bool convert(byte_producer_consumer_container<FILE_BYTE_PRODUCER, FILE_BYTE_CONSUMER, CLIPBOARD_BYTE_PRODUCER, CLIPBOARD_BYTE_CONSUMER>&& byte_producer_consumer)
     {
-        auto const converter = CONVERTER_PRODUCER();
+        CONVERTER_PRODUCER converter_producer{};
+        auto const converter = converter_producer();
 
-        //auto& producer = byte_producer_consumer.get_producer();
-        /*
+        auto& producer = byte_producer_consumer.get_producer();
         auto& consumer = byte_producer_consumer.get_consumer();
 
         // TODO: change producer to support begin() and end(), then we can just send this all to
         // std::for_each(begin(), end(), consumer.consume); with an extra layer to handle the optional
         auto chunk = producer.chunk_or_empty();
         while (chunk.has_value()) {
-            if (!consumer.consume(converter.convert(chunk.value()))) {
+            std::vector<unsigned char> chunk_value{std::move(*chunk)};
+            std::span<unsigned char const> chunk_value_view{chunk_value};
+            auto const converted = converter.convert(chunk_value_view);
+            // possible extension or added function - value_or_throw
+            if (!converted.has_value()) {
+                return false;
+            }
+            if (!consumer.consume(converted.value())) {
                 return false;
             }
         }
         consumer.flush();
-        */
         return true;
     }
 
@@ -84,15 +90,12 @@ namespace moreland::base64::cli
             return false;
 
         try {
-            byte_producer_consumer_container<FILE_BYTE_PRODUCER, FILE_BYTE_CONSUMER, CLIPBOARD_BYTE_PRODUCER, CLIPBOARD_BYTE_CONSUMER> const
-            byte_producer_consumer(arguments.subspan(1));
-
-            auto const remaining_args = arguments.subspan(1);
+            using container_t = byte_producer_consumer_container<FILE_BYTE_PRODUCER, FILE_BYTE_CONSUMER, CLIPBOARD_BYTE_PRODUCER, CLIPBOARD_BYTE_CONSUMER>;
             if (type == operation_type::encode) {
-                return convert<ENCODER, ENCODER_PRODUCER>(byte_producer_consumer);
+                return convert<ENCODER, ENCODER_PRODUCER>(container_t{arguments.subspan(1)});
             }
             if (type == operation_type::decode) {
-                return convert<DECODER, DECODER_PRODUCER>(byte_producer_consumer);
+                return convert<DECODER, DECODER_PRODUCER>(container_t{arguments.subspan(1)});
             }
 
             return false;
