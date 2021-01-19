@@ -109,18 +109,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp" />
-    <ClInclude Include="base64_app.h" />
-    <ClCompile Include="base64_app.cpp">
-      <DependentUpon>base64_app.h</DependentUpon>
-    </ClCompile>
+    <ClInclude Include="arguments_view.h" />
+    <ClCompile Include="argument_view.cpp" />
+    <ClInclude Include="byte_producer_consumer_container.h" />
+    <ClInclude Include="clipboard_byte_consumer.h" />
     <ClInclude Include="clipboard_byte_producer.h" />
+    <ClInclude Include="convert.h" />
+    <ClInclude Include="file_byte_consumer.h" />
     <ClInclude Include="file_byte_producer.h" />
-    <ClCompile Include="file_byte_producer.cpp" >
+    <ClCompile Include="clipboard_byte_consumer.cpp" />
+    <ClCompile Include="file_byte_consumer.cpp" />
+    <ClCompile Include="file_byte_producer.cpp">
       <DependentUpon>file_byte_producer.h</DependentUpon>
     </ClCompile>
     <ClInclude Include="operation_type.h" />
     <ClInclude Include="output_type.h" />
     <ClInclude Include="pch.h" />
+    <ClCompile Include="operation_type.cpp" />
     <ClCompile Include="pch.cpp">
       <DependentUpon>pch.h</DependentUpon>
     </ClCompile>

@@ -24,9 +24,15 @@ namespace moreland::base64::cli
     class file_byte_producer final : public converters::byte_producer
     {
     public:
-        explicit file_byte_producer(std::filesystem::path const& file_path);
         [[nodiscard]]
         std::optional<std::vector<unsigned char>> chunk_or_empty() override;
+
+        explicit file_byte_producer(std::filesystem::path const& file_path);
+        ~file_byte_producer() override;
+        file_byte_producer(file_byte_producer const&) = default;
+        file_byte_producer(file_byte_producer&&) noexcept = default;
+        file_byte_producer& operator=(file_byte_producer const&) = default;
+        file_byte_producer& operator=(file_byte_producer&&) noexcept = default;
     };
 
 }

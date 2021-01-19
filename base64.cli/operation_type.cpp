@@ -12,10 +12,12 @@
 // 
 
 #include "pch.h"
-#include "base64_app.h"
+#include "operation_type.h"
+#include "../base64.shared/std_extensions.h"
 
 namespace moreland::base64::cli
 {
+
     operation_type get_operation_type(std::string_view const type)
     {
         operation_type operation{operation_type::unknown};
@@ -26,39 +28,4 @@ namespace moreland::base64::cli
         return operation;
     }
 
-    std::tuple<operation_type, output_type> get_operation_and_output_from_arguments(std::span<std::string_view const> arguments)
-    {
-        auto const arguments_length = arguments.size();
-
-        operation_type operation{operation_type::unknown};
-        if (arguments_length > 0) {
-            operation = get_operation_type(arguments[0]);
-        }
-
-        output_type output = output_type::clipboard;
-        if (arguments_length > 2)
-            output = output_type::file_to_file;
-        else if (arguments_length > 1)
-            output = output_type::file_to_clipboard;
-
-        return std::tuple<operation_type, output_type>(operation, output);
-    }
-    std::optional<std::string> get_input_filename(std::span<std::string_view const> arguments)
-    {
-        return std::optional<std::string>();
-    }
-    std::optional<std::tuple<std::string, std::string>> get_filenames(std::span<std::string_view const> arguments)
-    {
-        return std::optional<std::tuple<std::string, std::string>>();
-    }
-    std::vector<std::string_view> as_vector_of_views(char const* source[], std::size_t length)
-    {
-        std::vector<std::string_view> vector;
-
-        for (std::size_t i=0; i< length; ++i) {
-            vector.emplace_back(source[i], strlen(source[i]));
-        }
-
-        return vector;
-    }
 }

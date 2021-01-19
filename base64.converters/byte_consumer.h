@@ -18,11 +18,11 @@
 namespace moreland::base64::converters
 {
     template <typename TCONSUMER>
-    concept ByteConsumer = requires(TCONSUMER const& consumer, std::span<unsigned char const> const source) 
+    concept ByteConsumer = requires(TCONSUMER consumer, std::span<unsigned char const> const source) 
     {
-        std::is_default_constructible<TCONSUMER>();
         { consumer.consume(source) } -> std::same_as<bool>;
         { consumer.flush() } -> std::same_as<void>;
+        { consumer.reset() } -> std::same_as<void>;
     };
 
     class byte_consumer
@@ -30,6 +30,8 @@ namespace moreland::base64::converters
     public:
         [[nodiscard]]
         virtual bool consume(std::span<unsigned char const> const source) = 0;
+        virtual void flush() = 0;
+        virtual void reset() = 0;
 
         explicit byte_consumer() = default;
         virtual ~byte_consumer() = default;

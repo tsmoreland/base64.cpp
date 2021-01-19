@@ -1,6 +1,5 @@
-
 //
-// Copyright © 2020 Terry Moreland
+// Copyright © 2021 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
 // to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
 // and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -12,18 +11,11 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "clipboard_byte_consumer.h"
 
 namespace moreland::base64::cli
 {
-    enum class operation_type
-    {
-        unknown,
-        decode,
-        encode,
-    };
-
-    [[nodiscard]]
-    operation_type get_operation_type(std::string_view const type);
+    using modern_win32_api::user::Clipboard;
 
 }

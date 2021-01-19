@@ -65,5 +65,15 @@ namespace moreland::base64::converters
     [[nodiscard]]
     BASE64_CONVERTER_EXPORT decoder make_url_decoder() noexcept;
 
+    class decoder_factory final
+    {
+    public:
+        [[nodiscard]]
+        decoder operator()() const
+        {
+            return make_decoder();
+        }
+    };
+
 }
 

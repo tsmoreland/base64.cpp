@@ -169,7 +169,7 @@ namespace moreland::base64::converters
         encoder const rfc4648{false, false, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
         return rfc4648;
     }
-    encoder make_url_encoder() noexcept  // NOLINT(clang-diagnostic-exit-time-destructors)
+    encoder make_url_encoder() noexcept  
     {
         encoder const rfc4648_url_safe{true, false, nullopt, true};  // NOLINT(clang-diagnostic-exit-time-destructors)
         return rfc4648_url_safe;

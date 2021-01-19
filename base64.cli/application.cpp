@@ -12,22 +12,17 @@
 // 
 
 #include "pch.h"
-#include "base64_app.h"
+#include "arguments_view.h"
+#include "convert.h"
 #include "../base64.shared/seh_exception.h"
-#include "../../base64.converters/encoder.h"
-#include "../../base64.converters/decoder.h"
 
 using moreland::base64::shared::seh_exception;
-using moreland::base64::converters::make_encoder;
-using moreland::base64::converters::make_decoder;
-using moreland::base64::converters::encoder;
-using moreland::base64::converters::decoder;
 
 using std::vector;
 using byte_string = std::basic_string<unsigned char>;
 
-using moreland::base64::cli::as_vector_of_views;
-using moreland::base64::cli::base64_run;
+using moreland::base64::cli::get_arguments_view;
+using moreland::base64::cli::convert;
 
 namespace shared = moreland::base64::shared;  // NOLINT(misc-unused-alias-decls)
 
@@ -36,16 +31,12 @@ int main(int argc, char const* argv[])
     try {
         seh_exception::initialize();
 
-        auto const base64_encoder = make_encoder();
-        auto const base64_decoder = make_decoder();
-
         ++argv;
         if (--argc < 0)
             return -1;
 
-        auto const arguments = as_vector_of_views(argv, argc);
-        if (auto const result = base64_run(arguments, base64_encoder, base64_decoder); !result) {
-            std::cout << "operation failed" << std::endl;
+        if (!convert(get_arguments_view(argv, argc))) {
+            return 1;
         }
 
         return 0;

@@ -14,6 +14,7 @@
 #pragma once
 
 #include "../base64.converters/byte_producer.h"
+#include "../base64.shared/std_extensions.h"
 #include "../modern_win32_api.user/clipboard_concept.h"
 #include "../modern_win32_api.user/clipboard_traits.h"
 
@@ -28,9 +29,9 @@ namespace moreland::base64::cli
         [[nodiscard]]
         std::optional<std::vector<unsigned char>> chunk_or_empty() override
         {
-            return map(CLIPBOARD::get_clipboard(), 
+            return std_extensions::map<std::string, std::vector<unsigned char>>(CLIPBOARD::get_clipboard(), 
                 [](auto const& original)  {
-                    return std::basic_string<unsigned char>(begin(original), end(original));
+                    return std::vector<unsigned char>(begin(original), end(original));
                 });
         }
     };
