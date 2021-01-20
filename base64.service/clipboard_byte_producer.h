@@ -18,7 +18,7 @@
 #include "../modern_win32_api.user/clipboard_concept.h"
 #include "../modern_win32_api.user/clipboard_traits.h"
 
-namespace moreland::base64::cli
+namespace moreland::base64::service
 {
     template <modern_win32_api::user::Clipboard CLIPBOARD = modern_win32_api::user::clipboard_traits>
     class clipboard_byte_producer final : public converters::byte_producer

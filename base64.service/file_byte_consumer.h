@@ -16,7 +16,7 @@
 #include <filesystem>
 #include "../base64.converters/byte_consumer.h"
 
-namespace moreland::base64::cli
+namespace moreland::base64::service
 {
     class file_byte_consumer final : public converters::byte_consumer
     {

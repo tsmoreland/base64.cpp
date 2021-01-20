@@ -13,29 +13,24 @@
 
 #include "pch.h"
 #include "arguments_view.h"
-#include "convert.h"
+#include "../base64.service/convert.h"
 #include "../base64.shared/seh_exception.h"
 
 using moreland::base64::shared::seh_exception;
 
-using std::vector;
-using byte_string = std::basic_string<unsigned char>;
+using moreland::base64::cli::get_arguments_as_vector;
+using moreland::base64::service::convert;
 
-using moreland::base64::cli::get_arguments_view;
-using moreland::base64::cli::convert;
-
-namespace shared = moreland::base64::shared;  // NOLINT(misc-unused-alias-decls)
+using args_vector = std::vector<std::string_view>;
+using args_view = std::span<std::string_view const>;
 
 int main(int argc, char const* argv[])
 {
     try {
         seh_exception::initialize();
+        args_vector args{get_arguments_as_vector(argv, argc)};
 
-        ++argv;
-        if (--argc < 0)
-            return -1;
-
-        if (!convert(get_arguments_view(argv, argc))) {
+        if (!convert(args_view{args}.subspan(1))) {
             return 1;
         }
 

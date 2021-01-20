@@ -1,4 +1,3 @@
-
 //
 // Copyright © 2020 Terry Moreland
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
@@ -14,7 +13,9 @@
 
 #pragma once
 
-namespace moreland::base64::cli
+#include <string_view>
+
+namespace moreland::base64::service
 {
     enum class operation_type
     {

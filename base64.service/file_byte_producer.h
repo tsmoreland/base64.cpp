@@ -18,9 +18,8 @@
 #include <filesystem>
 #include <vector>
 
-namespace moreland::base64::cli
+namespace moreland::base64::service
 {
-    // TODO: move this to it's own file
     class file_byte_producer final : public converters::byte_producer
     {
     public:

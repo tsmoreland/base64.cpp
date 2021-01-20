@@ -15,7 +15,7 @@
 #include "operation_type.h"
 #include "../base64.shared/std_extensions.h"
 
-namespace moreland::base64::cli
+namespace moreland::base64::service
 {
 
     operation_type get_operation_type(std::string_view const type)

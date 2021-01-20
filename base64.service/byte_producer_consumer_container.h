@@ -21,7 +21,7 @@
 #include "file_byte_producer.h"
 #include "file_byte_consumer.h"
 
-namespace moreland::base64::cli
+namespace moreland::base64::service
 {
 
     template <

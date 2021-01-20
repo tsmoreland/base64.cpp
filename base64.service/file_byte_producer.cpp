@@ -14,7 +14,7 @@
 #include "pch.h"
 #include "file_byte_producer.h"
 
-namespace moreland::base64::cli
+namespace moreland::base64::service
 {
     file_byte_producer::file_byte_producer(std::filesystem::path const& file_path)
     {

@@ -12,10 +12,3 @@
 // 
 
 #include "pch.h"
-#include "clipboard_byte_consumer.h"
-
-namespace moreland::base64::cli
-{
-    using modern_win32_api::user::Clipboard;
-
-}

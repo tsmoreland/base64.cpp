@@ -17,7 +17,7 @@
 #include "../base64.converters/byte_consumer.h"
 #include "../modern_win32_api.user/clipboard_concept.h"
 
-namespace moreland::base64::cli
+namespace moreland::base64::service
 {
     template <modern_win32_api::user::Clipboard CLIPBOARD>
     class clipboard_byte_consumer final : public converters::byte_consumer

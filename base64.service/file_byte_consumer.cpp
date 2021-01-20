@@ -14,7 +14,7 @@
 #include "pch.h"
 #include "file_byte_consumer.h"
 
-namespace moreland::base64::cli
+namespace moreland::base64::service
 {
     file_byte_consumer::file_byte_consumer(std::filesystem::path const& file)
     {

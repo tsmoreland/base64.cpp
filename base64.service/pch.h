@@ -11,17 +11,34 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "clipboard_byte_producer.h"
+#pragma once
 
-namespace moreland::base64::cli
+#define WIN32_LEAN_AND_MEAN 
+
+#include <exception>
+#include <iomanip> 
+#include <optional>
+#include <limits>
+#include <string>
+#include <iostream>
+#include <thread>
+#include <type_traits>
+
+namespace moreland::limits
 {
-    
-    std::optional<std::vector<unsigned char>> clipboard_byte_producer::chunk_or_empty() 
+    template <std::integral T>
+    constexpr auto minimum(T first, T second)
     {
-        return std_extensions::map(CLIPBOARD::get_clipboard(), 
-            [](auto const& original)  {
-                return std::basic_string<unsigned char>(begin(original), end(original));
-            });
+        return std::numeric_limits<T>::min(first, second);
+    }
+
+    template <std::integral T>
+    constexpr auto maximum(T first, T second)
+    {
+        return std::numeric_limits<T>::max(first, second);
     }
 }
+
+#include <Windows.h>
+#include <eh.h>
+#include <csignal>
