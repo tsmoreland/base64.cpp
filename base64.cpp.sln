@@ -20,7 +20,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "modern_win32_api.user", "mo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "modern_win32_api.user.test", "modern_win32_api.user.test\modern_win32_api.user.test.vcxproj", "{58299302-595C-4DF7-B976-84148D950FE2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base64.cli.test", "base64.cli.test\base64.cli.test.vcxproj", "{21040022-E608-438C-99DF-3509FFD6FB08}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base64.service", "base64.service\base64.service.vcxproj", "{C8051B61-3811-4937-BF3E-63850A0C6693}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base64.service.test", "base64.service.test\base64.service.test.vcxproj", "{21040022-E608-438C-99DF-3509FFD6FB08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +54,10 @@ Global
 		{58299302-595C-4DF7-B976-84148D950FE2}.Debug|x64.Build.0 = Debug|x64
 		{58299302-595C-4DF7-B976-84148D950FE2}.Release|x64.ActiveCfg = Release|x64
 		{58299302-595C-4DF7-B976-84148D950FE2}.Release|x64.Build.0 = Release|x64
+		{C8051B61-3811-4937-BF3E-63850A0C6693}.Debug|x64.ActiveCfg = Debug|x64
+		{C8051B61-3811-4937-BF3E-63850A0C6693}.Debug|x64.Build.0 = Debug|x64
+		{C8051B61-3811-4937-BF3E-63850A0C6693}.Release|x64.ActiveCfg = Release|x64
+		{C8051B61-3811-4937-BF3E-63850A0C6693}.Release|x64.Build.0 = Release|x64
 		{21040022-E608-438C-99DF-3509FFD6FB08}.Debug|x64.ActiveCfg = Debug|x64
 		{21040022-E608-438C-99DF-3509FFD6FB08}.Debug|x64.Build.0 = Debug|x64
 		{21040022-E608-438C-99DF-3509FFD6FB08}.Release|x64.ActiveCfg = Release|x64
