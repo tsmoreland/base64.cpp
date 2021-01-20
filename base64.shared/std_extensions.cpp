@@ -32,4 +32,20 @@ namespace moreland::std_extensions
         return true;
     }
 
+    std::string to_string(std::filesystem::path const& source) noexcept
+    {
+#ifdef _WIN32
+        std::wstring_view const source_view{source.c_str()};
+        std::string destination{};
+        std::ranges::transform(source_view, begin(destination), 
+            [](auto const& wide_char) {
+                return static_cast<char>(wide_char);
+            });   
+        return std::string{begin(source_view), end(source_view)};
+#elif __linux__
+        return std::string{source.c_str()};
+#else
+#error  Unsupported architecture
+#endif
+    }
 }
