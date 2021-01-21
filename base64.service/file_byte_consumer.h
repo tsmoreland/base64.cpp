@@ -14,11 +14,12 @@
 #pragma once
 
 #include <filesystem>
+#include "library_export.h"
 #include "../base64.converters/byte_consumer.h"
 
 namespace moreland::base64::service
 {
-    class file_byte_consumer final : public converters::byte_consumer
+    class BASE64_SERVICE_EXPORT file_byte_consumer final : public converters::byte_consumer
     {
         using file_byte_stream = std::basic_fstream<unsigned char, std::char_traits<unsigned char>>;
 

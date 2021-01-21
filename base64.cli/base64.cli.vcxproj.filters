@@ -3,12 +3,14 @@
   <ItemGroup>
     <ClCompile Include="application.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="file_byte_producer.cpp" />
     <ClCompile Include="argument_view.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="output_type.h" />
     <ClInclude Include="arguments_view.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vcpkg.json" />
   </ItemGroup>
 </Project>

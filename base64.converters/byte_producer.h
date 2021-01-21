@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <iterator>
 #include <optional>
 #include <vector>
 #include <filesystem>
@@ -22,6 +23,7 @@ namespace moreland::base64::converters
     template <typename TPRODUCER>
     concept ByteProducer = requires(TPRODUCER producer, std::string_view const argument)
     {
+        //std::forward_iterator<typename TPRODUCER::iterator>;
         { producer.chunk_or_empty() } -> std::same_as<std::optional<std::vector<unsigned char>>>;
     };
 
@@ -43,6 +45,11 @@ namespace moreland::base64::converters
         byte_producer(byte_producer&&) noexcept = default;
         byte_producer& operator=(byte_producer const&) = default;
         byte_producer& operator=(byte_producer&&) noexcept = default;
+
+        struct iterator
+        {
+
+        };
     };
 
 

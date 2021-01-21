@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include "library_export.h"
 #include "../base64.converters/byte_producer.h"
 #include <fstream>
 #include <mutex>
@@ -21,7 +22,7 @@
 
 namespace moreland::base64::service
 {
-    class file_byte_producer final : public converters::byte_producer
+    class BASE64_SERVICE_EXPORT file_byte_producer final : public converters::byte_producer
     {
         using file_byte_stream = std::basic_fstream<unsigned char, std::char_traits<unsigned char>>;
 

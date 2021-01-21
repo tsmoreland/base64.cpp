@@ -9,6 +9,7 @@
     <ClInclude Include="file_byte_consumer.h" />
     <ClInclude Include="file_byte_producer.h" />
     <ClInclude Include="operation_type.h" />
+    <ClInclude Include="library_export.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="file_byte_consumer.cpp" />

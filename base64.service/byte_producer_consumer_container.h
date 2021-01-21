@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <memory>
 #include "../base64.shared/std_extensions.h"
 #include "../base64.converters/converter.h"
 #include "../base64.converters/byte_producer.h"
@@ -43,18 +44,18 @@ namespace moreland::base64::service
     {
         CLIPBOARD_BYTE_PRODUCER clipboard_byte_producer_;
         CLIPBOARD_BYTE_CONSUMER clipboard_byte_consumer_;
-        std::vector<FILE_BYTE_PRODUCER> file_byte_producer_container_;
-        std::vector<FILE_BYTE_CONSUMER> file_byte_consumer_container_;
+        std::unique_ptr<FILE_BYTE_PRODUCER> file_byte_producer_;
+        std::unique_ptr<FILE_BYTE_CONSUMER> file_byte_consumer_;
     public:
         explicit byte_producer_consumer_container(std::span<std::string_view const> arguments)
         {
             if (!arguments.empty()) {
-                static_cast<void>(try_add_producer_using_file(std_extensions::first(arguments).value_or(""), file_byte_producer_container_));
+                file_byte_producer_ = get_producer_from_file(std_extensions::first(arguments).value_or(""));
                 arguments = arguments.subspan(1);
             } 
 
             if (!arguments.empty()) {
-                static_cast<void>(try_add_consumer_using_file(std_extensions::first(arguments).value_or(""), file_byte_consumer_container_));
+                file_byte_consumer_ = get_consumer_from_file(std_extensions::first(arguments).value_or(""));
                 arguments = arguments.subspan(1);
             }
         }
@@ -62,55 +63,55 @@ namespace moreland::base64::service
         [[nodiscard]]
         converters::byte_producer& get_producer()
         {
-            return !file_byte_producer_container_.empty()
-                ? static_cast<converters::byte_producer&>(file_byte_producer_container_[0])
+            return static_cast<bool>(file_byte_producer_)
+                ? static_cast<converters::byte_producer&>(*file_byte_producer_)
                 : static_cast<converters::byte_producer&>(clipboard_byte_producer_);
         }
         [[nodiscard]]
         converters::byte_producer const& get_producer() const
         {
-            return !file_byte_producer_container_.empty()
-                ? static_cast<converters::byte_producer const&>(file_byte_producer_container_[0])
+            return static_cast<bool>(file_byte_producer_)
+                ? static_cast<converters::byte_producer const&>(*file_byte_producer_)
                 : static_cast<converters::byte_producer const&>(clipboard_byte_producer_);
         }
         [[nodiscard]]
         converters::byte_consumer& get_consumer()
         {
-            return !file_byte_consumer_container_.empty()
-                ? static_cast<converters::byte_consumer&>(file_byte_consumer_container_[0])
+            return static_cast<bool>(file_byte_consumer_)
+                ? static_cast<converters::byte_consumer&>(*file_byte_consumer_)
                 : static_cast<converters::byte_consumer&>(clipboard_byte_consumer_);
         }
         [[nodiscard]]
         converters::byte_consumer const& get_consumer() const
         {
-            return !file_byte_consumer_container_.empty()
-                ? static_cast<converters::byte_consumer const&>(file_byte_consumer_container_[0])
+            return static_cast<bool>(file_byte_consumer_)
+                ? static_cast<converters::byte_consumer const&>(*file_byte_consumer_)
                 : static_cast<converters::byte_consumer const&>(clipboard_byte_consumer_);
         }
 
     private:
         [[nodiscard]]
-        static bool try_add_producer_using_file(std::string_view const path, std::vector<FILE_BYTE_PRODUCER>& container)
+        std::unique_ptr<FILE_BYTE_PRODUCER> get_producer_from_file(std::string_view const path)
         {
-            return try_add_to_vector<FILE_BYTE_PRODUCER>(path, container);
+            return get_from_file<FILE_BYTE_PRODUCER>(path);
         }
         [[nodiscard]]
-        static bool try_add_consumer_using_file(std::string_view const path, std::vector<FILE_BYTE_CONSUMER>& container)
+        std::unique_ptr<FILE_BYTE_CONSUMER> get_consumer_from_file(std::string_view const path)
         {
-            return try_add_to_vector<FILE_BYTE_CONSUMER>(path, container);
+            return get_from_file<FILE_BYTE_CONSUMER>(path);
         }
         template <typename T>
+            requires converters::ConstructedFromFile<T>  
         [[nodiscard]]
-        static bool try_add_to_vector(std::string_view const path, std::vector<T>& container)
+        std::unique_ptr<T> get_from_file(std::string_view const path)
         {
             auto const file = std_extensions::map<std::string_view const, std::filesystem::path>(path,
                 [](auto const& arg) {
                     return std::filesystem::path(arg);
                 });
-            if (!file.has_value())
-                return false;
-            container.emplace_back(file.value());
-            return true;
+            return file.has_value()
+                ? std::make_unique<T>(file.value_or(""))
+                : std::unique_ptr<T>{};
         }
 
     };
