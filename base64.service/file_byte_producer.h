@@ -14,24 +14,25 @@
 #pragma once
 
 #include "../base64.converters/byte_producer.h"
+#include <fstream>
+#include <mutex>
 #include <optional>
-#include <filesystem>
 #include <vector>
 
 namespace moreland::base64::service
 {
     class file_byte_producer final : public converters::byte_producer
     {
+        using file_byte_stream = std::basic_fstream<unsigned char, std::char_traits<unsigned char>>;
+
+        file_byte_stream source_;
+        std::unique_ptr<unsigned char[]> const buffer_;
+        std::mutex read_lock_;
     public:
         [[nodiscard]]
         std::optional<std::vector<unsigned char>> chunk_or_empty() override;
 
         explicit file_byte_producer(std::filesystem::path const& file_path);
-        ~file_byte_producer() override;
-        file_byte_producer(file_byte_producer const&) = default;
-        file_byte_producer(file_byte_producer&&) noexcept = default;
-        file_byte_producer& operator=(file_byte_producer const&) = default;
-        file_byte_producer& operator=(file_byte_producer&&) noexcept = default;
     };
 
 }

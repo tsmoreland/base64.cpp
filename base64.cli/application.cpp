@@ -31,17 +31,18 @@ int main(int argc, char const* argv[])
         args_vector args{get_arguments_as_vector(argv, argc)};
 
         if (!convert(args_view{args}.subspan(1))) {
+            std::cerr << "conversion operation failed" << std::endl;
             return 1;
         }
 
         return 0;
 
     } catch (std::exception const& e) {
-        std::cout << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
         return -1;
 
     } catch (...) {
-        std::cout << "unknown error occurred" << std::endl;
+        std::cerr << "unknown error occurred" << std::endl;
         return -1;
     }
 

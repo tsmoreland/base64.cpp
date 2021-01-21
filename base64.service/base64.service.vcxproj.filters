@@ -11,11 +11,12 @@
     <ClInclude Include="operation_type.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="clipboard_byte_consumer.cpp" />
-    <ClCompile Include="clipboard_byte_producer.cpp" />
     <ClCompile Include="file_byte_consumer.cpp" />
     <ClCompile Include="file_byte_producer.cpp" />
     <ClCompile Include="operation_type.cpp" />
     <ClCompile Include="pch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vcpkg.json" />
   </ItemGroup>
 </Project>

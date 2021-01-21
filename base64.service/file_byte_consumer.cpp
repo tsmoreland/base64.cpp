@@ -14,24 +14,35 @@
 #include "pch.h"
 #include "file_byte_consumer.h"
 
+using byte = unsigned char;
+using lock_guard = std::lock_guard<std::mutex>;
+using std::make_unique;
+
 namespace moreland::base64::service
 {
-    file_byte_consumer::file_byte_consumer(std::filesystem::path const& file)
+    constexpr std::size_t BUFFER_SIZE = 16384;
+
+    file_byte_consumer::file_byte_consumer(std::filesystem::path const& file_path)
+        : destination_{file_path, std::ios::out}
+        , buffer_{std::make_unique<byte[]>(BUFFER_SIZE)}
     {
     }
-    file_byte_consumer::~file_byte_consumer()
+    bool file_byte_consumer::consume(std::span<byte const> const source)
     {
-    }
-    bool file_byte_consumer::consume(std::span<unsigned char const> const source)
-    {
-        return false;
+        lock_guard guard{read_lock_};
+
+        return static_cast<bool>(destination_.write(source.data(), source.size()));
     }
 
     void file_byte_consumer::flush()
     {
+        lock_guard guard{read_lock_};
+        destination_.flush();
     }
 
     void file_byte_consumer::reset()
     {
+        lock_guard guard{read_lock_};
+        destination_.seekg(0, std::fstream::beg);
     }
 }

@@ -17,12 +17,15 @@
 
 #include <exception>
 #include <iomanip> 
+#include <fstream>
+#include <mutex>
 #include <optional>
 #include <limits>
 #include <string>
 #include <iostream>
 #include <thread>
 #include <type_traits>
+#include <fmt/core.h>
 
 namespace moreland::limits
 {
@@ -42,3 +45,6 @@ namespace moreland::limits
 #include <Windows.h>
 #include <eh.h>
 #include <csignal>
+#include <cstdlib>
+
+#include "../base64.shared/std_extensions.h"

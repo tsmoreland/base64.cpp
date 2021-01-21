@@ -20,6 +20,11 @@ namespace moreland::base64::service
 {
     class file_byte_consumer final : public converters::byte_consumer
     {
+        using file_byte_stream = std::basic_fstream<unsigned char, std::char_traits<unsigned char>>;
+
+        file_byte_stream destination_;
+        std::unique_ptr<unsigned char[]> const buffer_;
+        std::mutex read_lock_;
     public:
 
         [[nodiscard]]
@@ -27,12 +32,7 @@ namespace moreland::base64::service
         void flush() override;
         void reset() override;
 
-        explicit file_byte_consumer(std::filesystem::path const& file);
-        ~file_byte_consumer() override;
-        file_byte_consumer(file_byte_consumer const&) = default;
-        file_byte_consumer(file_byte_consumer&&) noexcept = default;
-        file_byte_consumer& operator=(file_byte_consumer const&) = default;
-        file_byte_consumer& operator=(file_byte_consumer&&) noexcept = default;
+        explicit file_byte_consumer(std::filesystem::path const& file_path);
     };
     
 }
