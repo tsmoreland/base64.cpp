@@ -1,5 +1,5 @@
 {
-  "name": "base64-service",
+  "name": "base64-cli",
   "version-string": "0.0.1",
   "dependencies": [
     "fmt"

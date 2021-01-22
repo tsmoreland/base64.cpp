@@ -14,13 +14,16 @@
 #pragma once
 
 #include <filesystem>
-#include "library_export.h"
+#include <memory>
 #include "../base64.converters/byte_consumer.h"
 
 namespace moreland::base64::service
 {
-    class BASE64_SERVICE_EXPORT file_byte_consumer final : public converters::byte_consumer
+    class file_byte_consumer final : public converters::byte_consumer
     {
+        const std::size_t BUFFER_SIZE = 16384;
+        using byte = unsigned char;
+        using lock_guard = std::lock_guard<std::mutex>;
         using file_byte_stream = std::basic_fstream<unsigned char, std::char_traits<unsigned char>>;
 
         file_byte_stream destination_;
@@ -29,11 +32,27 @@ namespace moreland::base64::service
     public:
 
         [[nodiscard]]
-        bool consume(std::span<unsigned char const> const source) override;
-        void flush() override;
-        void reset() override;
+        bool consume(std::span<unsigned char const> const source) override
+        {
+            lock_guard guard{read_lock_};
+            return static_cast<bool>(destination_.write(source.data(), source.size()));
+        }
+        void flush() override
+        {
+            lock_guard guard{read_lock_};
+            destination_.flush();
+        }
+        void reset() override
+        {
+            lock_guard guard{read_lock_};
+            destination_.seekg(0, std::fstream::beg);
+        }
 
-        explicit file_byte_consumer(std::filesystem::path const& file_path);
+        explicit file_byte_consumer(std::filesystem::path const& file_path)
+            : destination_{file_path, std::ios::out}
+            , buffer_{std::make_unique<unsigned char[]>(BUFFER_SIZE)}
+        {
+        }
     };
     
 }

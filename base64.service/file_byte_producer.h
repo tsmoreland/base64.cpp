@@ -13,27 +13,56 @@
 
 #pragma once
 
-#include "library_export.h"
 #include "../base64.converters/byte_producer.h"
+#include <fmt/core.h>
 #include <fstream>
 #include <mutex>
 #include <optional>
+#include <span>
 #include <vector>
 
 namespace moreland::base64::service
 {
-    class BASE64_SERVICE_EXPORT file_byte_producer final : public converters::byte_producer
+    class file_byte_producer final : public converters::byte_producer
     {
+        const std::size_t BUFFER_SIZE = 16384;
         using file_byte_stream = std::basic_fstream<unsigned char, std::char_traits<unsigned char>>;
+        using byte_vector = std::vector<unsigned char>;
+        using lock_guard = std::lock_guard<std::mutex>;
+        using optional_byte_vector = std::optional<byte_vector>;
+        using bytes_view = std::span<unsigned char>;
 
         file_byte_stream source_;
         std::unique_ptr<unsigned char[]> const buffer_;
         std::mutex read_lock_;
     public:
         [[nodiscard]]
-        std::optional<std::vector<unsigned char>> chunk_or_empty() override;
+        std::optional<std::vector<unsigned char>> chunk_or_empty() override
+        {
+            lock_guard guard{read_lock_};
 
-        explicit file_byte_producer(std::filesystem::path const& file_path);
+            source_.read(buffer_.get(), BUFFER_SIZE);
+            auto const count = source_
+                ? static_cast<std::size_t>(BUFFER_SIZE)
+                : static_cast<std::size_t>(source_.gcount());
+            if (count == 0)
+                return std::nullopt;
+
+            bytes_view buffer_view{&buffer_[0], count};
+            return count > 0
+                ? optional_byte_vector(byte_vector{std::begin(buffer_view), std::end(buffer_view)})
+                : std::nullopt;
+        }
+
+        explicit file_byte_producer(std::filesystem::path const& file_path)
+            : source_{file_path, std::ios::in}
+            , buffer_{std::make_unique<unsigned char[]>(BUFFER_SIZE)}
+        {
+            static_assert(converters::ConstructedFromFile<file_byte_producer>);
+            if (!source_.is_open()) {
+                throw std::invalid_argument(fmt::format("unable to read {}", std_extensions::to_string(file_path)));
+            }
+        }
     };
 
 }

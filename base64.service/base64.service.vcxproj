@@ -105,13 +105,7 @@
     <ClInclude Include="clipboard_byte_producer.h" />
     <ClInclude Include="convert.h" />
     <ClInclude Include="file_byte_consumer.h" />
-    <ClCompile Include="file_byte_consumer.cpp">
-      <DependentUpon>file_byte_consumer.h</DependentUpon>
-    </ClCompile>
     <ClInclude Include="file_byte_producer.h" />
-    <ClCompile Include="file_byte_producer.cpp">
-      <DependentUpon>file_byte_producer.h</DependentUpon>
-    </ClCompile>
     <ClInclude Include="library_export.h" />
     <ClInclude Include="operation_type.h" />
     <ClCompile Include="operation_type.cpp">

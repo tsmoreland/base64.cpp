@@ -31,7 +31,7 @@ namespace moreland::base64::service
         {
             return std_extensions::map<std::string, std::vector<unsigned char>>(CLIPBOARD::get_clipboard(), 
                 [](auto const& original)  {
-                    return std::vector<unsigned char>(begin(original), end(original));
+                    return std::vector<unsigned char>(std::begin(original), std::end(original));
                 });
         }
     };

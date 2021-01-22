@@ -23,7 +23,7 @@ namespace moreland::base64::converters
     template <typename TPRODUCER>
     concept ByteProducer = requires(TPRODUCER producer, std::string_view const argument)
     {
-        //std::forward_iterator<typename TPRODUCER::iterator>;
+        std::forward_iterator<typename TPRODUCER::iterator>;
         { producer.chunk_or_empty() } -> std::same_as<std::optional<std::vector<unsigned char>>>;
     };
 
@@ -36,6 +36,8 @@ namespace moreland::base64::converters
     class byte_producer
     {
     public:
+        class iterator;
+
         [[nodiscard]]
         virtual std::optional<std::vector<unsigned char>> chunk_or_empty() = 0;
 
@@ -46,8 +48,82 @@ namespace moreland::base64::converters
         byte_producer& operator=(byte_producer const&) = default;
         byte_producer& operator=(byte_producer&&) noexcept = default;
 
-        struct iterator
+        iterator begin()
         {
+            //reset(); -- add reset to producer, use it to reset position back to start
+            return iterator(*this, chunk_or_empty());
+        }
+
+        iterator end()
+        {
+            return iterator(*this, std::nullopt);
+        }
+
+        class iterator
+        {
+            byte_producer& container_;
+            std::optional<std::vector<unsigned char>> current_{std::nullopt};
+        public:
+            using iterator_category = std::forward_iterator_tag;
+            using difference_type   = std::ptrdiff_t;
+            using value_type        = std::optional<std::vector<unsigned char>>;
+            using pointer           = value_type*;
+            using reference         = value_type const&; 
+
+            explicit iterator(byte_producer& container, std::optional<std::vector<unsigned char>> value)
+                : container_{container}
+                , current_{std::move(value)}
+            {
+            }
+
+            [[nodiscard]]
+            reference operator*() const
+            {
+                return current_;
+            }
+            [[nodiscard]]
+            pointer operator->()
+            {
+                return &current_;
+            }
+            [[nodiscard]]
+            iterator& operator++()
+            {
+                current_ = container_.chunk_or_empty();
+                return *this;
+            }  
+            [[nodiscard]]
+            iterator operator++(int)
+            {
+                iterator tmp = *this;
+                current_ = container_.chunk_or_empty();
+                return tmp;
+            }
+            [[nodiscard]]
+            friend bool operator== (iterator const& first, iterator const& second)
+            {
+                if (first.current_.has_value() != second.current_.has_value())
+                    return false;
+                if (!first.current_.has_value())
+                    return true;
+                if (first.current_.value().size() != second.current_.value().size())
+                    return false;
+                if (first.current_.value().empty())
+                    return true;
+                for (auto i = std::begin(first.current_.value()), j = std::begin(second.current_.value());
+                     i != std::end(first.current_.value()) && j != std::end(second.current_.value());
+                     ++i, ++j) {
+
+                    if (*i != *j)
+                        return false;
+                }
+                return true;
+            }
+            [[nodiscard]]
+            friend bool operator!= (iterator const& first, iterator const& second)
+            {
+                return !(first == second);
+            }
 
         };
     };
