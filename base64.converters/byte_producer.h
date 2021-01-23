@@ -86,13 +86,11 @@ namespace moreland::base64::converters
             {
                 return &current_;
             }
-            [[nodiscard]]
             iterator& operator++()
             {
                 current_ = container_.chunk_or_empty();
                 return *this;
             }  
-            [[nodiscard]]
             iterator operator++(int)
             {
                 iterator tmp = *this;
