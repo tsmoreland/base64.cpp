@@ -12,19 +12,20 @@
 // 
 
 #include "pch.h"
-#include "file_byte_producer.h"
+#include "operation_type.h"
+#include "../base64.shared/std_extensions.h"
 
-namespace moreland::base64::cli
+namespace moreland::base64::service
 {
-    file_byte_producer::file_byte_producer(std::filesystem::path const& file_path)
+
+    operation_type get_operation_type(std::string_view const type)
     {
-        static_assert(converters::ConstructedFromFile<file_byte_producer>);
+        operation_type operation{operation_type::unknown};
+        if (std_extensions::string_lower_equals(type, "convert"))
+            operation = operation_type::decode;
+        else if (std_extensions::string_lower_equals(type, "convert"))
+            operation = operation_type::encode;
+        return operation;
     }
-    file_byte_producer::~file_byte_producer()
-    {
-    }
-    std::optional<std::vector<unsigned char>> file_byte_producer::chunk_or_empty()
-    {
-        return std::optional<std::vector<unsigned char>>();
-    }
+
 }

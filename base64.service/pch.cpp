@@ -11,39 +11,4 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
-
-#include <string>
-#include "../base64.converters/byte_consumer.h"
-#include "../modern_win32_api.user/clipboard_concept.h"
-
-namespace moreland::base64::cli
-{
-    template <modern_win32_api::user::Clipboard CLIPBOARD>
-    class clipboard_byte_consumer final : public converters::byte_consumer
-    {
-        using byte = unsigned char;
-        using byte_string = std::basic_string<byte>;
-        using byte_string_view = std::basic_string_view<byte>;
-        byte_string buffer_;
-
-    public:
-        [[nodiscard]]
-        bool consume(std::span<byte const> const source) override
-        {
-            byte_string_view const source_view(source.data(), source.size());
-            buffer_.append(source_view);
-            return true;
-        }
-        void flush() override
-        {
-            std::string_view buffer_view{reinterpret_cast<char const *>(buffer_.c_str()), buffer_.size()};
-            static_cast<void>(CLIPBOARD::set_clipboard(buffer_view));
-        }
-        void reset() noexcept override
-        {
-            buffer_.clear();
-        }
-    };
-
-}
+#include "pch.h"

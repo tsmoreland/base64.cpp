@@ -23,7 +23,7 @@
 #include "file_byte_producer.h"
 #include "byte_producer_consumer_container.h"
 
-namespace moreland::base64::cli
+namespace moreland::base64::service
 {
     template <
         converters::Converter CONVERTER,

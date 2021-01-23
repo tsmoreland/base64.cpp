@@ -11,27 +11,40 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#include "pch.h"
-#include "file_byte_consumer.h"
+#pragma once
 
-namespace moreland::base64::cli
+#define WIN32_LEAN_AND_MEAN 
+
+#include <exception>
+#include <iomanip> 
+#include <fstream>
+#include <mutex>
+#include <optional>
+#include <limits>
+#include <string>
+#include <iostream>
+#include <thread>
+#include <type_traits>
+#include <fmt/core.h>
+
+namespace moreland::limits
 {
-    file_byte_consumer::file_byte_consumer(std::filesystem::path const& file)
+    template <std::integral T>
+    constexpr auto minimum(T first, T second)
     {
-    }
-    file_byte_consumer::~file_byte_consumer()
-    {
-    }
-    bool file_byte_consumer::consume(std::span<unsigned char const> const source)
-    {
-        return false;
+        return std::numeric_limits<T>::min(first, second);
     }
 
-    void file_byte_consumer::flush()
+    template <std::integral T>
+    constexpr auto maximum(T first, T second)
     {
-    }
-
-    void file_byte_consumer::reset()
-    {
+        return std::numeric_limits<T>::max(first, second);
     }
 }
+
+#include <Windows.h>
+#include <eh.h>
+#include <csignal>
+#include <cstdlib>
+
+#include "../base64.shared/std_extensions.h"

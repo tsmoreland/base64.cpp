@@ -13,26 +13,36 @@
 
 #pragma once
 
-#include "../base64.converters/byte_producer.h"
-#include "../base64.shared/std_extensions.h"
+#include <string>
+#include "../base64.converters/byte_consumer.h"
 #include "../modern_win32_api.user/clipboard_concept.h"
-#include "../modern_win32_api.user/clipboard_traits.h"
 
-namespace moreland::base64::cli
+namespace moreland::base64::service
 {
-    template <modern_win32_api::user::Clipboard CLIPBOARD = modern_win32_api::user::clipboard_traits>
-    class clipboard_byte_producer final : public converters::byte_producer
+    template <modern_win32_api::user::Clipboard CLIPBOARD>
+    class clipboard_byte_consumer final : public converters::byte_consumer
     {
-    public:
-        explicit clipboard_byte_producer() = default;
+        using byte = unsigned char;
+        using byte_string = std::basic_string<byte>;
+        using byte_string_view = std::basic_string_view<byte>;
+        byte_string buffer_;
 
+    public:
         [[nodiscard]]
-        std::optional<std::vector<unsigned char>> chunk_or_empty() override
+        bool consume(std::span<byte const> const source) override
         {
-            return std_extensions::map<std::string, std::vector<unsigned char>>(CLIPBOARD::get_clipboard(), 
-                [](auto const& original)  {
-                    return std::vector<unsigned char>(begin(original), end(original));
-                });
+            byte_string_view const source_view(source.data(), source.size());
+            buffer_.append(source_view);
+            return true;
+        }
+        void flush() override
+        {
+            std::string_view buffer_view{reinterpret_cast<char const *>(buffer_.c_str()), buffer_.size()};
+            static_cast<void>(CLIPBOARD::set_clipboard(buffer_view));
+        }
+        void reset() noexcept override
+        {
+            buffer_.clear();
         }
     };
 

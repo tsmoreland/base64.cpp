@@ -11,28 +11,13 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
+// ReSharper disable CppClangTidyCppcoreguidelinesMacroUsage
+// ReSharper disable CppClangTidyClangDiagnosticUnusedMacros
+
 #pragma once
 
-#include <filesystem>
-#include "../base64.converters/byte_consumer.h"
-
-namespace moreland::base64::cli
-{
-    class file_byte_consumer final : public converters::byte_consumer
-    {
-    public:
-
-        [[nodiscard]]
-        bool consume(std::span<unsigned char const> const source) override;
-        void flush() override;
-        void reset() override;
-
-        explicit file_byte_consumer(std::filesystem::path const& file);
-        ~file_byte_consumer() override;
-        file_byte_consumer(file_byte_consumer const&) = default;
-        file_byte_consumer(file_byte_consumer&&) noexcept = default;
-        file_byte_consumer& operator=(file_byte_consumer const&) = default;
-        file_byte_consumer& operator=(file_byte_consumer&&) noexcept = default;
-    };
-    
-}
+#ifdef BASE64_SERVICE_EXPORTS
+#define BASE64_SERVICE_EXPORT __declspec(dllexport)
+#else
+#define BASE64_SERVICE_EXPORT __declspec(dllimport)
+#endif

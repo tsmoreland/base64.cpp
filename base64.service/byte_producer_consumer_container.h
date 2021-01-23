@@ -22,7 +22,7 @@
 #include "file_byte_producer.h"
 #include "file_byte_consumer.h"
 
-namespace moreland::base64::cli
+namespace moreland::base64::service
 {
 
     template <
@@ -63,42 +63,46 @@ namespace moreland::base64::cli
         [[nodiscard]]
         converters::byte_producer& get_producer()
         {
-            if (static_cast<bool>(file_byte_producer_))
-                return *file_byte_producer_;
-            return clipboard_byte_producer_;
+            return static_cast<bool>(file_byte_producer_)
+                ? static_cast<converters::byte_producer&>(*file_byte_producer_)
+                : static_cast<converters::byte_producer&>(clipboard_byte_producer_);
         }
         [[nodiscard]]
         converters::byte_producer const& get_producer() const
         {
-            if (static_cast<bool>(file_byte_producer_))
-                return *file_byte_producer_;
-            return clipboard_byte_producer_;
+            return static_cast<bool>(file_byte_producer_)
+                ? static_cast<converters::byte_producer const&>(*file_byte_producer_)
+                : static_cast<converters::byte_producer const&>(clipboard_byte_producer_);
         }
         [[nodiscard]]
         converters::byte_consumer& get_consumer()
         {
-            if (static_cast<bool>(file_byte_consumer_))
-                return *file_byte_consumer_;
-            return clipboard_byte_consumer_;
+            return static_cast<bool>(file_byte_consumer_)
+                ? static_cast<converters::byte_consumer&>(*file_byte_consumer_)
+                : static_cast<converters::byte_consumer&>(clipboard_byte_consumer_);
         }
         [[nodiscard]]
         converters::byte_consumer const& get_consumer() const
         {
-            if (static_cast<bool>(file_byte_consumer_))
-                return *file_byte_consumer_;
-            return clipboard_byte_consumer_;
+            return static_cast<bool>(file_byte_consumer_)
+                ? static_cast<converters::byte_consumer const&>(*file_byte_consumer_)
+                : static_cast<converters::byte_consumer const&>(clipboard_byte_consumer_);
         }
 
     private:
+        [[nodiscard]]
         std::unique_ptr<FILE_BYTE_PRODUCER> get_producer_from_file(std::string_view const path)
         {
             return get_from_file<FILE_BYTE_PRODUCER>(path);
         }
+        [[nodiscard]]
         std::unique_ptr<FILE_BYTE_CONSUMER> get_consumer_from_file(std::string_view const path)
         {
             return get_from_file<FILE_BYTE_CONSUMER>(path);
         }
         template <typename T>
+            requires converters::ConstructedFromFile<T>  
+        [[nodiscard]]
         std::unique_ptr<T> get_from_file(std::string_view const path)
         {
             auto const file = std_extensions::map<std::string_view const, std::filesystem::path>(path,

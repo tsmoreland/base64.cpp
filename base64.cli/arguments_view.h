@@ -20,6 +20,6 @@
 namespace moreland::base64::cli
 {
     [[nodiscard]]
-    std::vector<std::string_view> get_arguments_view(char const* source[], std::size_t length);
+    std::vector<std::string_view> get_arguments_as_vector(char const* source[], std::size_t length);
 
 }

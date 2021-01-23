@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <filesystem>
 #include <optional>
 #include <span>
 
@@ -60,4 +61,8 @@ namespace moreland::std_extensions
             ? mapper(source.value())
             : std::nullopt; 
     }
+
+    [[nodiscard]]
+    std::string to_string(std::filesystem::path const& source) noexcept;
+
 }

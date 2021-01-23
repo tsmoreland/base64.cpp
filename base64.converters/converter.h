@@ -14,12 +14,10 @@
 #pragma once
 
 #include <span>
-#include <string_view>
 #include <vector>
 
 #include "../base64.converters/maybe_converted.h"
 #include "byte_producer.h"
-#include "byte_consumer.h"
 
 namespace moreland::base64::converters
 {
@@ -29,21 +27,6 @@ namespace moreland::base64::converters
         std::is_default_constructible_v<TCONVERTER>;
         { converter.convert(source) } -> std::convertible_to<maybe_converted<std::vector<unsigned char >>>;
         { converter.convert_to_string_or_empty(source) } -> std::convertible_to<std::string>;
-    };
-
-    template <Converter CONVERTER, ByteProducer BYTE_PRODUCER, ByteConsumer BYTE_CONSUMER>
-    class converter final
-    {
-        CONVERTER const& converter_;
-        BYTE_PRODUCER& producer_;
-        BYTE_CONSUMER& consumer_;
-    public:
-        constexpr explicit converter(CONVERTER const& converter, BYTE_PRODUCER& producer, BYTE_CONSUMER const& consumer)
-            : converter_{converter}
-            , producer_{producer}
-            , consumer_{consumer}
-        {
-        }
     };
 
 }
