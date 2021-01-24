@@ -20,13 +20,6 @@
 
 namespace moreland::base64::converters
 {
-    template <typename TPRODUCER>
-    concept ByteProducer = requires(TPRODUCER producer, std::string_view const argument)
-    {
-        std::forward_iterator<typename TPRODUCER::iterator>;
-        { producer.chunk_or_empty() } -> std::same_as<std::optional<std::vector<unsigned char>>>;
-    };
-
     template <typename T>
     concept ConstructedFromFile = requires(std::filesystem::path const& file_path)
     {
@@ -66,7 +59,7 @@ namespace moreland::base64::converters
         public:
             using iterator_category = std::forward_iterator_tag;
             using difference_type   = std::ptrdiff_t;
-            using value_type        = std::optional<std::vector<unsigned char>>;
+            using value_type        = std::vector<unsigned char>;
             using pointer           = value_type*;
             using reference         = value_type const&; 
 
@@ -79,20 +72,22 @@ namespace moreland::base64::converters
             [[nodiscard]]
             reference operator*() const
             {
-                return current_;
+                if (current_.has_value())
+                    return current_.value();
+                throw std::out_of_range("invalid iterator access");
             }
             [[nodiscard]]
             pointer operator->()
             {
-                return &current_;
+                if (current_.has_value())
+                    return &current_.value();
+                throw std::out_of_range("invalid iterator access");
             }
-            [[nodiscard]]
             iterator& operator++()
             {
                 current_ = container_.chunk_or_empty();
                 return *this;
             }  
-            [[nodiscard]]
             iterator operator++(int)
             {
                 iterator tmp = *this;
@@ -124,8 +119,15 @@ namespace moreland::base64::converters
             {
                 return !(first == second);
             }
-
         };
+    };
+
+    template <typename TPRODUCER>
+    concept ByteProducer = requires(TPRODUCER producer, std::string_view const argument)
+    {
+        std::forward_iterator<typename TPRODUCER::iterator>;
+        std::is_base_of<byte_producer, TPRODUCER>::value;
+        { producer.chunk_or_empty() } -> std::same_as<std::optional<std::vector<unsigned char>>>;
     };
 
 

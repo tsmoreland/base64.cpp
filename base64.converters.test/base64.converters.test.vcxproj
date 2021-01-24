@@ -43,12 +43,18 @@
     <VcpkgConfiguration>$(Configuration)</VcpkgConfiguration>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="byte_producer_test_fixture.h" />
+    <ClCompile Include="byte_producer_test_fixture.cpp" >
+      <DependentUpon>byte_producer_test_fixture.h</DependentUpon>
+    </ClCompile>
     <ClInclude Include="decoder_test_fixture.h" />
     <ClInclude Include="encoder_test_fixture.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="test_data.h" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClCompile Include="test_data.cpp" >
+      <DependentUpon>test_data.h</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="byte_producer_tests.cpp" />
     <ClCompile Include="rfc4648_decoder_tests.cpp" />
     <ClCompile Include="rfc4648_encoder_tests.cpp" />
     <ClCompile Include="pch.cpp">
@@ -56,7 +62,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <DependentUpon>pch.h</DependentUpon>
     </ClCompile>
-    <ClCompile Include="test_data.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\base64.converters\base64.converters.vcxproj">

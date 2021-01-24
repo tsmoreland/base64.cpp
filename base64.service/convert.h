@@ -42,26 +42,35 @@ namespace moreland::base64::service
     [[nodiscard]]
     bool convert(byte_producer_consumer_container<FILE_BYTE_PRODUCER, FILE_BYTE_CONSUMER, CLIPBOARD_BYTE_PRODUCER, CLIPBOARD_BYTE_CONSUMER>&& byte_producer_consumer)
     {
+        using byte = unsigned char;
         CONVERTER_PRODUCER converter_producer{};
         auto const converter = converter_producer();
 
         auto& producer = byte_producer_consumer.get_producer();
         auto& consumer = byte_producer_consumer.get_consumer();
 
-        // TODO: change producer to support begin() and end(), then we can just send this all to
-        // std::for_each(begin(), end(), consumer.consume); with an extra layer to handle the optional
-        auto chunk = producer.chunk_or_empty();
-        while (chunk.has_value()) {
-            std::vector<unsigned char> chunk_value{std::move(*chunk)};
-            std::span<unsigned char const> chunk_value_view{chunk_value};
-            auto const converted = converter.convert(chunk_value_view);
-            // possible extension or added function - value_or_throw
-            if (!converted.has_value()) {
+        auto converted_consumer = [&consumer](auto const& value) -> bool {
+            //std::span<byte const> value_view(value); // might be an need extra step
+            return consumer.consume(value);
+        };
+
+        for (auto const &chunk : producer) {
+            std::span<byte const> chunk_value_view{chunk};
+
+            // TODO: for this to work we need an overload of map that can work with maybe
+            /*
+            auto const converted2 = converter.convert(chunk_value_view); 
+            if (!std_extensions::map<decltype(converted2), bool>(converted2, converted_consumer).value_or(false)) {
                 return false;
             }
-            if (!consumer.consume(converted.value())) {
+            */
+
+            if (auto const converted = converter.convert(chunk_value_view); converted.has_value()) {
+                if (!consumer.consume(converted.value())) {
+                    return false;
+                }
+            } else
                 return false;
-            }
         }
         consumer.flush();
         return true;
