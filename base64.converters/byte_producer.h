@@ -20,13 +20,6 @@
 
 namespace moreland::base64::converters
 {
-    template <typename TPRODUCER>
-    concept ByteProducer = requires(TPRODUCER producer, std::string_view const argument)
-    {
-        std::forward_iterator<typename TPRODUCER::iterator>;
-        { producer.chunk_or_empty() } -> std::same_as<std::optional<std::vector<unsigned char>>>;
-    };
-
     template <typename T>
     concept ConstructedFromFile = requires(std::filesystem::path const& file_path)
     {
@@ -122,8 +115,15 @@ namespace moreland::base64::converters
             {
                 return !(first == second);
             }
-
         };
+    };
+
+    template <typename TPRODUCER>
+    concept ByteProducer = requires(TPRODUCER producer, std::string_view const argument)
+    {
+        std::forward_iterator<typename TPRODUCER::iterator>;
+        std::is_base_of<byte_producer, TPRODUCER>::value;
+        { producer.chunk_or_empty() } -> std::same_as<std::optional<std::vector<unsigned char>>>;
     };
 
 
