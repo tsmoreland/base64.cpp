@@ -22,14 +22,14 @@ namespace moreland::base64::converters::tests
     {
         auto first = producer().begin();
 
-        BOOST_CHECK(first->has_value() == true);
+        BOOST_CHECK(first->empty() != true);
     }
 
     BOOST_AUTO_TEST_CASE(end__returns_iterator_with_empty)
     {
-        auto first = producer().end();
+        auto last = producer().end();
 
-        BOOST_CHECK(first->has_value() != true);
+        BOOST_CHECK_THROW(static_cast<void>(last->empty()), std::out_of_range);
     }
     BOOST_AUTO_TEST_CASE(byte_producer__supports_for_loop)
     {

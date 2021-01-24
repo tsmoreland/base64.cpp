@@ -59,7 +59,7 @@ namespace moreland::base64::converters
         public:
             using iterator_category = std::forward_iterator_tag;
             using difference_type   = std::ptrdiff_t;
-            using value_type        = std::optional<std::vector<unsigned char>>;
+            using value_type        = std::vector<unsigned char>;
             using pointer           = value_type*;
             using reference         = value_type const&; 
 
@@ -72,12 +72,16 @@ namespace moreland::base64::converters
             [[nodiscard]]
             reference operator*() const
             {
-                return current_;
+                if (current_.has_value())
+                    return current_.value();
+                throw std::out_of_range("invalid iterator access");
             }
             [[nodiscard]]
             pointer operator->()
             {
-                return &current_;
+                if (current_.has_value())
+                    return &current_.value();
+                throw std::out_of_range("invalid iterator access");
             }
             iterator& operator++()
             {

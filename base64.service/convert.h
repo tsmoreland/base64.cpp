@@ -49,8 +49,22 @@ namespace moreland::base64::service
         auto& producer = byte_producer_consumer.get_producer();
         auto& consumer = byte_producer_consumer.get_consumer();
 
+        auto converted_consumer = [&consumer](auto const& value) -> bool {
+            //std::span<byte const> value_view(value); // might be an need extra step
+            return consumer.consume(value);
+        };
+
         for (auto const &chunk : producer) {
-            std::span<byte const> chunk_value_view{chunk.value()};
+            std::span<byte const> chunk_value_view{chunk};
+
+            // TODO: for this to work we need an overload of map that can work with maybe
+            /*
+            auto const converted2 = converter.convert(chunk_value_view); 
+            if (!std_extensions::map<decltype(converted2), bool>(converted2, converted_consumer).value_or(false)) {
+                return false;
+            }
+            */
+
             if (auto const converted = converter.convert(chunk_value_view); converted.has_value()) {
                 if (!consumer.consume(converted.value())) {
                     return false;
