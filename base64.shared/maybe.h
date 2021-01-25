@@ -196,4 +196,15 @@ namespace moreland::base64::shared
 
     };
 
+    template <typename TSOURCE_RESULT, enum_t TREASON, TREASON UNKNOWN_ERROR, typename TDESTINATION_RESULT, class TMAPPER>
+    [[nodiscard]]
+    maybe<TDESTINATION_RESULT, TREASON, UNKNOWN_ERROR> map(
+        maybe<TSOURCE_RESULT, TREASON, UNKNOWN_ERROR> const& source, 
+        TMAPPER mapper)
+    {
+        return source.has_value()
+            ? maybe<TDESTINATION_RESULT, TREASON, UNKNOWN_ERROR>(mapper(source.value()))
+            : maybe<TDESTINATION_RESULT, TREASON, UNKNOWN_ERROR>{}; 
+    }
+
 }
