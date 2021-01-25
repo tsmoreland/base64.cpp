@@ -41,7 +41,7 @@ namespace moreland::std_extensions
             [](auto const& wide_char) {
                 return static_cast<char>(wide_char);
             });   
-        return std::string{begin(source_view), end(source_view)};
+        return destination;
 #elif __linux__
         return std::string{source.c_str()};
 #else

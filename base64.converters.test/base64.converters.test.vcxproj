@@ -25,6 +25,10 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\test\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\test\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnabled>true</VcpkgEnabled>
@@ -44,14 +48,14 @@
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="byte_producer_test_fixture.h" />
-    <ClCompile Include="byte_producer_test_fixture.cpp" >
+    <ClCompile Include="byte_producer_test_fixture.cpp">
       <DependentUpon>byte_producer_test_fixture.h</DependentUpon>
     </ClCompile>
     <ClInclude Include="decoder_test_fixture.h" />
     <ClInclude Include="encoder_test_fixture.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="test_data.h" />
-    <ClCompile Include="test_data.cpp" >
+    <ClCompile Include="test_data.cpp">
       <DependentUpon>test_data.h</DependentUpon>
     </ClCompile>
     <ClCompile Include="byte_producer_tests.cpp" />
@@ -91,6 +95,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);$(VcpkgCurrentInstalledDir)$(VcpkgConfigSubdir)lib;$(VcpkgCurrentInstalledDir)$(VcpkgConfigSubdir)lib\manual-link</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -108,6 +113,7 @@
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);$(VcpkgCurrentInstalledDir)$(VcpkgConfigSubdir)lib;$(VcpkgCurrentInstalledDir)$(VcpkgConfigSubdir)lib\manual-link</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
 </Project>
