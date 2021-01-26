@@ -41,6 +41,7 @@ namespace moreland::limits
 #include <eh.h>
 #include <csignal>
 
-#define BOOST_TEST_MODULE base64_cli_tests  // NOLINT(cppcoreguidelines-macro-usage)
+#define BOOST_TEST_MODULE base64_service_tests  // NOLINT(cppcoreguidelines-macro-usage)
 #include <boost/test/unit_test.hpp>
 
+#include "../base64.shared/std_extensions.h"

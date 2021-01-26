@@ -27,17 +27,18 @@ namespace moreland::base64::service
     {
         const std::size_t BUFFER_SIZE = 16384;
         using file_byte_stream = std::basic_fstream<unsigned char, std::char_traits<unsigned char>>;
-        using byte_vector = std::vector<unsigned char>;
         using lock_guard = std::lock_guard<std::mutex>;
-        using optional_byte_vector = std::optional<byte_vector>;
         using bytes_view = std::span<unsigned char>;
 
         file_byte_stream source_;
         std::unique_ptr<unsigned char[]> const buffer_;
         std::mutex read_lock_;
     public:
+        using byte_vector = std::vector<unsigned char>;
+        using optional_byte_vector = std::optional<byte_vector>;
+
         [[nodiscard]]
-        std::optional<std::vector<unsigned char>> chunk_or_empty() override
+        optional_byte_vector chunk_or_empty() override
         {
             lock_guard guard{read_lock_};
 

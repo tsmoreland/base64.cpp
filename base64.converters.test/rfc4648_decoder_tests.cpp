@@ -25,7 +25,7 @@ namespace moreland::base64::converters::tests
     {
         auto const decoded = decoder().convert(get_encoded_bytes());
 
-        BOOST_CHECK(decoded.has_value());
+        BOOST_REQUIRE(decoded.has_value());
     }
     BOOST_AUTO_TEST_CASE(docode__returns_expected_value__when_input_is_valid)
     {
@@ -38,8 +38,8 @@ namespace moreland::base64::converters::tests
         auto const actual_size = actual_view.size();
         auto const expected_size = expected.size();
 
-        BOOST_CHECK_MESSAGE(actual_size == expected_size, "lengths do not match");
-        BOOST_CHECK_MESSAGE(actual_view == expected, "values do not match");
+        BOOST_REQUIRE_MESSAGE(actual_size == expected_size, "lengths do not match");
+        BOOST_REQUIRE_MESSAGE(actual_view == expected, "values do not match");
     }
 
     BOOST_AUTO_TEST_SUITE_END()

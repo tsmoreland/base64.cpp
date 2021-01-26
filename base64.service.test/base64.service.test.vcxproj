@@ -47,7 +47,10 @@
     <VcpkgConfiguration>$(Configuration)</VcpkgConfiguration>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="file_byte_producer_test_fixture.h" />
     <ClInclude Include="mock_clipboard_traits.h" />
+    <ClCompile Include="file_byte_producer_tests.cpp" />
+    <ClCompile Include="file_byte_producer_test_fixture.cpp" />
     <ClCompile Include="mock_clipboard_traits.cpp">
       <DependentUpon>mock_clipboard_traits.h</DependentUpon>
     </ClCompile>
@@ -65,7 +68,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="base64_app_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\base64.converters\base64.converters.vcxproj">
@@ -79,6 +81,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="packages.config" />
     <None Include="vcpkg.json" />
     <None Include="sample.txt">
@@ -97,6 +100,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -114,6 +118,7 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

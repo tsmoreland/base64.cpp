@@ -1,7 +1,8 @@
 {
-  "name": "modern-win32-api-user-test",
+  "name": "base64-service-test",
   "version-string": "0.0.1",
   "dependencies": [
-    "boost-test"
+    "boost-test",
+    "fmt"
   ]
 }

@@ -12,8 +12,6 @@
     <ClInclude Include="library_export.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="file_byte_consumer.cpp" />
-    <ClCompile Include="file_byte_producer.cpp" />
     <ClCompile Include="operation_type.cpp" />
     <ClCompile Include="pch.cpp" />
   </ItemGroup>
