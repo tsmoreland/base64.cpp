@@ -48,9 +48,11 @@
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="file_byte_producer_test_fixture.h" />
+    <ClCompile Include="file_byte_producer_test_fixture.cpp" >
+      <DependentUpon>file_byte_producer_test_fixture.h</DependentUpon>
+    </ClCompile>
     <ClInclude Include="mock_clipboard_traits.h" />
     <ClCompile Include="file_byte_producer_tests.cpp" />
-    <ClCompile Include="file_byte_producer_test_fixture.cpp" />
     <ClCompile Include="mock_clipboard_traits.cpp">
       <DependentUpon>mock_clipboard_traits.h</DependentUpon>
     </ClCompile>
