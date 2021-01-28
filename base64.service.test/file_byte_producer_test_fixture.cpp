@@ -39,8 +39,11 @@ namespace moreland::base64::service
 
         const int read_size = 16384;
         auto const buffer = std::make_unique<unsigned char[]>(read_size);
-        while (source.read(buffer.get(), read_size)) {
-            // in theory this is a bad cast, but in actually it's ok due to read_size ensure gcount <= max size_type
+
+        while (!source.bad() && !source.eof()) {
+            source.read(buffer.get(), read_size); 
+            if (source.gcount() == 0)
+                break;
             byte_string_view buffer_view{buffer.get(), static_cast<byte_string_view::size_type>(source.gcount())};
             test_data_content_.append(buffer_view);
         }
