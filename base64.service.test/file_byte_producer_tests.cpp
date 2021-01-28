@@ -15,6 +15,8 @@
 #include "../base64.service/file_byte_producer.h"
 #include "file_byte_producer_test_fixture.h"
 
+using byte_string_view = std::basic_string_view<unsigned  char>;
+
 namespace moreland::base64::service
 {
     BOOST_FIXTURE_TEST_SUITE(file_byte_producer_tests, file_byte_producer_test_fixture)
@@ -26,6 +28,36 @@ namespace moreland::base64::service
         auto const chunk = producer.chunk_or_empty();
 
         BOOST_REQUIRE(chunk.has_value());
+    }
+
+    BOOST_AUTO_TEST_CASE(chunk_or_empty__returns_expected_value__when_file_is_not_empty)
+    {
+        auto producer = get_producer();
+
+        auto const chunk = producer
+            .chunk_or_empty()
+            .value_or(byte_vector());
+
+        BOOST_CHECK(!chunk.empty() && chunk.size() <= get_expected().size());
+
+        auto expected_view = byte_string_view(&get_expected()[0], chunk.size());
+        BOOST_REQUIRE(std::ranges::equal(expected_view, chunk));
+    }
+
+    BOOST_AUTO_TEST_CASE(chunk_or_empty__returns_all_file_contents__when_called_until_returns_nullopt)
+    {
+        auto producer = get_producer();
+
+        byte_vector complete_file{};
+        complete_file.reserve(get_expected().size());
+
+        for (auto const& chunk : producer) {
+            complete_file.insert(end(complete_file), begin(chunk), end(chunk));
+        }
+
+        auto const size = get_expected().size();
+        auto const expected_view = byte_string_view(&get_expected()[0], size);
+        BOOST_REQUIRE(std::ranges::equal(expected_view, complete_file));
     }
 
     BOOST_AUTO_TEST_SUITE_END()
