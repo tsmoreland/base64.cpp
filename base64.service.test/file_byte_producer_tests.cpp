@@ -12,12 +12,22 @@
 // 
 
 #include "pch.h"
+#include "../base64.service/file_byte_producer.h"
+#include "file_byte_producer_test_fixture.h"
 
-namespace moreland::base64::cli::tests
+namespace moreland::base64::service
 {
-    BOOST_AUTO_TEST_CASE(PLACEHOLDER)
+    BOOST_FIXTURE_TEST_SUITE(file_byte_producer_tests, file_byte_producer_test_fixture)
+
+    BOOST_AUTO_TEST_CASE(chunk_or_empty__has_value__when_file_is_not_empty)
     {
-        BOOST_TEST(true);
+        auto producer = get_producer();
+
+        auto const chunk = producer.chunk_or_empty();
+
+        BOOST_REQUIRE(chunk.has_value());
     }
 
+    BOOST_AUTO_TEST_SUITE_END()
+    
 }

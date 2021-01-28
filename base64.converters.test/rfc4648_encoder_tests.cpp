@@ -29,7 +29,7 @@ namespace moreland::base64::converters::tests
     {
         auto const encoded = encoder().convert(get_decoded_bytes());
 
-        BOOST_CHECK(encoded.has_value());
+        BOOST_REQUIRE(encoded.has_value());
     }
 
     BOOST_AUTO_TEST_CASE(encode__returns_expected_value__when_input_is_non_empty)
@@ -44,8 +44,8 @@ namespace moreland::base64::converters::tests
         auto const expected_size = expected.size();
 
         // semi-defy 1 assert per test, but these are just variations of the same check 
-        BOOST_CHECK_MESSAGE(actual_size == expected_size, "lengths do not match");
-        BOOST_CHECK_MESSAGE(actual_view == expected, "values do not match");
+        BOOST_REQUIRE_MESSAGE(actual_size == expected_size, "lengths do not match");
+        BOOST_REQUIRE_MESSAGE(actual_view == expected, "values do not match");
     }
 
     BOOST_AUTO_TEST_CASE(encode__return_value_matches_destination_size__when_success)
@@ -53,21 +53,21 @@ namespace moreland::base64::converters::tests
         std::vector<unsigned char> destination{};
         auto const size = encoder().convert(get_decoded_bytes(), destination);
 
-        BOOST_CHECK(size.value_or(0) == destination.size());
+        BOOST_REQUIRE(size.value_or(0) == destination.size());
     }
 
     BOOST_AUTO_TEST_CASE(encode_to_string_or_empty__returns_non_empty_string__when_input_is_non_empty)
     {
         auto const encoded = encoder().convert_to_string_or_empty(get_decoded_bytes());
 
-        BOOST_CHECK(!encoded.empty());
+        BOOST_REQUIRE(!encoded.empty());
     }
 
     BOOST_AUTO_TEST_CASE(encode_to_string_or_empty__returns_expected_value__when_input_is_non_empty)
     {
         auto const encoded = encoder().convert_to_string_or_empty(get_decoded_bytes());
 
-        BOOST_CHECK_MESSAGE(encoded == ENCODED, "values do not match");
+        BOOST_REQUIRE_MESSAGE(encoded == ENCODED, "values do not match");
     }
 
     BOOST_AUTO_TEST_CASE(encode__returns_value__when_input_requires_one_padding)

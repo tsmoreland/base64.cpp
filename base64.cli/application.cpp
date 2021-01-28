@@ -24,6 +24,7 @@ using moreland::base64::service::convert;
 using args_vector = std::vector<std::string_view>;
 using args_view = std::span<std::string_view const>;
 
+// ReSharper disable once CppParameterMayBeConst
 int main(int argc, char const* argv[])
 {
     try {
