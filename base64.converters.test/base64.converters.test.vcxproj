@@ -70,6 +70,7 @@
   <ItemGroup>
     <ProjectReference Include="..\base64.converters\base64.converters.vcxproj">
       <Project>{50bcb9b5-16fe-4380-be28-d3e5c847a981}</Project>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\base64.shared\base64.shared.vcxproj">
       <Project>{afe4772a-fa26-4758-b8a0-9a30e45be129}</Project>
@@ -97,6 +98,9 @@
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);$(VcpkgCurrentInstalledDir)$(VcpkgConfigSubdir)lib;$(VcpkgCurrentInstalledDir)$(VcpkgConfigSubdir)lib\manual-link</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(OutDir)..\..\$(Configuration)\base64.converters.dll $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -115,5 +119,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);$(VcpkgCurrentInstalledDir)$(VcpkgConfigSubdir)lib;$(VcpkgCurrentInstalledDir)$(VcpkgConfigSubdir)lib\manual-link</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(OutDir)..\..\$(Configuration)\base64.converters.dll $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
 </Project>

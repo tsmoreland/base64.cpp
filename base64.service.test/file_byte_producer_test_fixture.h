@@ -18,13 +18,8 @@ namespace moreland::base64::service
 
     class file_byte_producer_test_fixture
     {
-        using byte = unsigned char;
-        using byte_vector = file_byte_producer::byte_vector;
-        using optional_byte_vector = file_byte_producer::optional_byte_vector;
-
         char const* const test_data_filename_ = "sample.txt";
-
-        std::basic_string<byte> test_data_content_;
+        std::basic_string<unsigned char> test_data_content_;
     public:
         using byte_string = std::basic_string<unsigned char>;
 
@@ -39,6 +34,12 @@ namespace moreland::base64::service
         file_byte_producer_test_fixture(file_byte_producer_test_fixture&&) noexcept = delete;
         file_byte_producer_test_fixture& operator=(file_byte_producer_test_fixture const& ) = delete;
         file_byte_producer_test_fixture& operator=(file_byte_producer_test_fixture&&) noexcept = delete;
+
+    protected:
+        using byte = unsigned char;
+        using byte_vector = std::vector<byte>;
+        using optional_byte_vector = std::optional<byte_vector>;
+
     };
 
 }
