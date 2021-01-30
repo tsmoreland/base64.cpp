@@ -40,17 +40,14 @@ namespace moreland::base64::service
             std::is_default_constructible_v<CLIPBOARD_BYTE_CONSUMER> &&
             std::is_default_constructible_v<CONVERTER_PRODUCER>
     [[nodiscard]]
-    bool convert(byte_producer_consumer_container<FILE_BYTE_PRODUCER, FILE_BYTE_CONSUMER, CLIPBOARD_BYTE_PRODUCER, CLIPBOARD_BYTE_CONSUMER>&& byte_producer_consumer)
+    bool convert(aggregate_byte_producer_consumer<FILE_BYTE_PRODUCER, FILE_BYTE_CONSUMER, CLIPBOARD_BYTE_PRODUCER, CLIPBOARD_BYTE_CONSUMER>&& producer_consumer)
     {
         using byte = unsigned char;
         CONVERTER_PRODUCER converter_producer{};
         auto const converter = converter_producer();
 
-        auto& producer = byte_producer_consumer.get_producer();
-        auto& consumer = byte_producer_consumer.get_consumer();
-
-        auto converted_consumer = [&consumer](auto const& value) {
-            return consumer.consume(std::span<byte const>{value});
+        auto converted_consumer = [&producer_consumer](auto const& value) {
+            return producer_consumer.consume(std::span<byte const>{value});
         };
         auto map = [&converted_consumer](auto const& source) {
             return shared::map<
@@ -61,13 +58,13 @@ namespace moreland::base64::service
                 >(source, converted_consumer);
         };
 
-        for (auto const &chunk : producer) {
+        for (auto const &chunk : producer_consumer) {
             if (auto const converted = converter.convert(std::span<byte const>{chunk});
                 !map(converted).value_or(false)) {
                 return false;
             }
         }
-        consumer.flush();
+        producer_consumer.flush();
         return true;
     }
 
@@ -94,7 +91,7 @@ namespace moreland::base64::service
             return false;
 
         try {
-            using container_t = byte_producer_consumer_container<FILE_BYTE_PRODUCER, FILE_BYTE_CONSUMER, CLIPBOARD_BYTE_PRODUCER, CLIPBOARD_BYTE_CONSUMER>;
+            using container_t = aggregate_byte_producer_consumer<FILE_BYTE_PRODUCER, FILE_BYTE_CONSUMER, CLIPBOARD_BYTE_PRODUCER, CLIPBOARD_BYTE_CONSUMER>;
             if (type == operation_type::encode) {
                 return convert<ENCODER, ENCODER_PRODUCER>(container_t{arguments.subspan(1)});
             }
