@@ -93,6 +93,7 @@
   <ItemGroup>
     <ClInclude Include="base64_failure_reason.h" />
     <ClInclude Include="byte_consumer.h" />
+    <ClInclude Include="byte_producer_iterator.h" />
     <ClInclude Include="converter.h" />
     <ClInclude Include="decoder.h" />
     <ClCompile Include="decoder.cpp">

@@ -16,5 +16,6 @@
     <ClInclude Include="encoder.h" />
     <ClInclude Include="byte_producer.h" />
     <ClInclude Include="byte_consumer.h" />
+    <ClInclude Include="byte_producer_iterator.h" />
   </ItemGroup>
 </Project>
