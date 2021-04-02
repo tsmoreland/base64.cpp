@@ -102,7 +102,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="byte_producer_consumer_container.h" />
+    <ClInclude Include="aggregate_byte_producer_consumer.h" />
     <ClInclude Include="clipboard_byte_consumer.h" />
     <ClInclude Include="clipboard_byte_producer.h" />
     <ClInclude Include="convert.h" />

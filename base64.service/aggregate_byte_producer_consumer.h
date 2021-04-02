@@ -40,14 +40,14 @@ namespace moreland::base64::service
             std::is_base_of_v<converters::byte_consumer, FILE_BYTE_CONSUMER> &&
             std::is_base_of_v<converters::byte_producer, CLIPBOARD_BYTE_PRODUCER> &&
             std::is_base_of_v<converters::byte_consumer, CLIPBOARD_BYTE_CONSUMER> 
-    class byte_producer_consumer_container final
+    class aggregate_byte_producer_consumer final : public converters::byte_producer, public converters::byte_consumer
     {
         CLIPBOARD_BYTE_PRODUCER clipboard_byte_producer_;
         CLIPBOARD_BYTE_CONSUMER clipboard_byte_consumer_;
         std::unique_ptr<FILE_BYTE_PRODUCER> file_byte_producer_;
         std::unique_ptr<FILE_BYTE_CONSUMER> file_byte_consumer_;
     public:
-        explicit byte_producer_consumer_container(std::span<std::string_view const> arguments)
+        explicit aggregate_byte_producer_consumer(std::span<std::string_view const> arguments)
         {
             if (!arguments.empty()) {
                 file_byte_producer_ = get_producer_from_file(std_extensions::first(arguments).value_or(""));
@@ -61,34 +61,56 @@ namespace moreland::base64::service
         }
 
         [[nodiscard]]
-        converters::byte_producer& get_producer()
+        byte_producer& get_producer()
         {
             return static_cast<bool>(file_byte_producer_)
-                ? static_cast<converters::byte_producer&>(*file_byte_producer_)
-                : static_cast<converters::byte_producer&>(clipboard_byte_producer_);
+                ? static_cast<byte_producer&>(*file_byte_producer_)
+                : static_cast<byte_producer&>(clipboard_byte_producer_);
         }
         [[nodiscard]]
-        converters::byte_producer const& get_producer() const
+        byte_producer const& get_producer() const
         {
             return static_cast<bool>(file_byte_producer_)
-                ? static_cast<converters::byte_producer const&>(*file_byte_producer_)
-                : static_cast<converters::byte_producer const&>(clipboard_byte_producer_);
+                ? static_cast<byte_producer const&>(*file_byte_producer_)
+                : static_cast<byte_producer const&>(clipboard_byte_producer_);
         }
         [[nodiscard]]
-        converters::byte_consumer& get_consumer()
+        byte_consumer& get_consumer()
         {
             return static_cast<bool>(file_byte_consumer_)
-                ? static_cast<converters::byte_consumer&>(*file_byte_consumer_)
-                : static_cast<converters::byte_consumer&>(clipboard_byte_consumer_);
+                ? static_cast<byte_consumer&>(*file_byte_consumer_)
+                : static_cast<byte_consumer&>(clipboard_byte_consumer_);
         }
         [[nodiscard]]
-        converters::byte_consumer const& get_consumer() const
+        byte_consumer const& get_consumer() const
         {
             return static_cast<bool>(file_byte_consumer_)
-                ? static_cast<converters::byte_consumer const&>(*file_byte_consumer_)
-                : static_cast<converters::byte_consumer const&>(clipboard_byte_consumer_);
+                ? static_cast<byte_consumer const&>(*file_byte_consumer_)
+                : static_cast<byte_consumer const&>(clipboard_byte_consumer_);
         }
 
+        [[nodiscard]]
+        std::optional<std::vector<unsigned char>> chunk_or_empty() override
+        {
+            return get_producer().chunk_or_empty();
+        }
+
+
+        [[nodiscard]]
+        bool consume(std::span<unsigned char const> const source) override
+        {
+            return get_consumer().consume(source);
+        }
+
+        void flush() override
+        {
+            return get_consumer().flush();
+        }
+
+        void reset() override
+        {
+            return get_consumer().reset();
+        }
     private:
         [[nodiscard]]
         std::unique_ptr<FILE_BYTE_PRODUCER> get_producer_from_file(std::string_view const path)
@@ -113,6 +135,5 @@ namespace moreland::base64::service
                 ? std::make_unique<T>(file.value_or(""))
                 : std::unique_ptr<T>{};
         }
-
     };
 }

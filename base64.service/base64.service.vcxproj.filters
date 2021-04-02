@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="byte_producer_consumer_container.h" />
     <ClInclude Include="clipboard_byte_consumer.h" />
     <ClInclude Include="clipboard_byte_producer.h" />
     <ClInclude Include="convert.h" />
@@ -10,6 +9,7 @@
     <ClInclude Include="file_byte_producer.h" />
     <ClInclude Include="operation_type.h" />
     <ClInclude Include="library_export.h" />
+    <ClInclude Include="aggregate_byte_producer_consumer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="operation_type.cpp" />
