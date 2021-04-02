@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{21040022-e608-438c-99df-3509ffd6fb08}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -48,7 +48,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="file_byte_producer_test_fixture.h" />
-    <ClCompile Include="file_byte_producer_test_fixture.cpp" >
+    <ClCompile Include="file_byte_producer_test_fixture.cpp">
       <DependentUpon>file_byte_producer_test_fixture.h</DependentUpon>
     </ClCompile>
     <ClInclude Include="mock_clipboard_traits.h" />
