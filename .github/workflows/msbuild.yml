@@ -40,7 +40,6 @@ jobs:
       shell:  'powershell'
       run: |
         git log --oneline
-        git pull
       working-directory: vcpkg
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.1
