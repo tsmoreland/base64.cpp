@@ -14,7 +14,7 @@
 #pragma once
 
 #include "../base64.converters/byte_producer.h"
-#include <fmt/core.h>
+#include <format>
 #include <fstream>
 #include <mutex>
 #include <optional>
@@ -27,7 +27,7 @@ namespace moreland::base64::service
     {
         const std::size_t BUFFER_SIZE = 16384;
         using file_byte_stream = std::basic_fstream<unsigned char, std::char_traits<unsigned char>>;
-        using lock_guard = std::lock_guard<std::mutex>;
+        using lock_guard = std::scoped_lock<std::mutex>;
         using bytes_view = std::span<unsigned char>;
 
         file_byte_stream source_;
@@ -41,13 +41,14 @@ namespace moreland::base64::service
         optional_byte_vector chunk_or_empty() override
         {
             lock_guard guard{read_lock_};
-
-            source_.read(buffer_.get(), BUFFER_SIZE);
+            source_.read(buffer_.get(), static_cast<std::streamsize>(BUFFER_SIZE));
             auto const count = source_
-                ? static_cast<std::size_t>(BUFFER_SIZE)
+                ? BUFFER_SIZE
                 : static_cast<std::size_t>(source_.gcount());
-            if (count == 0)
+
+            if (count == 0) {
                 return std::nullopt;
+            }
 
             bytes_view buffer_view{&buffer_[0], count};
             return count > 0
@@ -61,7 +62,7 @@ namespace moreland::base64::service
         {
             static_assert(converters::ConstructedFromFile<file_byte_producer>);
             if (!source_.is_open()) {
-                throw std::invalid_argument(fmt::format("unable to read {}", std_extensions::to_string(file_path)));
+                throw std::invalid_argument(std::format("unable to read {}", std_extensions::to_string(file_path)));
             }
         }
     };
