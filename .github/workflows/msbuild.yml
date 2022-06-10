@@ -36,10 +36,6 @@ jobs:
       shell: 'powershell'
       run: |
         vcpkg/vcpkg.exe integrate install
-    - name: debug 
-      shell:  'powershell'
-      run: |
-        git log --oneline
       working-directory: vcpkg
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.1
