@@ -37,7 +37,7 @@ jobs:
       run: |
         vcpkg/vcpkg.exe integrate install
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1
+      uses: microsoft/setup-msbuild@v1.1
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}

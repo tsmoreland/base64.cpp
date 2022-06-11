@@ -15,8 +15,8 @@
 
 #define WIN32_LEAN_AND_MEAN 
 
-#include <fmt/core.h>
 #include <exception>
+#include <format>
 #include <iomanip> 
 #include <optional>
 #include <limits>
