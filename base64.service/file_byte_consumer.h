@@ -18,6 +18,7 @@
 
 #include "../base64.converters/byte_consumer.h"
 #include <filesystem>
+#include <fstream>
 #include <memory>
 
 namespace moreland::base64::service {
