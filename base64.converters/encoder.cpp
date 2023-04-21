@@ -129,9 +129,9 @@ namespace moreland::base64::converters {
 
     maybe_converted<size_t> encoder::calculate_output_length(
         span<byte const> const source, bool const insert_line_breaks) {
-        size_t const new_line_size = 2;
-        size_t const ONE           = 1;
-        size_t size                = source.size() / 3 * 4;
+        constexpr size_t const new_line_size = 2;
+        constexpr size_t const ONE           = 1;
+        size_t size                          = source.size() / 3 * 4;
         size += source.size() % 3 != 0 ? 4 : 0;
 
         if (size == 0)
