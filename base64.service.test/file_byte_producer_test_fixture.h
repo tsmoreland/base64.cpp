@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include "../base64.service/file_byte_producer.h"
+
 namespace moreland::base64::service {
 
     class file_byte_producer_test_fixture {
