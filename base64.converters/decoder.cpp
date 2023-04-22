@@ -102,10 +102,8 @@ namespace moreland::base64::converters {
 
             current_block_codes = (current_block_codes << 6) | value;
 
-            auto const and_value = current_block_codes & 0x80000000u;
-
             // Last bit in currBlockCodes will be on after in shifted right 4 times:
-            if ((current_block_codes & 0x80000000u) != 0u) {
+            if (auto const and_value = current_block_codes & 0x80000000u; and_value != 0u) {
 
                 if (output_length - destination.size() < 3) {
                     return maybe_size_t(base64_failure_reason::bad_length);
